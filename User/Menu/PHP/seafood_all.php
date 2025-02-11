@@ -1,7 +1,10 @@
 <?php
-session_start();
-require_once "db_connection.php"; // เชื่อมต่อฐานข้อมูล
+$servername = "localhost";
+$username = "root";
+$password = "123456";
+$dbname = "winaishabu";
 
+$conn = new mysqli($servername, $username, $password, $dbname);
 // ดึงค่า getting_table_id จากฐานข้อมูล
 $query = "SELECT getting_table_id FROM getting_table WHERE ... "; // ปรับเงื่อนไขให้เหมาะสม
 $result = mysqli_query($conn, $query);
@@ -195,7 +198,6 @@ if ($row = mysqli_fetch_assoc($result)) {
                 <form action="payment.php" method="post">
                     <button type="submit">ชำระเงิน</button>
                 </form>
-
             </aside>
         </main>
 
