@@ -79,7 +79,8 @@ if ($result->num_rows > 0) {
     <link rel="stylesheet" type="text/css" href="stylesCancel.css">
 </head>
 <body>
-<div class="container">
+<div class="success-box">
+<button class="close-btn" onclick="closeBox()">&times;</button>
     <h2>ยกเลิกการจอง</h2>
     <form method="POST">
         <input type="hidden" name="availability_id" value="<?php echo $_GET['availability_id']; ?>">
@@ -97,5 +98,12 @@ if ($result->num_rows > 0) {
         <?php endif; ?>
     </form>
 </div>
+<script>
+        // ฟังก์ชันเมื่อกดปุ่มปิด
+        function closeBox() {
+            // กลับไปที่หน้าแรก
+            window.location.href = "Homepage.php"; // เปลี่ยนเป็น path ของหน้าแรก
+        }
+    </script>
 </body>
 </html>
