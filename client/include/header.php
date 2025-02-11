@@ -84,5 +84,4 @@
             </div>
         </div>
     </header>
-
     <?php include 'navbar.php'; ?>

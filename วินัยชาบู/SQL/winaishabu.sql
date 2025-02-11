@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 11, 2025 at 05:26 AM
+-- Generation Time: Feb 11, 2025 at 09:51 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -289,19 +289,20 @@ CREATE TABLE `order` (
 
 CREATE TABLE `package` (
   `package_id` int(11) NOT NULL,
-  `package_name` varchar(255) NOT NULL
+  `package_name` varchar(255) NOT NULL,
+  `price` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `package`
 --
 
-INSERT INTO `package` (`package_id`, `package_name`) VALUES
-(701, 'แพ็กเกจหมู'),
-(702, 'แพ็กเกจเนื้อ'),
-(703, 'แพ็กเกจทะเล'),
-(704, 'แพ็กเกจมังสวิรัติ'),
-(705, 'แพ็กเกจรวม');
+INSERT INTO `package` (`package_id`, `package_name`, `price`) VALUES
+(701, 'แพ็กเกจหมู', 899),
+(702, 'แพ็กเกจเนื้อ', 8299),
+(703, 'แพ็กเกจทะเล', 1299),
+(704, 'แพ็กเกจมังสวิรัติ', 699),
+(705, 'แพ็กเกจรวม', 8599);
 
 -- --------------------------------------------------------
 
@@ -489,6 +490,7 @@ CREATE TABLE `reservation` (
 
 INSERT INTO `reservation` (`reservation_id`, `first_name`, `last_name`, `number_of_guest`, `status`, `time_update`, `availability_id`) VALUES
 (333518, 'ชบา', 'ชื่นชม', 2, 'Comfirm', '2025-02-10 20:58:48', 116),
+(490506, 'ชบา', 'ชื่นชม', 2, 'Cancel', '2025-02-11 06:35:46', 216),
 (502000, 'ชบา', 'ชื่นชม', 2, 'Cancel', '2025-02-10 20:53:54', 116),
 (981784, 'ชบา', 'ชื่นชม', 2, 'Cancel', '2025-02-11 04:12:29', 216);
 
