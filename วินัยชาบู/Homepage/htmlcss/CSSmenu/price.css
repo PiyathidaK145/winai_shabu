@@ -1,0 +1,54 @@
+.image-item .price {
+  color: #ff5733; /* สีส้มสด */
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.image-item .price::before {
+  content: "ราคา: ";
+  font-weight: normal;
+  color: #000;
+  margin-right: 5px;
+}
+
+.image-item:hover .price {
+  color: #e74c3c; /* เปลี่ยนเป็นสีแดงเมื่อชี้ */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* การ์ดสินค้า */
+.image-item {
+  background: #fff; /* พื้นหลังสีขาว */
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  text-align: center;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.image-item:hover {
+  transform: scale(1.05); /* ขยายการ์ดเล็กน้อย */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+.image-item img {
+  width: 120px;
+  height: 100px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.image-item p {
+  margin: 5px 0;
+}
+
+/* ทำให้ราคาคงที่ในตำแหน่งเดียวกัน */
+/* .image-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 220px;
+} */

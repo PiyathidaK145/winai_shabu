@@ -1,0 +1,70 @@
+#order-summary {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+#order-summary h2 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  padding-bottom: 10px;
+}
+
+#order-summary div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+#order-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#order-list li {
+  display: flex;
+  justify-content: space-between; /* จัดตำแหน่ง space-between */
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd; /* เส้นคั่นระหว่างรายการ */
+}
+
+#order-list li:last-child {
+  border-bottom: none;
+}
+
+#order-summary button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+#order-summary button:first-of-type {
+  background-color: #28a745; /* สีเขียวสำหรับปุ่มสั่งออเดอร์ */
+  color: white;
+}
+
+#order-summary button:first-of-type:hover {
+  background-color: #218838;
+}
+
+#order-summary button:last-of-type {
+  background-color: #007bff; /* สีน้ำเงินสำหรับปุ่มชำระเงิน */
+  color: white;
+}
+
+#order-summary button:last-of-type:hover {
+  background-color: #0056b3;
+}

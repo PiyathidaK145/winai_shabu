@@ -1,0 +1,127 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+}
+
+.form-container {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-container h1 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-container input[type="text"],
+.form-container input[type="tel"],
+.form-container input[type="number"],
+.form-container input[type="time"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box; /* Ensure padding does not affect width */
+}
+
+.form-container div {
+    display: flex; /* ใช้ Flexbox เพื่อจัด Checkbox และข้อความ */
+    align-items: center; /* จัดให้อยู่ตรงกลางแนวตั้ง */
+}
+
+.form-container input[type="checkbox"] {
+    margin: 0 8px 0 0; /* ระยะห่างระหว่าง Checkbox และข้อความ */
+}
+
+.form-container .terms-label {
+    font-size: 14px; /* ขนาดข้อความ */
+    line-height: 1; /* ลดระยะบรรทัดของข้อความ */
+    margin: 0; /* ลบระยะขอบ */
+}
+
+
+
+.form-container button {
+    width: 100%;
+    padding: 14px;
+    background-color: #ff5722;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form-container button:hover {
+    background-color: #e64a19;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .form-container {
+        padding: 15px;
+        max-width: 100%;
+    }
+    .form-container h1 {
+        font-size: 18px;
+    }
+    .form-container input[type="text"],
+    .form-container input[type="tel"],
+    .form-container input[type="number"],
+    .form-container input[type="time"] {
+        padding: 10px;
+        font-size: 13px;
+    }
+    .form-container button {
+        padding: 12px;
+        font-size: 14px;
+    }
+}
+.form-container {
+    position: relative; /* เพิ่มตำแหน่งเพื่อให้ close-button อิงตำแหน่งได้ */
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px; /* ระยะห่างจากด้านบนของกรอบ */
+    right: 10px; /* ระยะห่างจากด้านขวาของกรอบ */
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #df0606;
+    line-height: 1; /* ลดระยะห่างของไอคอน */
+}
+
+.close-button:hover {
+    color: #b50505; /* สีเข้มขึ้นเมื่อวางเมาส์ */
+}

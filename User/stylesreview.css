@@ -1,0 +1,107 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .review-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  h1 {
+    margin: 0 0 10px;
+  }
+  
+  h2 {
+    margin: 10px 0;
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  .stars {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+  }
+  
+  .stars span:hover,
+  .stars span.active {
+    color: #f5a623;
+  }
+  
+  .rating-message {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  /* Tags */
+  .tags-container {
+    margin: 20px 0;
+  }
+  
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .tag {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .tag.selected {
+    background-color: #f5a623;
+    color: #fff;
+    border-color: #f5a623;
+  }
+  
+  /* Textarea and Button */
+  textarea {
+    width: 100%;
+    height: 80px;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #f5a623;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #d4881a;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .review-container {
+      padding: 15px;
+    }
+  }
+  
