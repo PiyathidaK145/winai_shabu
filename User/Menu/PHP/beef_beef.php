@@ -72,7 +72,7 @@
                         <ul class="tabs">
                             <?php
                             $categories = [
-                                ['href' => 'beef_beef.php', 'data' => 'beef', 'src' => '../img/meat/beef.jpg', 'name' => 'เนื้อ'],
+                                ['href' => 'beef_menu.php', 'data' => 'beef', 'src' => '../img/meat/beef.jpg', 'name' => 'เนื้อ'],
                                 ['href' => 'beef_processed.php', 'data' => 'processed', 'src' => '../img/processed/มาม่า.JPG', 'name' => 'ของแปรรูป'],
                                 ['href' => 'beef_vegatable.php', 'data' => 'vegetables', 'src' => '../img/vegatable/vegatarian.jpg', 'name' => 'ผัก'],
                                 ['href' => 'beef_fruit.php', 'data' => 'fruit', 'src' => '../img/Fruits/Fruit.JPG', 'name' => 'ผลไม้'],
@@ -102,55 +102,8 @@
                         ['src' => '../img/meat/เนื้อพื้นท้องวัวออสเตรเลียสไลซ์แช่แข็ง.jpg', 'name' => 'เนื้อพื้นท้องวัวออสเตรเลียสไลซ์แช่แข็ง'],
                         ['src' => '../img/meat/A4.png', 'name' => 'เนื้อวากิวญี่ปุ่น A4'],
                         ['src' => '../img/meat/A5.png', 'name' => 'เนื้อวากิวญี่ปุ่น A5'],
-                        ["src" => "../img/All-menu/เส้นอุด้ง.jpg", "name" => "เส้นอุด้ง"],
-                        ["src" => "../img/All-menu/ลูกชิ้นปิงปอง.jpg", "name" => "ลูกชิ้นปิงปอง"],
-                        ["src" => "../img/All-menu/ลูกชิ้นรักบี้.jpg", "name" => "ลูกชิ้นรักบี้"],
-                        ["src" => "../img/All-menu/เต้าหู้ม้วนห่อสาหร่าย.jpg", "name" => "เต้าหู้ม้วนห่อสาหร่าย"],
-                        ["src" => "../img/All-menu/คริสตัลไข่ปลา.jpg", "name" => "คริสตัลไข่ปลา"],
-                        ["src" => "../img/All-menu/ลูกชิ้นกุ้ง.jpg", "name" => "ลูกชิ้นกุ้ง"],
-                        ["src" => "../img/All-menu/บะหมี่หยกไต้หวัน.jpg", "name" => "บะหมี่หยกไต้หวัน"]
+ 
                        
-                    ];
-                   
-                    $fruits = [
-                        ["name" => "แตงโม", "image" => "../img/Fruits/watermelon.jpg"],
-                        ["name" => "แอปเปิ้ล", "image" => "../img/Fruits/apple.jpg"],
-                        ["name" => "กล้วย", "image" => "../img/Fruits/banana.jpg"],
-                        ["name" => "กีวี่", "image" => "../img/Fruits/kiwi.jpg"],
-                        ["name" => "ทับทิม", "image" => "../img/Fruits/Pomegranate.jpg"],
-                        ["name" => "สัปปะรด", "image" => "../img/Fruits/pineapple.jpg"],
-                        ["name" => "แคนตาลูป", "image" => "../img/Fruits/cantaloupe.jpg"],
-                        ["name" => "แก้วมังกร", "image" => "../img/Fruits/dragon fruit.jpg"],
-                        ["name" => "ส้ม", "image" => "../img/Fruits/orange.jpg"]
-                    ];
-
-                    foreach ($fruits as $fruit) {
-                        echo "<div class='image-item'>";
-                        echo "<img src='{$fruit['image']}'>";
-                        echo "<p>{$fruit['name']}</p>";
-                        echo "<div class='menu-quantity'>";
-                        echo "<button class='decrease' onclick=\"updateOrder('{$fruit['name']}', -1)\">-</button>";
-                        echo "<span class='quantity' id='quantity-{$fruit['name']}' style='visibility: hidden;'>0</span>";
-                        echo "<button class='increase' onclick=\"updateOrder('{$fruit['name']}', 1)\">+</button>";
-                        echo "</div>";
-                        echo "</div>";
-                    }
-                    
-                    $items = [
-                        ["src" => "../img/vegatable/ผักบุ้ง.webp", "name" => "ผักบุ้ง"],
-                        ["src" => "../img/vegatable/ต้นหอม.jpg", "name" => "ต้นหอม"],
-                        ["src" => "../img/vegatable/ข้าวโพดอ่อน.jpg", "name" => "ข้าวโพดอ่อน"],
-                        ["src" => "../img/vegatable/กวางตุ้ง.jpg", "name" => "กวางตุ้ง"],
-                        ["src" => "../img/vegatable/ผักขึ้นฉ่าย.jpg", "name" => "ผักขึ้นฉ่าย"],
-                        ["src" => "../img/vegatable/ฮ่องเต้น้อย.jpg", "name" => "ฮ่องเต้น้อย"],
-                        ["src" => "../img/vegatable/ฟักทองญี่ปุ่น.jpg", "name" => "ฟักทองญี่ปุ่น"],
-                        ["src" => "../img/vegatable/สาหร่ายวากาเมะ.jpg", "name" => "วากาเมะเขียว"],
-                        ["src" => "../img/vegatable/ผักกาดขาว.jpg", "name" => "ผักกาดขาว"],
-                        ["src" => "../img/vegatable/เห็ดฟาง.webp", "name" => "เห็ดฟาง"],
-                        ["src" => "../img/vegatable/เห็ดหูหนู.jpg", "name" => "เห็ดหูหนู"],
-                        ["src" => "../img/vegatable/เห็ดเข็มทอง.webp", "name" => "เห็ดเข็มทอง"],
-                        ["src" => "../img/vegatable/ข้าวโพด.webp", "name" => "ข้าวโพด"],
-                        ["src" => "../img/vegatable/เห็ดชิเมจิขาว.jpg", "name" => "เห็ดชิเมจิขาว"]
                     ];
  
                     foreach ($meats as $meat) {
@@ -161,36 +114,6 @@
                         echo "<button class='decrease' onclick=\"updateOrder('{$meat['name']}', 0)\">-</button>";
                         echo "<span class='quantity' id='quantity-{$meat['name']}' style='visibility: hidden;'>0</span>";
                         echo "<button class='increase' onclick=\"updateOrder('{$meat['name']}',0)\">+</button>";
-                        echo "</div></div>";
-                    }
-                    ?>
-
-                    <?php
-                    // รายการเมนู
-                    $items = [
-                        ["src" => "../img/other/เผือกทอด.jpg", "name" => "เผือกทอด"],
-                        ["src" => "../img/other/เฟรนช์ฟรายส์.jpg", "name" => "เฟรนช์ฟรายส์"],
-                        ["src" => "../img/other/น้ำแร่.jpg", "name" => "น้ำแร่"],
-                        ["src" => "../img/other/น้ำเก๊กฮวย.jpg", "name" => "น้ำเก๊กฮวย"],
-                        ["src" => "../img/other/น้ำอัดลม.jpg", "name" => "น้ำอัดลม"],
-                        ["src" => "../img/other/ชามะนาว.jpg", "name" => "ชามะนาว"],
-                        ["src" => "../img/other/น้ำแตงโมปั่น.jpg", "name" => "น้ำแตงโมปั่น"],
-                        ["src" => "../img/other/น้ำส้ม.jpg", "name" => "น้ำส้ม"],
-                        ["src" => "../img/other/น้ำมะพร้าว.jpg", "name" => "น้ำมะพร้าว"],
-                        ["src" => "../img/other/รวมมิตร.jpg", "name" => "รวมมิตร"],
-                        ["src" => "../img/other/ทับทิมกรอบ.jpg", "name" => "ทับทิมกรอบ"],
-                        ["src" => "../img/other/บัวลอยร้อน.jpg", "name" => "บัวลอย(ร้อน)"],
-                        ["src" => "../img/other/บัวลอยน้ำขิง.jpg", "name" => "บัวลอยน้ำขิง"]
-                    ];
-
-                    foreach ($items as $item) {
-                        echo "<div class='image-item'>";
-                        echo "<img src='{$item['src']}' alt='{$item['name']}'>";
-                        echo "<p>{$item['name']}</p>";
-                        echo "<div class='menu-quantity'>";
-                        echo "<button class='decrease' onclick=\"updateOrder('{$item['name']}', -1)\">-</button>";
-                        echo "<span class='quantity' id='quantity-{$item['name']}' style='visibility: hidden;'>0</span>";
-                        echo "<button class='increase' onclick=\"updateOrder('{$item['name']}', 1)\">+</button>";
                         echo "</div></div>";
                     }
                     ?>
