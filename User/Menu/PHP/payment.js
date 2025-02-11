@@ -14,7 +14,7 @@ function showPaymentOption() {
 }
 
 // ฟังก์ชันยืนยันการชำระเงิน
-function confirmPayment() {
+/*function confirmPayment() {
   const paymentMethod = document.getElementById("payment-method").value;
   
   // ตรวจสอบวิธีการชำระเงิน
@@ -36,5 +36,45 @@ function confirmPayment() {
 
     // ไปยังหน้ารอตรวจสอบ
     window.location.href = "Makepayment.php";
+  
+}*/
+function confirmPayment() {
+  const tableID = document.getElementById("table-number").innerText;
+  const packageID = document.getElementById("package-id").value;
+  const promotionID = document.getElementById("promotion-id").value;
+  const packagePrice = document.getElementById("package-price").value;
+  const paymentMethod = document.getElementById("payment-method").value;
+
+  if (paymentMethod === "เลือกวิธีชำระเงิน") {
+      alert("กรุณาเลือกวิธีชำระเงิน");
+      return;
   }
+
+  const data = {
+      table_id: tableID,
+      package_id: packageID,
+      promotion_id: promotionID,
+      package_price: packagePrice,
+      payment_method: paymentMethod
+  };
+
+  console.log("กำลังส่งข้อมูลการชำระเงิน...", data);
+
+  fetch("process_payment.php", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(result => {
+      if (result.success) {
+          alert("ชำระเงินสำเร็จ!");
+          window.location.href = "success_page.php"; // ไปที่หน้าหลังชำระเงินเสร็จ
+      } else {
+          alert("เกิดข้อผิดพลาด: " + result.message);
+      }
+  })
+  .catch(error => console.error("Error:", error));
 }
