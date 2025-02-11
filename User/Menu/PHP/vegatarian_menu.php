@@ -7,10 +7,10 @@
     <title>Winai's Shabu</title>
     <link rel="stylesheet" href="../CSS/menu.css">
     <!-- Preload Resource -->
-    <link rel="preload" href="../img/meat/beef.jpg" as="image">
-    <link rel="preload" href="../img/vegatable/vegatable.jpg" as="image">
-    <link rel="preload" href="../img/seafood/seafood.jpg" as="image">
-    <link rel="preload" href="../img/other/other.jpg" as="image">
+    <link rel="preload" href="../img/meat/beef.jpg" as="src">
+    <link rel="preload" href="../img/vegatable/vegatable.jpg" as="src">
+    <link rel="preload" href="../img/seafood/seafood.jpg" as="src">
+    <link rel="preload" href="../img/other/other.jpg" as="src">
     <script src="../Javascript..-set.js"></script>
     <script src="../Javascript/select_soup.js"></script>
     <link rel="stylesheet" href="../CSS/select_soup.css">
@@ -43,8 +43,7 @@
                         ["src" => "../img/Soups/น้ำซุปต้นตำรับ.jpg", "name" => "น้ำซุปต้นตำรับ"],
                         ["src" => "../img/Soups/น้ำซุปน้ำดำ.jpg", "name" => "น้ำซุปน้ำดำญี่ปุ่น"],
                         ["src" => "../img/Soups/น้ำซุปกระดูกหมู.jpg", "name" => "น้ำซุปกระดูกหมู"],
-                        ["src" => "../img/Soups/น้ำซุปหม่าล่า.jpg", "name" => "น้ำซุปหม่าล่า"],
-                        ["src" => "../img/Soups/น้ำซุปต้มยำ.jpg", "name" => "น้ำซุปต้มยำ"]
+                        ["src" => "../img/Soups/น้ำซุปหม่าล่า.jpg", "name" => "น้ำซุปหม่าล่า"]
                     ];
                     foreach ($soups as $soup) {
                         echo "<div class='menu-item' onclick=\"toggleSoupSelection(this, '{$soup['name']}')\">";
@@ -90,21 +89,44 @@
             <section id="image-gallery" data-category="Beefset">
                 <div class="image-grid">
                     <?php
-                    $menu_items = [
-                        ["img" => "../img/vegatable/ผักบุ้ง.webp", "name" => "ผักบุ้ง"],
-                        ["img" => "../img/vegatable/ต้นหอม.jpg", "name" => "ต้นหอม"],
-                        ["img" => "../img/vegatable/ข้าวโพดอ่อน.jpg", "name" => "ข้าวโพดอ่อน"],
-                        ["img" => "../img/vegatable/กวางตุ้ง.jpg", "name" => "กวางตุ้ง"],
-                        ["img" => "../img/vegatable/ผักขึ้นฉ่าย.jpg", "name" => "ผักขึ้นฉ่าย"],
-                        ["img" => "../img/vegatable/ฮ่องเต้น้อย.jpg", "name" => "ฮ่องเต้น้อย"],
-                        ["img" => "../img/vegatable/ฟักทองญี่ปุ่น.jpg", "name" => "ฟักทองญี่ปุ่น"],
-                        ["img" => "../img/vegatable/สาหร่ายวากาเมะ.jpg", "name" => "วากาเมะเขียว"],
-                        ["img" => "../img/vegatable/ผักกาดขาว.jpg", "name" => "ผักกาดขาว"],
-                        ["img" => "../img/vegatable/เห็ดฟาง.webp", "name" => "เห็ดฟาง"],
-                        ["img" => "../img/vegatable/เห็ดหูหนู.jpg", "name" => "เห็ดหูหนู"],
-                        ["img" => "../img/vegatable/เห็ดเข็มทอง.webp", "name" => "เห็ดเข็มทอง"],
-                        ["img" => "../img/vegatable/ข้าวโพด.webp", "name" => "ข้าวโพด"],
-                        ["img" => "../img/vegatable/เห็ดชิเมจิขาว.jpg", "name" => "เห็ดชิเมจิขาว"],
+                    $items = [
+                        ["src" => "../img/vegatable/ผักบุ้ง.webp", "name" => "ผักบุ้ง"],
+                        ["src" => "../img/vegatable/ต้นหอม.jpg", "name" => "ต้นหอม"],
+                        ["src" => "../img/vegatable/ข้าวโพดอ่อน.jpg", "name" => "ข้าวโพดอ่อน"],
+                        ["src" => "../img/vegatable/ข้าวโพด.jpg", "name" => "ข้าวโพด"],
+                        ["src" => "../img/vegatable/กวางตุ้ง.jpg", "name" => "กวางตุ้ง"],
+                        ["src" => "../img/vegatable/ผักขึ้นฉ่าย.jpg", "name" => "ผักขึ้นฉ่าย"],
+                        ["src" => "../img/vegatable/ฮ่องเต้น้อย.jpg", "name" => "ฮ่องเต้น้อย"],
+                        ["src" => "../img/vegatable/ฟักทองญี่ปุ่น.jpg", "name" => "ฟักทองญี่ปุ่น"],
+                        ["src" => "../img/vegatable/ผักกาดขาว.jpg", "name" => "ผักกาดขาว"],
+                        ["src" => "../img/vegatable/เห็ดหูหนู.jpg", "name" => "เห็ดหูหนู"],
+                        ["src" => "../img/vegatable/เห็ดเข็มทอง.jpg", "name" => "เห็ดเข็มทอง"],
+                        ["src" => "../img/vegatable/เห็ดฟาง.jpg", "name" => "เห็ดฟาง"],
+                        ["src" => "../img/vegatable/เห็ดชิเมจิขาว.jpg", "name" => "เห็ดชิเมจิขาว"],
+                        ["src" => "../img/vegatable/วากาเมะ.jpg", "name" => "วากาเมะเขียว"],
+                        ["src" => "../img/All-menu/เส้นอุด้ง.jpg", "name" => "เส้นอุด้ง"],
+                        ["src" => "../img/All-menu/เต้าหู้ม้วนห่อสาหร่าย.jpg", "name" => "เต้าหู้ม้วนห่อสาหร่าย"],
+                        ["src" => "../img/All-menu/บะหมี่หยกไต้หวัน.jpg", "name" => "บะหมี่หยกไต้หวัน"],
+                        ["src" => "../img/Fruits/watermelon.jpg", "name" => "แตงโม"],
+                        ["src" => "../img/Fruits/apple.jpg","name" => "แอปเปิ้ล" ],
+                        ["src" => "../img/Fruits/banana.jpg","name" => "กล้วย" ],
+                        ["src" => "../img/Fruits/kiwi.jpg", "name" => "กีวี่"],
+                        ["src" => "../img/Fruits/Pomegranate.jpg","name" => "ทับทิม"],
+                        ["src" => "../img/Fruits/pineapple.jpg","name" => "สัปปะรด"],
+                        ["src" => "../img/Fruits/cantaloupe.jpg","name" => "แคนตาลูป"],
+                        ["src" => "../img/Fruits/dragon fruit.jpg","name" => "แก้วมังกร"],
+                        ["src" => "../img/Fruits/orange.jpg","name" => "ส้ม"],
+                        ["src" => "../img/other/เผือกทอด.jpg", "name" => "เผือกทอด"],
+                        ["src" => "../img/other/เฟรนช์ฟรายส์.jpg", "name" => "เฟรนช์ฟรายส์"],
+                        ["src" => "../img/other/น้ำแร่.jpg", "name" => "น้ำแร่"],
+                        ["src" => "../img/other/น้ำเก๊กฮวย.jpg", "name" => "น้ำเก๊กฮวย"],
+                        ["src" => "../img/other/น้ำอัดลม.jpg", "name" => "น้ำอัดลม"],
+                        ["src" => "../img/other/ชามะนาว.jpg", "name" => "ชาเขียวรสน้ำผึ้งมะนาว"],
+                        ["src" => "../img/other/น้ำแตงโมปั่น.jpg", "name" => "น้ำชาเขียว รสแตงโม"],
+                        ["src" => "../img/other/น้ำส้ม.jpg", "name" => "น้ำส้ม"],
+                        ["src" => "../img/other/น้ำมะพร้าว.jpg", "name" => "น้ำมะพร้าว"],
+                        ["src" => "../img/other/ชานมไข่มุก.png", "name" => "ชานมไข่มุก"],
+                        ["src" => "../img/other/บัวลอยน้ำขิง.jpg", "name" => "บัวลอยน้ำขิง"]
                     ];
                     foreach ($items as $item) {
                         echo "<div class='image-item'>";

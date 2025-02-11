@@ -32,12 +32,11 @@
         <div class="promotion-banner">
             <p>โปรโมชันพิเศษสำหรับเดือนนี้! ลดราคาสุดคุ้มทุกวันจันทร์-พฤหัสบดี</p>
         </div>
-
         <div class="top-bar">
-            <a href="/วินัยชาบู/htmlcss/Homepage.php" class="back-button">&larr;</a>
+        <a href="../PHP/pork-pork.php" class="back-button">←</a>
             <div class="search-bar">
                 <input type="text" placeholder="ค้นหา">
-                <button>&#128269;</button>
+                <button>🔍</button>
             </div>
         </div>
         <main>
