@@ -48,8 +48,7 @@
                         ["name" => "ซุปต้นตำรับ", "image" => "../img/Soups/น้ำซุปต้นตำรับ.jpg"],
                         ["name" => "ซุปน้ำดำญี่ปุ่น", "image" => "../img/Soups/น้ำซุปน้ำดำ.jpg"],
                         ["name" => "น้ำซุปกระดูกหมู", "image" => "../img/Soups/น้ำซุปกระดูกหมู.jpg"],
-                        ["name" => "น้ำซุปหม่าล่า", "image" => "../img/Soups/น้ำซุปหม่าล่า.jpg"],
-                        ["name" => "น้ำซุปต้มยำ", "image" => "../img/Soups/น้ำซุปต้มยำ.jpg"]
+                        ["name" => "น้ำซุปหม่าล่า", "image" => "../img/Soups/น้ำซุปหม่าล่า.jpg"]
                     ];
 
                     foreach ($soups as $soup) {
