@@ -1,5 +1,14 @@
 <?php
-// เริ่มต้นไฟล์ PHP
+session_start();
+require_once "db_connection.php"; // เชื่อมต่อฐานข้อมูล
+
+// ดึงค่า getting_table_id จากฐานข้อมูล
+$query = "SELECT getting_table_id FROM getting_table WHERE ... "; // ปรับเงื่อนไขให้เหมาะสม
+$result = mysqli_query($conn, $query);
+
+if ($row = mysqli_fetch_assoc($result)) {
+    $_SESSION['getting_table_id'] = $row['getting_table_id'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -183,7 +192,10 @@
                     <!-- รายการออเดอร์จะเพิ่มที่นี่ -->
                 </ul>
                 <button onclick="submitOrder()">สั่งออเดอร์</button>
-                <button>ชำระเงิน</button>
+                <form action="payment.php" method="post">
+                    <button type="submit">ชำระเงิน</button>
+                </form>
+
             </aside>
         </main>
 
