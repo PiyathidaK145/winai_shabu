@@ -75,5 +75,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php endif; ?>
     </form>
 </div>
+<script>
+        // ฟังก์ชันเมื่อกดปุ่มปิด
+        function closeBox() {
+            // กลับไปที่หน้าแรก
+            window.location.href = "Homepage.php"; // เปลี่ยนเป็น path ของหน้าแรก
+        }
+    </script>
+
 </body>
 </html>
