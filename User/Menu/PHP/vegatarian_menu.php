@@ -1,7 +1,3 @@
-<?php
-// เริ่มต้นเซสชัน (ถ้าจำเป็นสำหรับการจัดการข้อมูลผู้ใช้ในอนาคต)
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="th">
 
@@ -11,14 +7,14 @@ session_start();
     <title>Winai's Shabu</title>
     <link rel="stylesheet" href="../CSS/menu.css">
     <!-- Preload Resource -->
-    <link rel="preload" href="../img/meat/beef.jpg" as="image">
-    <link rel="preload" href="../img/vegatable/vegatable.jpg" as="image">
-    <link rel="preload" href="../img/seafood/seafood.jpg" as="image">
-    <link rel="preload" href="../img/other/other.jpg" as="image">
-    <script src="../Javascript/menu-set.js"></script>
+    <link rel="preload" href="../img/meat/beef.jpg" as="src">
+    <link rel="preload" href="../img/vegatable/vegatable.jpg" as="src">
+    <link rel="preload" href="../img/seafood/seafood.jpg" as="src">
+    <link rel="preload" href="../img/other/other.jpg" as="src">
+    <script src="../Javascript..-set.js"></script>
     <script src="../Javascript/select_soup.js"></script>
     <link rel="stylesheet" href="../CSS/select_soup.css">
-    <link rel="stylesheet" href="/CSS/price.css">
+    <link rel="stylesheet" href="../CSS/price.css">
     <script src="../Javascript/submitOrder.js"></script>
     <script src="../Javascript/order_Summary.js"></script>
     <link rel="stylesheet" href="../CSS/order_Summary.css">
@@ -32,15 +28,13 @@ session_start();
         <div class="promotion-banner">
             <p>โปรโมชันพิเศษสำหรับเดือนนี้! ลดราคาสุดคุ้มทุกวันจันทร์-พฤหัสบดี</p>
         </div>
-
         <div class="top-bar">
-            <a href="/วินัยชาบู/htmlcss/Homepage.php" class="back-button">&larr;</a>
+            <a href="../htmlcss/หน้าแรก.html" class="back-button">←</a>
             <div class="search-bar">
                 <input type="text" placeholder="ค้นหา">
-                <button>&#128269;</button>
+                <button>🔍</button>
             </div>
         </div>
-
         <main>
             <section id="menu-section">
                 <div class="menu-carousel">
@@ -51,10 +45,9 @@ session_start();
                         ["src" => "../img/Soups/น้ำซุปกระดูกหมู.jpg", "name" => "น้ำซุปกระดูกหมู"],
                         ["src" => "../img/Soups/น้ำซุปหม่าล่า.jpg", "name" => "น้ำซุปหม่าล่า"]
                     ];
-
                     foreach ($soups as $soup) {
                         echo "<div class='menu-item' onclick=\"toggleSoupSelection(this, '{$soup['name']}')\">";
-                        echo "<img src='{$soup['src']}' alt='{$soup['name']}'>";
+                        echo "<img src='{$soup['src']}'>";
                         echo "<p>{$soup['name']}</p>";
                         echo "</div>";
                     }
@@ -64,6 +57,7 @@ session_start();
                     <button id="confirm-button" onclick="confirmSelection()" disabled>ยืนยัน</button>
                 </div>
             </section>
+
 
             <!-- Filter Section -->
             <section id="filter-section">
@@ -91,7 +85,7 @@ session_start();
                 </div>
             </section>
 
-
+            
             <section id="image-gallery" data-category="Beefset">
                 <div class="image-grid">
                     <?php
@@ -109,11 +103,33 @@ session_start();
                         ["src" => "../img/vegatable/เห็ดเข็มทอง.jpg", "name" => "เห็ดเข็มทอง"],
                         ["src" => "../img/vegatable/เห็ดฟาง.jpg", "name" => "เห็ดฟาง"],
                         ["src" => "../img/vegatable/เห็ดชิเมจิขาว.jpg", "name" => "เห็ดชิเมจิขาว"],
-                        ["src" => "../img/vegatable/วากาเมะ.jpg", "name" => "วากาเมะเขียว"]
+                        ["src" => "../img/vegatable/วากาเมะ.jpg", "name" => "วากาเมะเขียว"],
+                        ["src" => "../img/All-menu/เส้นอุด้ง.jpg", "name" => "เส้นอุด้ง"],
+                        ["src" => "../img/All-menu/เต้าหู้ม้วนห่อสาหร่าย.jpg", "name" => "เต้าหู้ม้วนห่อสาหร่าย"],
+                        ["src" => "../img/All-menu/บะหมี่หยกไต้หวัน.jpg", "name" => "บะหมี่หยกไต้หวัน"],
+                        ["src" => "../img/Fruits/watermelon.jpg", "name" => "แตงโม"],
+                        ["src" => "../img/Fruits/apple.jpg","name" => "แอปเปิ้ล" ],
+                        ["src" => "../img/Fruits/banana.jpg","name" => "กล้วย" ],
+                        ["src" => "../img/Fruits/kiwi.jpg", "name" => "กีวี่"],
+                        ["src" => "../img/Fruits/Pomegranate.jpg","name" => "ทับทิม"],
+                        ["src" => "../img/Fruits/pineapple.jpg","name" => "สัปปะรด"],
+                        ["src" => "../img/Fruits/cantaloupe.jpg","name" => "แคนตาลูป"],
+                        ["src" => "../img/Fruits/dragon fruit.jpg","name" => "แก้วมังกร"],
+                        ["src" => "../img/Fruits/orange.jpg","name" => "ส้ม"],
+                        ["src" => "../img/other/เผือกทอด.jpg", "name" => "เผือกทอด"],
+                        ["src" => "../img/other/เฟรนช์ฟรายส์.jpg", "name" => "เฟรนช์ฟรายส์"],
+                        ["src" => "../img/other/น้ำแร่.jpg", "name" => "น้ำแร่"],
+                        ["src" => "../img/other/น้ำเก๊กฮวย.jpg", "name" => "น้ำเก๊กฮวย"],
+                        ["src" => "../img/other/น้ำอัดลม.jpg", "name" => "น้ำอัดลม"],
+                        ["src" => "../img/other/ชามะนาว.jpg", "name" => "ชาเขียวรสน้ำผึ้งมะนาว"],
+                        ["src" => "../img/other/น้ำแตงโมปั่น.jpg", "name" => "น้ำชาเขียว รสแตงโม"],
+                        ["src" => "../img/other/น้ำส้ม.jpg", "name" => "น้ำส้ม"],
+                        ["src" => "../img/other/น้ำมะพร้าว.jpg", "name" => "น้ำมะพร้าว"],
+                        ["src" => "../img/other/ชานมไข่มุก.png", "name" => "ชานมไข่มุก"],
+                        ["src" => "../img/other/บัวลอยน้ำขิง.jpg", "name" => "บัวลอยน้ำขิง"]
                     ];
-
                     foreach ($items as $item) {
-                        echo "<div class='image-item' data-category='Beefset'>";
+                        echo "<div class='image-item'>";
                         echo "<img src='{$item['src']}' alt='{$item['name']}'>";
                         echo "<p>{$item['name']}</p>";
                         echo "<div class='menu-quantity'>";
@@ -134,14 +150,20 @@ session_start();
                 <ul id="order-list">
                     <!-- รายการออเดอร์จะเพิ่มที่นี่ -->
                 </ul>
-                <button onclick="submitOrder()">สั่งออเดอร์</button>
+                <button onclick="submitOrder()">สั่งออเดอร์</button>                
                 <button>ชำระเงิน</button>
             </aside>
         </main>
 
-        <?php include 'footer.php'; ?> <!-- เพิ่มไฟล์ Footer -->
+        <!-- Footer -->
+        <footer>
+            <p>ติดต่อเรา:
+                <a href="tel:0123456789">012-345-6789</a> |
+                <a href="https://facebook.com/example">Facebook</a> |
+                <a href="https://maps.google.com">แผนที่ร้าน</a>
+            </p>
+        </footer>
     </div>
 </body>
 
 </html>
-

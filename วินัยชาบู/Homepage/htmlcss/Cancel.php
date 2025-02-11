@@ -56,7 +56,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" type="text/css" href="stylesCancel.css">
 </head>
 <body>
-<div class="container">
+<div class="success-box">
+<button class="close-btn" onclick="closeBox()">&times;</button>
     <h2>ยกเลิกการจอง</h2>
     <form method="POST">
         <input type="hidden" name="availability_id" value="<?php echo $_GET['availability_id']; ?>">
@@ -69,18 +70,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <!-- แสดงปุ่ม "จองใหม่" เมื่อการจองถูกยกเลิกแล้ว -->
             <button type="submit" name="action" value="book">จองใหม่</button>
         <?php else: ?>
-            <!-- แสดงปุ่ม "ยกเลิกการจอง" เมื่อการจองยังไม่ถูกยกเลิก -->
+            <!-- แสดงปุ่ม "ยกเลิกการจอง" เมื่อการจองยังไม่ถูกยกเลิก ufuffiufvlglks-->
             <button type="submit" name="action" value="cancel">ยกเลิกการจอง</button>
         <?php endif; ?>
     </form>
 </div>
-
-<?php
-// ถ้ามีการยกเลิกการจองเสร็จสิ้นและถูกส่งผ่านพารามิเตอร์ cancel=true ให้แสดงข้อความยืนยัน
-if (isset($_GET['cancel']) && $_GET['cancel'] == 'true') {
-    echo "<script>alert('การจองถูกยกเลิกเรียบร้อย');</script>";
-}
-?>
-
 </body>
 </html>
