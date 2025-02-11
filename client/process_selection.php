@@ -11,7 +11,8 @@ if ($conn->connect_error) {
 }
 
 // ฟังก์ชันสร้าง getting_table_id แบบสุ่ม 6 หลัก
-function generateUniqueId($conn) {
+function generateUniqueId($conn)
+{
     do {
         $uniqueId = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
         $sql = "SELECT COUNT(*) AS count FROM getting_table WHERE getting_table_id = ?";
