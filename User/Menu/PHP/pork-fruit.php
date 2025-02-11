@@ -34,10 +34,11 @@
             <p>โปรโมชันพิเศษสำหรับเดือนนี้! ลดราคาสุดคุ้มทุกวันจันทร์-พฤหัสบดี</p>
         </div>
         <div class="top-bar">
-            <a href="../htmlcss/หน้าแรก.html" class="back-button">←</a>
+            <a href="../PHP/pork-pork.php" class="back-button">←</a>
             <div class="search-bar">
                 <input type="text" placeholder="ค้นหา">
-                <button>🔍</button>
+                <button type="submit">🔍</button>
+
             </div>
         </div>
         <main>
@@ -98,15 +99,15 @@
                 <div class="image-grid">
                     <?php
                     $fruits = [
-                        ["name" => "แตงโม", "image" => "../img/Fruits/watermelon.jpg"],
-                        ["name" => "แอปเปิ้ล", "image" => "../img/Fruits/apple.jpg"],
-                        ["name" => "กล้วย", "image" => "../img/Fruits/banana.jpg"],
-                        ["name" => "กีวี่", "image" => "../img/Fruits/kiwi.jpg"],
-                        ["name" => "ทับทิม", "image" => "../img/Fruits/Pomegranate.jpg"],
-                        ["name" => "สัปปะรด", "image" => "../img/Fruits/pineapple.jpg"],
-                        ["name" => "แคนตาลูป", "image" => "../img/Fruits/cantaloupe.jpg"],
-                        ["name" => "แก้วมังกร", "image" => "../img/Fruits/dragon fruit.jpg"],
-                        ["name" => "ส้ม", "image" => "../img/Fruits/orange.jpg"]
+                            ["src" => "../img/Fruits/watermelon.jpg", "name" => "แตงโม"],
+                            ["src" => "../img/Fruits/apple.jpg", "name" => "แอปเปิ้ล"],
+                            ["src" => "../img/Fruits/banana.jpg", "name" => "กล้วย"],
+                            ["src" => "../img/Fruits/kiwi.jpg", "name" => "กีวี่"],
+                            ["src" => "../img/Fruits/Pomegranate.jpg", "name" => "ทับทิม"],
+                            ["src" => "../img/Fruits/pineapple.jpg", "name" => "สัปปะรด"],
+                            ["src" => "../img/Fruits/cantaloupe.jpg", "name" => "แคนตาลูป"],
+                            ["src" => "../img/Fruits/dragon fruit.jpg", "name" => "แก้วมังกร"],
+                            ["src" => "../img/Fruits/orange.jpg", "name" => "ส้ม"]
                     ];
 
                     foreach ($fruits as $fruit) {

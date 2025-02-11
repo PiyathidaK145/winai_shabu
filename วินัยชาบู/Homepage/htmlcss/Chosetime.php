@@ -130,6 +130,19 @@ if (isset($_GET['time'])) {
         </tbody>
     </table>
 
-    <?php $conn->close(); ?>
+    <head>
+    <link rel="stylesheet" href="stylesBackButtonchose.css">
+</head>
+<body>
+    <button id="backButton">ย้อนกลับ</button>
+
+    <script>
+        document.getElementById("backButton").addEventListener("click", function() {
+            window.location.href = "Homepage.php";
+        });
+    </script>
+</body>
+
+
 </body>
 </html>
