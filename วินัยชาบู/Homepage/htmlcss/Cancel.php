@@ -33,41 +33,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($update_stmt->execute()) {
             $is_cancelled = true;  // ปรับสถานะเมื่อยกเลิกการจองสำเร็จ
-            // รีไดเร็กต์กลับไปที่หน้า ChoseTime.php พร้อมกับพารามิเตอร์ cancel=true
+            // รีไดเร็กต์กลับไปที่หน้า Homepage.php พร้อมกับพารามิเตอร์ cancel=true
             echo "<script>
                     alert('การจองถูกยกเลิกเรียบร้อย');
-                    window.location.href = 'ChoseTime.php?table={$_GET['table']}';
+                    window.location.href = 'Homepage.php?table={$_GET['table']}&cancel=true';
                   </script>";
         } else {
             echo "<script>alert('เกิดข้อผิดพลาดในการยกเลิก กรุณาลองใหม่');</script>";
         }
-    } 
-}
-
-// ตรวจสอบว่ามีการจองอยู่จริง และไม่ได้ถูกยกเลิกไปแล้ว
-$sql = "SELECT * FROM reservation WHERE availability_id = ? AND first_name = ? AND last_name = ? AND status != 'cancel'";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("iss", $availability_id, $first_name, $last_name);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    // อัปเดตสถานะเป็น 'cancel'
-    $update_sql = "UPDATE reservation SET status = 'cancel' WHERE availability_id = ? AND first_name = ? AND last_name = ?";
-    $update_stmt = $conn->prepare($update_sql);
-    $update_stmt->bind_param("iss", $availability_id, $first_name, $last_name);
-
-    if ($update_stmt->execute()) {
-        // รีไดเร็กต์กลับไปที่หน้า ChoseTime.php พร้อมกับพารามิเตอร์ cancel=true
-        echo "<script>
-                alert('การจองถูกยกเลิกเรียบร้อย');
-                window.location.href = 'ChoseTime.php?table={$_GET['table']}&cancel=true';
-              </script>";
     } else {
-        echo "<script>alert('เกิดข้อผิดพลาดในการยกเลิก กรุณาลองใหม่');</script>";
+        echo "<script>alert('ไม่พบการจองนี้ในระบบ');</script>";
     }
-} 
-
+}
 ?>
 
 <!DOCTYPE html>
@@ -93,17 +70,10 @@ if ($result->num_rows > 0) {
             <!-- แสดงปุ่ม "จองใหม่" เมื่อการจองถูกยกเลิกแล้ว -->
             <button type="submit" name="action" value="book">จองใหม่</button>
         <?php else: ?>
-            <!-- แสดงปุ่ม "ยกเลิกการจอง" เมื่อการจองยังไม่ถูกยกเลิก -->
+            <!-- แสดงปุ่ม "ยกเลิกการจอง" เมื่อการจองยังไม่ถูกยกเลิก ufuffiufvlglks-->
             <button type="submit" name="action" value="cancel">ยกเลิกการจอง</button>
         <?php endif; ?>
     </form>
 </div>
-<script>
-        // ฟังก์ชันเมื่อกดปุ่มปิด
-        function closeBox() {
-            // กลับไปที่หน้าแรก
-            window.location.href = "Homepage.php"; // เปลี่ยนเป็น path ของหน้าแรก
-        }
-    </script>
 </body>
 </html>
