@@ -5,19 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Winai's Shabu</title>
-    <link rel="stylesheet" href="/CSS/menu.css">
+    <link rel="stylesheet" href="../CSS/menu.css">
     <!-- Preload Resource -->
-    <link rel="preload" href="/img/meat/beef.jpg" as="image">
-    <link rel="preload" href="/img/vegatable/vegatable.jpg" as="image">
-    <link rel="preload" href="/img/seafood/seafood.jpg" as="image">
-    <link rel="preload" href="/img/other/other.jpg" as="image">
-    <script src="/Javascript/menu-set.js"></script>
-    <script src="/Javascript/select_soup.js"></script>
-    <link rel="stylesheet" href="/CSS/select_soup.css">
-    <link rel="stylesheet" href="/CSS/price.css">
-    <script src="/Javascript/submitOrder.js"></script>
-    <script src="/Javascript/order_Summary.js"></script>
-    <link rel="stylesheet" href="/CSS/order_Summary.css">
+    <link rel="preload" href="../img/meat/beef.jpg" as="image">
+    <link rel="preload" href="../img/vegatable/vegatable.jpg" as="image">
+    <link rel="preload" href="../img/seafood/seafood.jpg" as="image">
+    <link rel="preload" href="../img/other/other.jpg" as="image">
+    <script src="../Javascript..-set.js"></script>
+    <script src="../Javascript/select_soup.js"></script>
+    <link rel="stylesheet" href="../CSS/select_soup.css">
+    <link rel="stylesheet" href="../CSS/price.css">
+    <script src="../Javascript/submitOrder.js"></script>
+    <script src="../Javascript/order_Summary.js"></script>
+    <link rel="stylesheet" href="../CSS/order_Summary.css">
 </head>
 
 <body>
@@ -40,17 +40,17 @@
                 <div class="menu-carousel">
                     <?php
                     $soups = [
-                        ["img" => "/menu/img/Soups/น้ำซุปต้นตำรับ.jpg", "name" => "น้ำซุปต้นตำรับ"],
-                        ["img" => "/menu/img/Soups/น้ำซุปน้ำดำ.jpg", "name" => "น้ำซุปน้ำดำญี่ปุ่น"],
-                        ["img" => "/menu/img/Soups/น้ำซุปกระดูกหมู.jpg", "name" => "น้ำซุปกระดูกหมู"],
-                        ["img" => "/menu/img/Soups/น้ำซุปหม่าล่า.jpg", "name" => "น้ำซุปหม่าล่า"],
-                        ["img" => "/menu/img/Soups/น้ำซุปต้มยำ.jpg", "name" => "น้ำซุปต้มยำ"]
+                        ["src" => "../img/Soups/น้ำซุปต้นตำรับ.jpg", "name" => "น้ำซุปต้นตำรับ"],
+                        ["src" => "../img/Soups/น้ำซุปน้ำดำ.jpg", "name" => "น้ำซุปน้ำดำญี่ปุ่น"],
+                        ["src" => "../img/Soups/น้ำซุปกระดูกหมู.jpg", "name" => "น้ำซุปกระดูกหมู"],
+                        ["src" => "../img/Soups/น้ำซุปหม่าล่า.jpg", "name" => "น้ำซุปหม่าล่า"],
+                        ["src" => "../img/Soups/น้ำซุปต้มยำ.jpg", "name" => "น้ำซุปต้มยำ"]
                     ];
                     foreach ($soups as $soup) {
-                        echo '<div class="menu-item" onclick="toggleSoupSelection(this, \'' . $soup['name'] . '\')">
-                                <img src="' . $soup['img'] . '">
-                                <p>' . $soup['name'] . '</p>
-                            </div>';
+                        echo "<div class='menu-item' onclick=\"toggleSoupSelection(this, '{$soup['name']}')\">";
+                        echo "<img src='{$soup['src']}'>";
+                        echo "<p>{$soup['name']}</p>";
+                        echo "</div>";
                     }
                     ?>
                 </div>
@@ -91,31 +91,30 @@
                 <div class="image-grid">
                     <?php
                     $menu_items = [
-                        ["img" => "ผักบุ้ง.webp", "name" => "ผักบุ้ง"],
-                        ["img" => "ต้นหอม.jpg", "name" => "ต้นหอม"],
-                        ["img" => "ข้าวโพดอ่อน.jpg", "name" => "ข้าวโพดอ่อน"],
-                        ["img" => "กวางตุ้ง.jpg", "name" => "กวางตุ้ง"],
-                        ["img" => "ผักขึ้นฉ่าย.jpg", "name" => "ผักขึ้นฉ่าย"],
-                        ["img" => "ฮ่องเต้น้อย.jpg", "name" => "ฮ่องเต้น้อย"],
-                        ["img" => "ฟักทองญี่ปุ่น.jpg", "name" => "ฟักทองญี่ปุ่น"],
-                        ["img" => "สาหร่ายวากาเมะ.jpg", "name" => "วากาเมะเขียว"],
-                        ["img" => "ผักกาดขาว.jpg", "name" => "ผักกาดขาว"],
-                        ["img" => "เห็ดฟาง.webp", "name" => "เห็ดฟาง"],
-                        ["img" => "เห็ดหูหนู.jpg", "name" => "เห็ดหูหนู"],
-                        ["img" => "เห็ดเข็มทอง.webp", "name" => "เห็ดเข็มทอง"],
-                        ["img" => "ข้าวโพด.webp", "name" => "ข้าวโพด"],
-                        ["img" => "เห็ดชิเมจิขาว.jpg", "name" => "เห็ดชิเมจิขาว"],
+                        ["img" => "../img/vegatable/ผักบุ้ง.webp", "name" => "ผักบุ้ง"],
+                        ["img" => "../img/vegatable/ต้นหอม.jpg", "name" => "ต้นหอม"],
+                        ["img" => "../img/vegatable/ข้าวโพดอ่อน.jpg", "name" => "ข้าวโพดอ่อน"],
+                        ["img" => "../img/vegatable/กวางตุ้ง.jpg", "name" => "กวางตุ้ง"],
+                        ["img" => "../img/vegatable/ผักขึ้นฉ่าย.jpg", "name" => "ผักขึ้นฉ่าย"],
+                        ["img" => "../img/vegatable/ฮ่องเต้น้อย.jpg", "name" => "ฮ่องเต้น้อย"],
+                        ["img" => "../img/vegatable/ฟักทองญี่ปุ่น.jpg", "name" => "ฟักทองญี่ปุ่น"],
+                        ["img" => "../img/vegatable/สาหร่ายวากาเมะ.jpg", "name" => "วากาเมะเขียว"],
+                        ["img" => "../img/vegatable/ผักกาดขาว.jpg", "name" => "ผักกาดขาว"],
+                        ["img" => "../img/vegatable/เห็ดฟาง.webp", "name" => "เห็ดฟาง"],
+                        ["img" => "../img/vegatable/เห็ดหูหนู.jpg", "name" => "เห็ดหูหนู"],
+                        ["img" => "../img/vegatable/เห็ดเข็มทอง.webp", "name" => "เห็ดเข็มทอง"],
+                        ["img" => "../img/vegatable/ข้าวโพด.webp", "name" => "ข้าวโพด"],
+                        ["img" => "../img/vegatable/เห็ดชิเมจิขาว.jpg", "name" => "เห็ดชิเมจิขาว"],
                     ];
-                    foreach ($menu_items as $item) {
-                        echo "<div class='image-item'>
-                                <img src='../Homepage/menu/img/vegatable/{$item['img']}' alt='{$item['name']}'>
-                                <p>{$item['name']}</p>
-                                <div class='menu-quantity'>
-                                    <button class='decrease' onclick=\"updateOrder('{$item['name']}', -1)\">-</button>
-                                    <span class='quantity' id='quantity-{$item['name']}' style='visibility: hidden;'>0</span>
-                                    <button class='increase' onclick=\"updateOrder('{$item['name']}', 1)\">+</button>
-                                </div>
-                              </div>";
+                    foreach ($items as $item) {
+                        echo "<div class='image-item'>";
+                        echo "<img src='{$item['src']}' alt='{$item['name']}'>";
+                        echo "<p>{$item['name']}</p>";
+                        echo "<div class='menu-quantity'>";
+                        echo "<button class='decrease' onclick=\"updateOrder('{$item['name']}', 0)\">-</button>";
+                        echo "<span class='quantity' id='quantity-{$item['name']}' style='visibility: hidden;'>0</span>";
+                        echo "<button class='increase' onclick=\"updateOrder('{$item['name']}', 0)\">+</button>";
+                        echo "</div></div>";
                     }
                     ?>
                 </div>
