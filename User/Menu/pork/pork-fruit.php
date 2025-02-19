@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winai's Shabu</title>
+    <title>A's Shabu</title>
     <link rel="stylesheet" href="../CSS/menu.css">
     <script src="../Javascript/menu-set.js"></script>
     <script src="../Javascript/select_soup.js"></script>

@@ -39,7 +39,7 @@ if ($row = mysqli_fetch_assoc($result)) {
 <body>
     <div class="container">
         <header>
-            <h1>Winai's Shabu</h1>
+            <h1>A's Shabu</h1>
         </header>
         <div class="promotion-banner">
             <p>โปรโมชันพิเศษสำหรับเดือนนี้! ลดราคาสุดคุ้มทุกวันจันทร์-พฤหัสบดี</p>
