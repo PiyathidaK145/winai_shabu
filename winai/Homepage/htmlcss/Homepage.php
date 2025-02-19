@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winai's Shabu</title>
+    <title>A's Shabu</title>
     <link rel="stylesheet" href="stylesHomepage.css">
     <!-- Preload Resource -->
     <link rel="preload" href="/img/meat/beef.jpg" as="image">
@@ -16,7 +16,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>Winai's Shabu</h1>
+            <h1>A's Shabu</h1>
         </header>
         <div class="promotion-banner">
             <p>โปรโมชันพิเศษสำหรับเดือนนี้! ลดราคาสุดคุ้มทุกวันจันทร์-พฤหัสบดี</p>
