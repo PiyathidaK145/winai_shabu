@@ -77,6 +77,36 @@
 
             <section id="map">
                 <h2>แผนผังร้าน</h2>
+                <?php
+                $servername = "localhost";
+                $username = "root"; // เปลี่ยนเป็นชื่อผู้ใช้ของคุณ
+                $password = "123456"; // เปลี่ยนเป็นรหัสผ่านของคุณ
+                $dbname = "winaishabu"; // เปลี่ยนเป็นชื่อฐานข้อมูลของคุณ
+                
+                // เชื่อมต่อกับฐานข้อมูล
+                $conn = new mysqli($servername, $username, $password, $dbname);
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+
+                // ดึงข้อมูลการจองทั้งหมดที่มีสถานะเป็น 'Comfirm'
+                $sql = "SELECT availability_id FROM reservation WHERE status = 'Comfirm'";
+                $result = $conn->query($sql);
+
+                $reservedTables = []; // เก็บจำนวนครั้งที่โต๊ะถูกจอง
+                
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        // คำนวณหมายเลขโต๊ะจาก availability_id
+                        $tableId = floor($row['availability_id'] / 100); // สมมติว่า availability_id มีรูปแบบ 1022 -> โต๊ะ 10
+                        if (!isset($reservedTables[$tableId])) {
+                            $reservedTables[$tableId] = 0;
+                        }
+                        $reservedTables[$tableId]++;
+                    }
+                }
+                ?>
+
                 <section id="rectangle-under-map">
                     <div class="rectangle-box">
                         <?php
@@ -98,7 +128,9 @@
         </main>
 
         <footer>
-            <p>ติดต่อเรา: <a href="tel:0123456789">012-345-6789</a> | <a href="https://facebook.com/example">Facebook</a> | <a href="https://maps.google.com">แผนที่ร้าน</a></p>
+            <p>ติดต่อเรา: <a href="tel:0123456789">012-345-6789</a> | <a
+                    href="https://facebook.com/example">Facebook</a> | <a href="https://maps.google.com">แผนที่ร้าน</a>
+            </p>
         </footer>
     </div>
 </body>
@@ -107,4 +139,3 @@
 
 
 </html>
-

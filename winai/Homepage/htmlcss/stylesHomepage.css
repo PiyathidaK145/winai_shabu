@@ -222,6 +222,16 @@ body {
     color: white;
     border-radius: 5px;
   }
+  .table-available {
+    background-color: #ff6f00; /* สีส้ม = จองได้ */
+  }
+
+  .table-full {
+    background-color: gray; /* สีเทา = จองเต็มแล้ว */
+    pointer-events: none; /* ปิดการคลิก */
+  }
+
+  
   
   /* การตั้งตำแหน่งของโต๊ะภายในสี่เหลี่ยม */
   .table1 {
