@@ -147,10 +147,10 @@ INSERT INTO `member` (`member_id`, `first_name`, `last_name`, `gender`, `religio
 --
 
 CREATE TABLE `menu` (
-  `menu_id` int(11) NOT NULL,
-  `raw_materia_id` int(11) NOT NULL,
-  `quantity_of_sale` int(11) NOT NULL,
-  `unit` varchar(255) NOT NULL
+  `menu_id` int NOT NULL,
+  `raw_materia_id` int NOT NULL,
+  `quantity_of_sale` int NOT NULL,
+  `unit` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -319,13 +319,13 @@ INSERT INTO `package` (`package_id`, `package_name`, `price`) VALUES
 --
 
 CREATE TABLE `package_item` (
-  `package_item_id` int(11) NOT NULL,
-  `package_id` int(11) NOT NULL,
-  `menu_item_id` int(11) NOT NULL,
-  `description` text NOT NULL,
-  `price` int(11) NOT NULL,
+  `package_item_id` int NOT NULL,
+  `package_id` int NOT NULL,
+  `menu_item_id` int NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price` int NOT NULL,
   `is_active` tinyint(1) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -393,6 +393,7 @@ INSERT INTO `package_item` (`package_item_id`, `package_id`, `menu_item_id`, `de
 (1458, 701, 58, '', 0, 0, '2025-02-10 17:58:55'),
 (1459, 701, 59, '', 0, 0, '2025-02-10 17:58:55');
 
+
 -- --------------------------------------------------------
 
 --
@@ -459,16 +460,16 @@ CREATE TABLE `promotion_item` (
 --
 
 CREATE TABLE `raw_material` (
-  `raw_material_id` int(11) NOT NULL,
-  `item_name` varchar(255) NOT NULL,
-  `description` text NOT NULL,
-  `category_id` int(11) NOT NULL,
+  `raw_material_id` int NOT NULL,
+  `item_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `category_id` int NOT NULL,
   `price_of_cost` decimal(10,2) NOT NULL,
   `quanity` decimal(10,2) NOT NULL,
-  `unit` varchar(255) NOT NULL,
-  `Num_before_consumption` int(11) NOT NULL,
-  `warehouse_id` int(11) NOT NULL,
-  `image_url` varchar(255) NOT NULL
+  `unit` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Num_before_consumption` int NOT NULL,
+  `warehouse_id` int NOT NULL,
+  `image_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -476,9 +477,9 @@ CREATE TABLE `raw_material` (
 --
 
 INSERT INTO `raw_material` (`raw_material_id`, `item_name`, `description`, `category_id`, `price_of_cost`, `quanity`, `unit`, `Num_before_consumption`, `warehouse_id`, `image_url`) VALUES
-(1, 'ผักบุ้ง', 'ผักบุ้ง - ผักที่คัดสรรมาอย่างดี ให้ความกรอบและรสชาติอร่อย ทานกับชาบูเข้ากันสุดๆ เสิร์ฟในปริมาณ 200 กรัม ทานคู่กับน้ำจิ้ม', 1101, 24.00, 1000.00, 'g.', 5, 1201, 'vegatable/vegatable.jpg'),
-(2, 'ต้นหอมญี่ปุ่น', 'ต้นหอมญี่ปุ่น - ผักที่คัดสรรมาอย่างดี ให้ความกรอบและรสชาติอร่อย ทานกับชาบูเข้ากันสุดๆ เสิร์ฟในปริมาณ 200 กรัม เหมาะสำหรับเพิ่มความหวานให้กับน้ำซุป.', 1101, 70.00, 1000.00, 'g.', 5, 1201, 'vegatable/vegatable.jpg'),
-(3, 'ข้าวโพดอ่อน', 'ข้าวโพดอ่อน - ผักปลอดสาร สดสะอาด เหมาะกับการทานคู่กับเนื้อและน้ำจิ้ม เพิ่มรสสัมผัสที่ลงตัว เสิร์ฟในปริมาณ 200 กรัมเหมาะกับน้ำซุปหอมๆ และทานคู่กับเนื้อสัตว์.', 1101, 50.00, 1000.00, 'g.', 5, 1201, 'vegatable/vegatable.jpg'),
+(1, 'ผักบุ้ง', 'ผักบุ้ง - ผักที่คัดสรรมาอย่างดี ให้ความกรอบและรสชาติอร่อย ทานกับชาบูเข้ากันสุดๆ เสิร์ฟในปริมาณ 200 กรัม ทานคู่กับน้ำจิ้ม', 1101, 24.00, 1000.00, 'g.', 5, 1201, 'uploads/ผักบุ้ง.jpg'),
+(2, 'ต้นหอมญี่ปุ่น', 'ต้นหอมญี่ปุ่น - ผักที่คัดสรรมาอย่างดี ให้ความกรอบและรสชาติอร่อย ทานกับชาบูเข้ากันสุดๆ เสิร์ฟในปริมาณ 200 กรัม เหมาะสำหรับเพิ่มความหวานให้กับน้ำซุป.', 1101, 70.00, 1000.00, 'g.', 5, 1201, 'uploads/ต้นหอม.jpg'),
+(3, 'ข้าวโพดอ่อน', 'ข้าวโพดอ่อน - ผักปลอดสาร สดสะอาด เหมาะกับการทานคู่กับเนื้อและน้ำจิ้ม เพิ่มรสสัมผัสที่ลงตัว เสิร์ฟในปริมาณ 200 กรัมเหมาะกับน้ำซุปหอมๆ และทานคู่กับเนื้อสัตว์.', 1101, 50.00, 1000.00, 'g.', 5, 1201, 'uploads/ข้าวโพดอ่อน.jpg'),
 (4, 'กวางตุ้ง', 'กวางตุ้ง - ผักสดใหม่ คัดสรรจากแหล่งคุณภาพ เหมาะสำหรับลวกในน้ำซุปร้อนๆ ให้รสชาติหวานกรอบ เสิร์ฟในปริมาณ 200 กรัม อร่อยเมื่อจุ่มในน้ำซุปแล้วทานกับน้ำจิ้ม', 1101, 14.00, 1000.00, 'g.', 5, 1201, 'vegatable/vegatable.jpg'),
 (5, 'ผักขึ้นฉ่าย', 'ผักขึ้นฉ่าย - ผักสดใหม่ คัดสรรจากแหล่งคุณภาพ เหมาะสำหรับลวกในน้ำซุปร้อนๆ ให้รสชาติหวานกรอบ เสิร์ฟในปริมาณ 200 กรัม  เหมาะกับน้ำซุปหอมๆ และทานคู่กับเนื้อสัตว์.', 1101, 84.00, 500.00, 'g.', 5, 1201, 'vegatable/vegatable.jpg'),
 (6, 'ฮ่องเต้น้อย', 'ฮ่องเต้น้อย(เบบี้ฮ่องเต้) - ผักที่คัดสรรมาอย่างดี ให้ความกรอบและรสชาติอร่อย ทานกับชาบูเข้ากันสุดๆ เสิร์ฟในปริมาณ 200 กรัม อร่อยเมื่อจุ่มในน้ำซุปแล้วทานกับน้ำจิ้ม', 1101, 85.00, 1000.00, 'g.', 5, 1201, 'vegatable/vegatable.jpg'),
