@@ -1,6 +1,5 @@
 <?php
-// เริ่มต้นเซสชัน (ถ้าจำเป็นสำหรับการจัดการข้อมูลผู้ใช้ในอนาคต)
-session_start();
+// เริ่มต้นไฟล์ PHP
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -8,7 +7,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winai's Shabu</title>
+    <title>A's Shabu</title>
     <link rel="stylesheet" href="../CSS/menu.css">
     <!-- Preload Resource -->
     <link rel="preload" href="../img/meat/beef.jpg" as="image">
@@ -18,10 +17,11 @@ session_start();
     <script src="../Javascript/menu-set.js"></script>
     <script src="../Javascript/select_soup.js"></script>
     <link rel="stylesheet" href="../CSS/select_soup.css">
-    <link rel="stylesheet" href="/CSS/price.css">
+    <link rel="stylesheet" href="../CSS/price.css">
     <script src="../Javascript/submitOrder.js"></script>
     <script src="../Javascript/order_Summary.js"></script>
     <link rel="stylesheet" href="../CSS/order_Summary.css">
+
 </head>
 
 <body>
@@ -39,22 +39,20 @@ session_start();
                 <button>🔍</button>
             </div>
         </div>
-
         <main>
             <section id="menu-section">
                 <div class="menu-carousel">
                     <?php
+                    // เมนูซุป
                     $soups = [
-                        ["src" => "../img/Soups/น้ำซุปต้นตำรับ.jpg", "name" => "น้ำซุปต้นตำรับ"],
-                        ["src" => "../img/Soups/น้ำซุปน้ำดำ.jpg", "name" => "น้ำซุปน้ำดำญี่ปุ่น"],
-                        ["src" => "../img/Soups/น้ำซุปกระดูกหมู.jpg", "name" => "น้ำซุปกระดูกหมู"],
-                        ["src" => "../img/Soups/น้ำซุปหม่าล่า.jpg", "name" => "น้ำซุปหม่าล่า"],
-                        ["src" => "../img/Soups/น้ำซุปต้มยำ.jpg", "name" => "น้ำซุปต้มยำ"]
+                        ['src' => '../img/Soups/น้ำซุปต้นตำรับ.jpg', 'name' => 'น้ำซุปน้ำใส'],
+                        ['src' => '../img/Soups/น้ำซุปน้ำดำ.jpg', 'name' => 'ซุปน้ำดำญี่ปุ่น'],
+                        ['src' => '../img/Soups/น้ำซุปหม่าล่า.jpg', 'name' => 'น้ำซุปหม่าล่า']
                     ];
 
                     foreach ($soups as $soup) {
                         echo "<div class='menu-item' onclick=\"toggleSoupSelection(this, '{$soup['name']}')\">";
-                        echo "<img src='{$soup['src']}' alt='{$soup['name']}'>";
+                        echo "<img src='{$soup['src']}'>";
                         echo "<p>{$soup['name']}</p>";
                         echo "</div>";
                     }
@@ -63,6 +61,7 @@ session_start();
                 <div id="confirm-button-container">
                     <button id="confirm-button" onclick="confirmSelection()" disabled>ยืนยัน</button>
                 </div>
+
             </section>
 
             <!-- Filter Section -->
@@ -78,6 +77,7 @@ session_start();
                                 ['href' => 'pork-fruit.php', 'data' => 'fruit', 'src' => '../img/Fruits/Fruit.JPG', 'name' => 'ผลไม้'],
                                 ['href' => 'pork-other.php', 'data' => 'other', 'src' => '../img/other/other.jpg', 'name' => 'อื่นๆ']
                             ];
+
                             foreach ($categories as $category) {
                                 echo "<li data-category='{$category['data']}'>";
                                 echo "<a href='{$category['href']}'>";
@@ -96,20 +96,13 @@ session_start();
                 <div class="image-grid">
                     <?php
                     $items = [
-                        ["src" => "../img/vegatable/ผักบุ้ง.webp", "name" => "ผักบุ้ง"],
-                        ["src" => "../img/vegatable/ต้นหอม.jpg", "name" => "ต้นหอม"],
-                        ["src" => "../img/vegatable/ข้าวโพดอ่อน.jpg", "name" => "ข้าวโพดอ่อน"],
-                        ["src" => "../img/vegatable/กวางตุ้ง.jpg", "name" => "กวางตุ้ง"],
-                        ["src" => "../img/vegatable/ผักขึ้นฉ่าย.jpg", "name" => "ผักขึ้นฉ่าย"],
-                        ["src" => "../img/vegatable/ฮ่องเต้น้อย.jpg", "name" => "ฮ่องเต้น้อย"],
-                        ["src" => "../img/vegatable/ฟักทองญี่ปุ่น.jpg", "name" => "ฟักทองญี่ปุ่น"],
-                        ["src" => "../img/vegatable/สาหร่ายวากาเมะ.jpg", "name" => "วากาเมะเขียว"],
-                        ["src" => "../img/vegatable/ผักกาดขาว.jpg", "name" => "ผักกาดขาว"],
-                        ["src" => "../img/vegatable/เห็ดฟาง.webp", "name" => "เห็ดฟาง"],
-                        ["src" => "../img/vegatable/เห็ดหูหนู.jpg", "name" => "เห็ดหูหนู"],
-                        ["src" => "../img/vegatable/เห็ดเข็มทอง.webp", "name" => "เห็ดเข็มทอง"],
-                        ["src" => "../img/vegatable/ข้าวโพด.webp", "name" => "ข้าวโพด"],
-                        ["src" => "../img/vegatable/เห็ดชิเมจิขาว.jpg", "name" => "เห็ดชิเมจิขาว"]
+                        ["src" => "../img/All-menu/เส้นอุด้ง.jpg", "name" => "เส้นอุด้ง"],
+                        ["src" => "../img/All-menu/ลูกชิ้นปิงปอง.jpg", "name" => "ลูกชิ้นปิงปอง"],
+                        ["src" => "../img/All-menu/ลูกชิ้นรักบี้.jpg", "name" => "ลูกชิ้นรักบี้"],
+                        ["src" => "../img/All-menu/เต้าหู้ม้วนห่อสาหร่าย.jpg", "name" => "เต้าหู้ม้วนห่อสาหร่าย"],
+                        ["src" => "../img/All-menu/คริสตัลไข่ปลา.jpg", "name" => "คริสตัลไข่ปลา"],
+                        ["src" => "../img/All-menu/ลูกชิ้นกุ้ง.jpg", "name" => "ลูกชิ้นกุ้ง"],
+                        ["src" => "../img/All-menu/บะหมี่หยกไต้หวัน.jpg", "name" => "บะหมี่หยกไต้หวัน"]
                     ];
 
                     foreach ($items as $item) {
@@ -139,9 +132,16 @@ session_start();
             </aside>
         </main>
 
-        <?php include 'footer.php'; ?> <!-- เพิ่มไฟล์ Footer -->
+
+        <!-- Footer -->
+        <footer>
+            <p>ติดต่อเรา:
+                <a href="tel:0123456789">012-345-6789</a> |
+                <a href="https://facebook.com/example">Facebook</a> |
+                <a href="https://maps.google.com">แผนที่ร้าน</a>
+            </p>
+        </footer>
     </div>
 </body>
 
 </html>
-

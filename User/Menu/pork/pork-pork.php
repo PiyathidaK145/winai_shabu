@@ -1,17 +1,5 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "123456";
-$dbname = "winaishabu";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-// ดึงค่า getting_table_id จากฐานข้อมูล
-$query = "SELECT getting_table_id FROM getting_table WHERE ... "; // ปรับเงื่อนไขให้เหมาะสม
-$result = mysqli_query($conn, $query);
-
-if ($row = mysqli_fetch_assoc($result)) {
-    $_SESSION['getting_table_id'] = $row['getting_table_id'];
-}
+// Start PHP code to manage dynamic functionality
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -19,13 +7,8 @@ if ($row = mysqli_fetch_assoc($result)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winai's Shabu</title>
+    <title>A's Shabu</title>
     <link rel="stylesheet" href="../CSS/menu.css">
-    <!-- Preload Resource -->
-    <link rel="preload" href="../img/meat/beef.jpg" as="image">
-    <link rel="preload" href="../img/vegatable/vegatable.jpg" as="image">
-    <link rel="preload" href="../img/seafood/seafood.jpg" as="image">
-    <link rel="preload" href="../img/other/other.jpg" as="image">
     <script src="../Javascript/menu-set.js"></script>
     <script src="../Javascript/select_soup.js"></script>
     <link rel="stylesheet" href="../CSS/select_soup.css">
@@ -33,7 +16,11 @@ if ($row = mysqli_fetch_assoc($result)) {
     <script src="../Javascript/submitOrder.js"></script>
     <script src="../Javascript/order_Summary.js"></script>
     <link rel="stylesheet" href="../CSS/order_Summary.css">
-
+    <!-- Preload Resource -->
+    <link rel="preload" href="../img/meat/beef.jpg" as="image">
+    <link rel="preload" href="../img/vegatable/vegatable.jpg" as="image">
+    <link rel="preload" href="../img/seafood/seafood.jpg" as="image">
+    <link rel="preload" href="../img/other/other.jpg" as="image">
 </head>
 
 <body>
@@ -45,28 +32,26 @@ if ($row = mysqli_fetch_assoc($result)) {
             <p>โปรโมชันพิเศษสำหรับเดือนนี้! ลดราคาสุดคุ้มทุกวันจันทร์-พฤหัสบดี</p>
         </div>
         <div class="top-bar">
-            <a href="/วินัยชาบู/Homepage/htmlcss/Homepage.php" class="back-button">←</a>
+            <a href="../PHP/pork-pork.php" class="back-button">←</a>
             <div class="search-bar">
                 <input type="text" placeholder="ค้นหา">
-                <button>🔍</button>
+                <button type="submit">🔍</button>
+
             </div>
         </div>
         <main>
             <section id="menu-section">
                 <div class="menu-carousel">
                     <?php
-                    // เมนูซุป
                     $soups = [
-                        ["src" => "../img/Soups/น้ำซุปต้นตำรับ.jpg", "name" => "น้ำซุปต้นตำรับ"],
-                        ["src" => "../img/Soups/น้ำซุปน้ำดำ.jpg", "name" => "น้ำซุปน้ำดำญี่ปุ่น"],
-                        ["src" => "../img/Soups/น้ำซุปกระดูกหมู.jpg", "name" => "น้ำซุปกระดูกหมู"],
-                        ["src" => "../img/Soups/น้ำซุปหม่าล่า.jpg", "name" => "น้ำซุปหม่าล่า"],
-                        ["src" => "../img/Soups/น้ำซุปต้มยำ.jpg", "name" => "น้ำซุปต้มยำ"]
+                        ['src' => '../img/Soups/น้ำซุปต้นตำรับ.jpg', 'name' => 'น้ำซุปน้ำใส'],
+                        ['src' => '../img/Soups/น้ำซุปน้ำดำ.jpg', 'name' => 'ซุปน้ำดำญี่ปุ่น'],
+                        ['src' => '../img/Soups/น้ำซุปหม่าล่า.jpg', 'name' => 'น้ำซุปหม่าล่า']
                     ];
 
                     foreach ($soups as $soup) {
                         echo "<div class='menu-item' onclick=\"toggleSoupSelection(this, '{$soup['name']}')\">";
-                        echo "<img src='{$soup['src']}'>";
+                        echo "<img src='{$soup['src']}' alt='{$soup['name']}'>";
                         echo "<p>{$soup['name']}</p>";
                         echo "</div>";
                     }
@@ -75,7 +60,6 @@ if ($row = mysqli_fetch_assoc($result)) {
                 <div id="confirm-button-container">
                     <button id="confirm-button" onclick="confirmSelection()" disabled>ยืนยัน</button>
                 </div>
-
             </section>
 
             <!-- Filter Section -->
@@ -85,11 +69,11 @@ if ($row = mysqli_fetch_assoc($result)) {
                         <ul class="tabs">
                             <?php
                             $categories = [
-                                ['href' => 'seafood_menu.php', 'data' => 'beef', 'src' => '../img/seafood/seafood.jpg', 'name' => 'ทะเล'],
-                                ['href' => 'seafood_processed.php', 'data' => 'processed', 'src' => '../img/processed/มาม่า.JPG', 'name' => 'ของแปรรูป'],
-                                ['href' => 'seafood_vegatable.php', 'data' => 'vegetables', 'src' => '../img/vegatable/vegatarian.jpg', 'name' => 'ผัก'],
-                                ['href' => 'seafood_fruit.php', 'data' => 'fruit', 'src' => '../img/Fruits/Fruit.JPG', 'name' => 'ผลไม้'],
-                                ['href' => 'seafood_other.php', 'data' => 'other', 'src' => '../img/other/other.jpg', 'name' => 'อื่นๆ']
+                                ['href' => 'pork-menu.php', 'data' => 'pork', 'src' => '../img/meat/Pork.jpg', 'name' => 'หมู'],
+                                ['href' => 'pork-processed.php', 'data' => 'processed', 'src' => '../img/processed/มาม่า.JPG', 'name' => 'ของแปรรูป'],
+                                ['href' => 'pork-vegatable.php', 'data' => 'vegetables', 'src' => '../img/vegatable/vegatarian.jpg', 'name' => 'ผัก'],
+                                ['href' => 'pork-fruit.php', 'data' => 'fruit', 'src' => '../img/Fruits/Fruit.JPG', 'name' => 'ผลไม้'],
+                                ['href' => 'pork-other.php', 'data' => 'other', 'src' => '../img/other/other.jpg', 'name' => 'อื่นๆ']
                             ];
 
                             foreach ($categories as $category) {
@@ -105,17 +89,15 @@ if ($row = mysqli_fetch_assoc($result)) {
                 </div>
             </section>
 
-
             <section id="image-gallery">
                 <div class="image-grid">
                     <?php
                     $meats = [
-                        ["src" => "../img/seafood/แมงกะพรุน.png", "name" => "แมงกะพรุน"],
-                        ["src" => "../img/seafood/หอยเป่าฮื้อ.jpg", "name" => "หอยเป๋าฮื้อ 60g/1ตัว"],
-                        ["src" => "../img/seafood/เนื้อปลาแพนกาเซีย.jpg", "name" => "เนื้อปลาแพนกาเซียสดอลลี่"],
-                        ["src" => "../img/seafood/ปลาหมึก.png", "name" => "ปลาหมึกสด"],
-                        ["src" => "../img/seafood/เนื้อกุ้งสด.jpg", "name" => "เนื้อกุ้งขาว"],
-                        ["src" => "../img/seafood/หอยแมลงภู่นิวซีแลนด์.jpg", "name" => "หอยแมลงภู่นิวซีแลนด์"],
+                        ["src" => "../img/meat/สันคอหมูสไลซ์.png", "name" => "สันคอหมูสไลซ์"],
+                        ["src" => "../img/meat/สามชั้นสไลด์.png", "name" => "สามชั้นสไลซ์"],
+                        ["src" => "../img/meat/สันคอคุโรบูตะสไลซ์.png", "name" => "สันคอคุโรบูตะสไลซ์"],
+                        ["src" => "../img/meat/หมูบะช่อ.png", "name" => "หมูบะช่อทรงเครื่อง"],
+                        ["src" => "../img/meat/หมูนุ่มโรยงา.png", "name" => "หมูนุ่มโรยงา"],
                         ["src" => "../img/All-menu/เส้นอุด้ง.jpg", "name" => "เส้นอุด้ง"],
                         ["src" => "../img/All-menu/ลูกชิ้นปิงปอง.jpg", "name" => "ลูกชิ้นปิงปอง"],
                         ["src" => "../img/All-menu/ลูกชิ้นรักบี้.jpg", "name" => "ลูกชิ้นรักบี้"],
@@ -146,30 +128,20 @@ if ($row = mysqli_fetch_assoc($result)) {
                         ["src" => "../img/Fruits/cantaloupe.jpg", "name" => "แคนตาลูป"],
                         ["src" => "../img/Fruits/dragon fruit.jpg", "name" => "แก้วมังกร"],
                         ["src" => "../img/Fruits/orange.jpg", "name" => "ส้ม"],
-                        ["src" => "../img/other/ซาลาเปาหมูแดง.jpg", "name" => "ซาลาเปาหมูแดง"],
-                        ["src" => "../img/other/ซาลาเปาหมูสับ.jpg", "name" => "ซาลาเปาหมูสับ"],
-                        ["src" => "../img/other/ซาลาเปาไส้ครีม.jpg", "name" => "ซาลาเปาไส้ครีม"],
-                        ["src" => "../img/other/ซาลาเปาไส้ถั่วดำ.jpg", "name" => "ซาลาเปาไส้ถั่วครีม"],
-                        ["src" => "../img/other/ขนมจีบหมู.jpg", "name" => "ขนมจีบหมู"],
-                        ["src" => "../img/other/ฮะเก๋า.jpg", "name" => "ฮะเก๋า"],
-                        ["src" => "../img/other/เผือกทอด.jpg", "name" => "เผือกทอด"],
-                        ["src" => "../img/other/ปอเปี๊ยะทอด.jpg", "name" => "ปอเปี๊ยะทอด"],
-                        ["src" => "../img/other/ขนมจีบกุ้ง.jpg", "name" => "ขนมจีบกุ้ง"],
                         ["src" => "../img/other/เผือกทอด.jpg", "name" => "เผือกทอด"],
                         ["src" => "../img/other/เฟรนช์ฟรายส์.jpg", "name" => "เฟรนช์ฟรายส์"],
-                        ["src" => "../img/other/เสี่ยวหลงเปาไส้กุ้งและหมูสับ.jpg", "name" => "เสี่ยวหลงเปาไส้กุ้งและหมูสับ"],
                         ["src" => "../img/other/น้ำแร่.jpg", "name" => "น้ำแร่"],
                         ["src" => "../img/other/น้ำเก๊กฮวย.jpg", "name" => "น้ำเก๊กฮวย"],
                         ["src" => "../img/other/น้ำอัดลม.jpg", "name" => "น้ำอัดลม"],
-                        ["src" => "../img/All-menu/ชาเขียวน้ำผึ้งมะนาว.jpg", "name" => "ชาเขียวรสน้ำผึ้งมะนาว"],
-                        ["src" => "../img/All-menu/ชาเขียวรสแตงโม.png", "name" => "ชาเขียวรสแตงโม"],
+                        ["src" => "../img/other/ชามะนาว.jpg", "name" => "ชามะนาว"],
+                        ["src" => "../img/other/น้ำแตงโมปั่น.jpg", "name" => "น้ำแตงโมปั่น"],
                         ["src" => "../img/other/น้ำส้ม.jpg", "name" => "น้ำส้ม"],
                         ["src" => "../img/other/น้ำมะพร้าว.jpg", "name" => "น้ำมะพร้าว"],
-                        ["src" => "../img/other/ชานมไข่มุก.png", "name" => "ชานมไข่มุก"],
+                        ["src" => "../img/other/รวมมิตร.jpg", "name" => "รวมมิตร"],
                         ["src" => "../img/other/ทับทิมกรอบ.jpg", "name" => "ทับทิมกรอบ"],
                         ["src" => "../img/other/บัวลอยร้อน.jpg", "name" => "บัวลอย(ร้อน)"],
-                        ["src" => "../img/other/บัวลอยน้ำขิง.jpg", "name" => "บัวลอยน้ำขิง"],
-                        ["src" => "../img/other/บัวลอยจิ มันม่วง (ร้อน).jpg", "name" => "บัวลอยไส้มันม่วง"]
+                        ["src" => "../img/other/บัวลอยน้ำขิง.jpg", "name" => "บัวลอยน้ำขิง"]
+
                     ];
 
                     foreach ($meats as $meat) {
@@ -195,10 +167,7 @@ if ($row = mysqli_fetch_assoc($result)) {
                     <!-- รายการออเดอร์จะเพิ่มที่นี่ -->
                 </ul>
                 <button onclick="submitOrder()">สั่งออเดอร์</button>
-                <form action="payment.php" method="post">
-                    <button type="submit">ชำระเงิน</button>
-                </form>
-
+                <button>ชำระเงิน</button>
             </aside>
         </main>
 
