@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winai's Shabu</title>
+    <title>A's Shabu</title>
     <link rel="stylesheet" href="../CSS/menu.css">
     <script src="../Javascript/menu-set.js"></script>
     <script src="../Javascript/select_soup.js"></script>
@@ -46,11 +46,9 @@
                 <div class="menu-carousel">
                     <?php
                     $soups = [
-                        ["name" => "ซุปต้นตำรับ", "image" => "../img/Soups/น้ำซุปต้นตำรับ.jpg"],
-                        ["name" => "ซุปน้ำดำญี่ปุ่น", "image" => "../img/Soups/น้ำซุปน้ำดำ.jpg"],
-                        ["name" => "น้ำซุปกระดูกหมู", "image" => "../img/Soups/น้ำซุปกระดูกหมู.jpg"],
-                        ["name" => "น้ำซุปหม่าล่า", "image" => "../img/Soups/น้ำซุปหม่าล่า.jpg"],
-                        ["name" => "น้ำซุปต้มยำ", "image" => "../img/Soups/น้ำซุปต้มยำ.jpg"]
+                        ['src' => '../img/Soups/น้ำซุปต้นตำรับ.jpg', 'name' => 'น้ำซุปน้ำใส'],
+                        ['src' => '../img/Soups/น้ำซุปน้ำดำ.jpg', 'name' => 'ซุปน้ำดำญี่ปุ่น'],
+                        ['src' => '../img/Soups/น้ำซุปหม่าล่า.jpg', 'name' => 'น้ำซุปหม่าล่า']
                     ];
 
                     foreach ($soups as $soup) {
