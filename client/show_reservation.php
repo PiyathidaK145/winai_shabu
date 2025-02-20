@@ -29,7 +29,7 @@ if (isset($_GET["reservation_id"])) {
     }
 
     // ตรวจสอบว่า reservation_id มีอยู่ในตาราง reservation หรือไม่
-    $sql = "SELECT first_name, last_name, number_of_guest FROM reservation WHERE reservation_id = ? AND status = 'Comfirm'";
+    $sql = "SELECT first_name, last_name, number_of_guest FROM reservation WHERE reservation_id = ? AND status = 'Confirm'";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $reservation_id);
     $stmt->execute();

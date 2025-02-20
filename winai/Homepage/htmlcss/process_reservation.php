@@ -17,7 +17,7 @@ $first_name = $conn->real_escape_string($_POST['first_name']);
 $number_of_guest = (int)$_POST['number_of_guest'];
 $time_accept = $conn->real_escape_string($_POST['time_accept']);
 $availability_id = (int)$_POST['availability_id'];
-$status = "Comfirm"; // ค่าเริ่มต้นเป็น "Comfirm"
+$status = "Confirm"; // ค่าเริ่มต้นเป็น "Comfirm"
 
 // ตรวจสอบว่า availability_id ถูกต้องหรือไม่
 if ($availability_id == 0) {

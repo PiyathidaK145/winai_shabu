@@ -90,7 +90,7 @@
                 }
 
                 // ดึงข้อมูลการจองทั้งหมดที่มีสถานะเป็น 'Comfirm'
-                $sql = "SELECT availability_id FROM reservation WHERE status = 'Comfirm'";
+                $sql = "SELECT availability_id FROM reservation WHERE status = 'Confirm'";
                 $result = $conn->query($sql);
 
                 $reservedTables = []; // เก็บจำนวนครั้งที่โต๊ะถูกจอง

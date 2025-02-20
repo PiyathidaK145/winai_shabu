@@ -111,7 +111,7 @@ if (isset($_GET['time'])) {
                     }
 
                     // แสดงปุ่มให้เปลี่ยนตามสถานะที่ตรวจพบ
-                    if ($status === 'Comfirm') {
+                    if ($status === 'Confirm') {
                         echo "<td class='reserved'>
                                 <a href='Cancel.php?availability_id=$availability_id&table=$tableNumber&time=$time' style='color: red; text-decoration: none;'>
                                     ยกเลิก
