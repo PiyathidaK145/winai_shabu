@@ -9,40 +9,52 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$availability_id = $_GET['availability_id'];
+$availability_id = isset($_GET['availability_id']) ? intval($_GET['availability_id']) : 0;
 $first_name = '';
 $last_name = '';
 $is_cancelled = false;  // ตัวแปรตรวจสอบว่าเป็นการจองที่ยกเลิกแล้วหรือไม่
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == "cancel") {
     $first_name = $_POST["first_name"];
     $last_name = $_POST["last_name"];
 
-    // ตรวจสอบว่ามีการจองอยู่จริง และไม่ได้ถูกยกเลิกไปแล้ว
-    $sql = "SELECT * FROM reservation WHERE availability_id = ? AND first_name = ? AND last_name = ? AND status != 'cancel'";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iss", $availability_id, $first_name, $last_name);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    if ($availability_id > 0) {
+        // ตรวจสอบว่ามีการจองอยู่จริง และยังไม่ได้ถูกยกเลิก
+        $sql = "SELECT reservation_id FROM reservation WHERE availability_id = ? AND first_name = ? AND last_name = ? AND status != 'Cancel'";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iss", $availability_id, $first_name, $last_name);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        // อัปเดตสถานะเป็น 'cancel'
-        $update_sql = "UPDATE reservation SET status = 'cancel' WHERE availability_id = ? AND first_name = ? AND last_name = ?";
-        $update_stmt = $conn->prepare($update_sql);
-        $update_stmt->bind_param("iss", $availability_id, $first_name, $last_name);
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $reservation_id = $row['reservation_id'];
 
-        if ($update_stmt->execute()) {
-            $is_cancelled = true;  // ปรับสถานะเมื่อยกเลิกการจองสำเร็จ
-            // รีไดเร็กต์กลับไปที่หน้า Homepage.php พร้อมกับพารามิเตอร์ cancel=true
+            // ✅ อัปเดตสถานะของการจองเป็น 'Cancel'
+            $update_reservation = $conn->prepare("UPDATE reservation SET status = 'Cancel' WHERE reservation_id = ?");
+            $update_reservation->bind_param("i", $reservation_id);
+            $update_reservation->execute();
+            $update_reservation->close();
+
+            // ✅ อัปเดต table_availability เป็น 'Free'
+            $update_availability = $conn->prepare("UPDATE table_availability SET status = 'Free' WHERE availability_id = ?");
+            $update_availability->bind_param("i", $availability_id);
+            $update_availability->execute();
+            $update_availability->close();
+
+            $is_cancelled = true;  // บันทึกว่าได้ทำการยกเลิกแล้ว
+
+            // แจ้งเตือนและรีไดเรกต์กลับไปที่หน้า Homepage.php
             echo "<script>
                     alert('การจองถูกยกเลิกเรียบร้อย');
                     window.location.href = 'Homepage.php?table={$_GET['table']}&cancel=true';
                   </script>";
         } else {
-            echo "<script>alert('เกิดข้อผิดพลาดในการยกเลิก กรุณาลองใหม่');</script>";
+            echo "<script>alert('ไม่พบการจองนี้ในระบบ หรือถูกยกเลิกไปแล้ว');</script>";
         }
+        $stmt->close();
     } else {
-        echo "<script>alert('ไม่พบการจองนี้ในระบบ');</script>";
+        echo "<script>alert('ข้อมูลไม่ถูกต้อง!');</script>";
     }
 }
 ?>
@@ -57,31 +69,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 <div class="success-box">
-<button class="close-btn" onclick="closeBox()">&times;</button>
+    <button class="close-btn" onclick="closeBox()">&times;</button>
     <h2>ยกเลิกการจอง</h2>
     <form method="POST">
-        <input type="hidden" name="availability_id" value="<?php echo $_GET['availability_id']; ?>">
+        <input type="hidden" name="availability_id" value="<?php echo $availability_id; ?>">
         <label>ชื่อ:</label>
         <input type="text" name="first_name" required>
         <label>นามสกุล:</label>
         <input type="text" name="last_name" required>
-        
+
         <?php if ($is_cancelled): ?>
-            <!-- แสดงปุ่ม "จองใหม่" เมื่อการจองถูกยกเลิกแล้ว -->
-            <button type="submit" name="action" value="book">จองใหม่</button>
+            <button type="button" onclick="window.location.href='Homepage.php'">กลับหน้าแรก</button>
         <?php else: ?>
-            <!-- แสดงปุ่ม "ยกเลิกการจอง" เมื่อการจองยังไม่ถูกยกเลิก ufuffiufvlglks-->
             <button type="submit" name="action" value="cancel">ยกเลิกการจอง</button>
         <?php endif; ?>
     </form>
 </div>
 <script>
-        // ฟังก์ชันเมื่อกดปุ่มปิด
-        function closeBox() {
-            // กลับไปที่หน้าแรก
-            window.location.href = "Homepage.php"; // เปลี่ยนเป็น path ของหน้าแรก
-        }
-    </script>
+    function closeBox() {
+        window.location.href = "Homepage.php"; 
+    }
+</script>
 
 </body>
 </html>
