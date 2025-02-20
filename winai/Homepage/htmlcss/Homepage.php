@@ -15,8 +15,13 @@
 
 <body>
     <div class="container">
-        <header>
+    <header>
             <h1>Winai's Shabu</h1>
+            <div class="profile-icon">
+                <a href="login_page.php">
+                    <img src="../img/other/รูปโปรไฟล์.jpg" alt="image">
+                </a>
+            </div>
         </header>
         <div class="promotion-banner">
             <p>โปรโมชันพิเศษสำหรับเดือนนี้! ลดราคาสุดคุ้มทุกวันจันทร์-พฤหัสบดี</p>

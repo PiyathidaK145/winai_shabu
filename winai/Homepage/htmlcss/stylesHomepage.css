@@ -557,4 +557,31 @@ body {
     transform: scale(1.05);
     /* Slightly enlarge on hover */
   }
+  .profile-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;  /* ปรับขนาดปุ่ม */
+    height: 40px;
+    background-color: white; /* สีพื้นหลัง */
+    border-radius: 50%; /* ทำให้เป็นวงกลม */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .profile-icon img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover; /* ป้องกันภาพผิดสัดส่วน */
+  }
+  
+  .profile-icon:hover {
+    transform: scale(1.1);
+  }
+  
   
