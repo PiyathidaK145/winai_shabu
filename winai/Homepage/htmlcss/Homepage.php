@@ -17,6 +17,11 @@
     <div class="container">
         <header>
             <h1>Winai's Shabu</h1>
+            <div class="profile-icon">
+                <a href="login_page.php">
+                    <img src="../img/other/รูปโปรไฟล์.jpg" alt="image">
+                </a>
+            </div>
         </header>
         <div class="promotion-banner">
             <p>โปรโมชันพิเศษสำหรับเดือนนี้! ลดราคาสุดคุ้มทุกวันจันทร์-พฤหัสบดี</p>
@@ -54,24 +59,6 @@
                             <p>Mix</p>
                         </a>
                     </div>
-                    <?php
-                    /*$menu_items = [
-                        ['link' => 'pork-menu.php', 'img' => '../img/meat/Pork.jpg', 'alt' => 'หมู', 'name' => 'หมู'],
-                        ['link' => 'meat-menu.php', 'img' => '../img/meat/beef.jpg', 'alt' => 'เนื้อ', 'name' => 'เนื้อ'],
-                        ['link' => 'seafood-menu.php', 'img' => '../img/seafood/seafood.jpg', 'alt' => 'ทะเล', 'name' => 'ทะเล'],
-                        ['link' => 'vegatarian-menu.php', 'img' => '../img/vegatable/vegatarian.jpg', 'alt' => 'มังสวิรัติ', 'name' => 'มังสวิรัติ'],
-                        ['link' => 'mix-menu.php', 'img' => '../img/meat/Mix.jpg', 'alt' => 'Mix', 'name' => 'Mix'],
-                    ];
-
-                    foreach ($menu_items as $item) {
-                        echo '<div class="menu-item">';
-                        echo "<a href=\"{$item['link']}\">";
-                        echo "<img src=\"{$item['img']}\" alt=\"{$item['alt']}\">";
-                        echo "<p>{$item['name']}</p>";
-                        echo '</a>';
-                        echo '</div>';
-                    }*/
-                    ?>
                 </div>
             </section>
 
@@ -103,8 +90,4 @@
     </div>
 </body>
 <script src="scriptHomepage.js"></script>
-
-
-
 </html>
-
