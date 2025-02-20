@@ -1,570 +1,572 @@
 body {
-    font-family: "Prompt", sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  .container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  header {
-    background: #333;
-    color: #fff;
-    text-align: left;
-    padding: 2rem 0;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0;
-    /* คงขนาด header */
-  }
-  
-  header h1 {
-    margin: 0;
-    /* รีเซ็ต margin เพื่อป้องกันการเบี่ยงเบน */
-    font-size: 2rem;
-    letter-spacing: 1px;
-  }
-  
-  nav {
-    background: #ffefe0;
-    display: flex;
-    justify-content: space-around;
-    padding: 1rem;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  nav a {
-    font-size: 1.1rem;
-    text-decoration: none;
-    color: #ff6f61;
-    font-weight: bold;
-    transition: color 0.3s ease;
-  }
-  
-  nav a:hover {
-    color: #ff5722;
-  }
-  
-  .promotion-banner {
-    background-color: #ff5722;
-    color: #fff;
-    padding: 1.5rem;
-    text-align: center;
-    font-size: 1.3rem;
-    font-weight: 600;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
+  font-family: "Prompt", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: #333;
+  color: #fff;
+  text-align: left;
+  padding: 2rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  /* คงขนาด header */
+}
+
+header h1 {
+  margin: 0;
+  /* รีเซ็ต margin เพื่อป้องกันการเบี่ยงเบน */
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+nav {
+  background: #ffefe0;
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+nav a {
+  font-size: 1.1rem;
+  text-decoration: none;
+  color: #ff6f61;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #ff5722;
+}
+
+.promotion-banner {
+  background-color: #ff5722;
+  color: #fff;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+main {
+  flex-grow: 1;
+  /* ขยายส่วนนี้ให้เต็มพื้นที่ */
+  display: flex;
+  flex-direction: column;
+  /* เรียงเนื้อหาในแนวตั้ง */
+  gap: 2rem;
+  /* ระยะห่างระหว่างแต่ละส่วน */
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* ส่วนการตั้งค่าในหน้าจอปกติ */
+.menu-section {
+  display: flex;
+  justify-content: center; /* จัดให้อยู่ตรงกลางแนวนอน */
+  align-items: center; /* จัดให้อยู่ตรงกลางแนวตั้ง */
+  height: 100%; /* ครอบคลุมหน้าจอ */
+}
+.menu-carousel {
+  display: flex;
+  overflow-x: auto; /* เปิดการเลื่อนแนวนอน */
+  gap: 1.5rem; /* ระยะห่างระหว่างกล่องเมนู */
+  padding: 0 1rem; /* เพิ่ม Padding เพื่อให้เลื่อนได้จนสุด */
+  scroll-snap-type: x mandatory; /* ใช้ Snap */
+  align-items: center;
+  justify-content: flex-start; /* เริ่มต้นจากซ้าย (สำหรับ Scroll) */
+  justify-content: center;
+}
+
+.menu-carousel::before,
+.menu-carousel::after {
+  content: ""; /* เพิ่มเนื้อหาว่าง */
+  flex: 0 0 5%; /* ขนาด Flex เท่ากับ 50% ของพื้นที่ */
+}
+
+.menu-item {
+  flex: 0 0 auto;
+  width: 150px;
+  height: 150px; /* เพิ่มความสูงเพื่อรองรับข้อความ */
+  background-color: #ffe0b2;
+  color: #ff6f00;
+  text-align: center;
+  position: relative;
+  border-radius: 10px;
+  font-size: 1rem;
+  scroll-snap-align: center;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.menu-item img {
+  width: 100%;
+  height: 100px; /* กำหนดขนาดรูปภาพ */
+  object-fit: cover;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-item:hover {
+  background-color: #ffab40;
+  transform: scale(1.05); /* ขยายเมื่อ hover */
+}
+
+/* เมื่อ hover ที่ .menu-item */
+.menu-item:hover {
+  transform: scale(1.05); /* ขยายขนาดเมื่อ hover */
+  background-color: #ffab40; /* เปลี่ยนสีพื้นหลัง */
+}
+
+/* เมื่อ hover ที่ .menu-item */
+.menu-item:hover .menu-item-description {
+  color: #ff8c00; /* เปลี่ยนสีเมื่อ hover */
+}
+.menu-item a {
+  text-decoration: none; /* ลบเส้นใต้ */
+  color: inherit; /* ใช้สีเดียวกับข้อความ */
+  display: block;
+  text-align: center;
+}
+
+footer {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 1.1rem;
+}
+
+footer a {
+  color: #ffab40;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
   main {
-    flex-grow: 1;
-    /* ขยายส่วนนี้ให้เต็มพื้นที่ */
-    display: flex;
-    flex-direction: column;
-    /* เรียงเนื้อหาในแนวตั้ง */
-    gap: 2rem;
-    /* ระยะห่างระหว่างแต่ละส่วน */
-    padding: 2rem;
-    box-sizing: border-box;
+    gap: 1.5rem;
   }
-  
-  /* ส่วนการตั้งค่าในหน้าจอปกติ */
-  .menu-section {
-    display: flex;
-    justify-content: center; /* จัดให้อยู่ตรงกลางแนวนอน */
-    align-items: center; /* จัดให้อยู่ตรงกลางแนวตั้ง */
-    height: 100%; /* ครอบคลุมหน้าจอ */
+  .menu-button,
+  .review-button {
+    font-size: 1.1rem;
+    padding: 1rem 1.5rem;
   }
   .menu-carousel {
-    display: flex;
-    overflow-x: auto; /* เปิดการเลื่อนแนวนอน */
-    gap: 1.5rem; /* ระยะห่างระหว่างกล่องเมนู */
-    padding: 0 1rem; /* เพิ่ม Padding เพื่อให้เลื่อนได้จนสุด */
-    scroll-snap-type: x mandatory; /* ใช้ Snap */
-    align-items: center;
-    justify-content: flex-start; /* เริ่มต้นจากซ้าย (สำหรับ Scroll) */
-    justify-content: center;
+    gap: 0.2rem;
+    /* ลดระยะห่างระหว่างกล่องเมนูในหน้าจอเล็ก */
+    padding: 0;
+    /* ลบ padding ของคอนเทนเนอร์ */
   }
-  
-  .menu-carousel::before,
-  .menu-carousel::after {
-    content: ""; /* เพิ่มเนื้อหาว่าง */
-    flex: 0 0 5%; /* ขนาด Flex เท่ากับ 50% ของพื้นที่ */
-  }
-  
-  .menu-item {
-    flex: 0 0 auto;
-    width: 150px;
-    height: 150px; /* เพิ่มความสูงเพื่อรองรับข้อความ */
-    background-color: #ffe0b2;
-    color: #ff6f00;
-    text-align: center;
-    position: relative;
-    border-radius: 10px;
-    font-size: 1rem;
-    scroll-snap-align: center;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-  }
-  
-  .menu-item img {
-    width: 100%;
-    height: 100px; /* กำหนดขนาดรูปภาพ */
-    object-fit: cover;
-    border-radius: 8px;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .menu-item:hover {
-    background-color: #ffab40;
-    transform: scale(1.05); /* ขยายเมื่อ hover */
-  }
-  
-  /* เมื่อ hover ที่ .menu-item */
-  .menu-item:hover {
-    transform: scale(1.05); /* ขยายขนาดเมื่อ hover */
-    background-color: #ffab40; /* เปลี่ยนสีพื้นหลัง */
-  }
-  
-  /* เมื่อ hover ที่ .menu-item */
-  .menu-item:hover .menu-item-description {
-    color: #ff8c00; /* เปลี่ยนสีเมื่อ hover */
-  }
-  .menu-item a {
-    text-decoration: none; /* ลบเส้นใต้ */
-    color: inherit; /* ใช้สีเดียวกับข้อความ */
-    display: block;
-    text-align: center;
-  }
-  
-  footer {
-    background: #333;
-    color: #fff;
-    text-align: center;
-    padding: 1.5rem;
-    font-size: 1.1rem;
-  }
-  
-  footer a {
-    color: #ffab40;
-    text-decoration: none;
-  }
-  
-  footer a:hover {
-    text-decoration: underline;
-  }
-  
-  @media screen and (max-width: 768px) {
-    main {
-      gap: 1.5rem;
-    }
-    .menu-button,
-    .review-button {
-      font-size: 1.1rem;
-      padding: 1rem 1.5rem;
-    }
-    .menu-carousel {
-      gap: 0.2rem;
-      /* ลดระยะห่างระหว่างกล่องเมนูในหน้าจอเล็ก */
-      padding: 0;
-      /* ลบ padding ของคอนเทนเนอร์ */
-    }
-  }
-  
-  /* การตั้งค่าสำหรับสี่เหลี่ยมที่เพิ่มใต้แผนผังร้าน */
-  #rectangle-under-map {
-    display: flex;
-    justify-content: center;
-    /* จัดสี่เหลี่ยมให้อยู่กลางจอ */
-    margin-top: 2rem;
-  }
-  
-  .rectangle-box {
-    width: 400px;
-    /* ความกว้างของสี่เหลี่ยม */
-    height: 400px;
-    /* ความสูงของสี่เหลี่ยม */
-    background-color: rgb(228, 228, 228);
-    /* สีพื้นหลัง */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 1.2rem;
-    text-align: center;
-    border-radius: 5px;
-    /* ขอบโค้ง */
-    position: relative;
-    /* กำหนดให้ .rectangle-box เป็นตำแหน่งพื้นฐานสำหรับ .table */
-  }
-  
-  .rectangle-box p {
-    margin: 0;
-  }
-  
-  /* การตั้งค่า table ให้อยู่ภายในสี่เหลี่ยม */
-  .table {
-    position: absolute;
-    background-color: #ff6f00;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 14px;
-    color: white;
-    border-radius: 5px;
-  }
-  .table-available {
-    background-color: #ff6f00; /* สีส้ม = จองได้ */
-  }
+}
 
-  .table-full {
-    background-color: gray; /* สีเทา = จองเต็มแล้ว */
-    pointer-events: none; /* ปิดการคลิก */
-  }
+/* การตั้งค่าสำหรับสี่เหลี่ยมที่เพิ่มใต้แผนผังร้าน */
+#rectangle-under-map {
+  display: flex;
+  justify-content: center;
+  /* จัดสี่เหลี่ยมให้อยู่กลางจอ */
+  margin-top: 2rem;
+}
 
-  
-  
-  /* การตั้งตำแหน่งของโต๊ะภายในสี่เหลี่ยม */
-  .table1 {
-    top: 30%;
-    left: 32%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table2 {
-    top: 40.2%;
-    left: 23%;
-    width: 18%;
-    height: 10%;
-  }
-  
-  .table3 {
-    top: 50.5%;
-    left: 23%;
-    width: 18%;
-    height: 10%;
-  }
-  
-  .table4 {
-    top: 60.9%;
-    left: 23%;
-    width: 18%;
-    height: 10%;
-  }
-  
-  .table5 {
-    top: 20%;
-    left: 54%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table6 {
-    top: 30.3%;
-    left: 54%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table7 {
-    top: 40.5%;
-    left: 54%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table8 {
-    top: 50.8%;
-    left: 54%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table9 {
-    top: 61%;
-    left: 54%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table10 {
-    top: 20%;
-    left: 65%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table11 {
-    top: 30.3%;
-    left: 65%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table12 {
-    top: 40.5%;
-    left: 65%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table13 {
-    top: 50.8%;
-    left: 65%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table14 {
-    top: 61%;
-    left: 65%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table15 {
-    top: 15%;
-    left: 90%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table16 {
-    top: 25.3%;
-    left: 90%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table17 {
-    top: 35.6%;
-    left: 90%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table18 {
-    top: 45.9%;
-    left: 90%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table19 {
-    top: 56.3%;
-    left: 90%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table20 {
-    top: 66.7%;
-    left: 90%;
-    width: 9%;
-    height: 10%;
-  }
-  
-  .table.booked {
-    background-color: gray;
-    color: rgb(255, 255, 255);
-    cursor: not-allowed;
-  }
-  
-  .rectangle {
-    position: absolute;
-    /* ใช้ตำแหน่งแบบ absolute */
-    width: 250px;
-    height: 50px;
-    background-color: #494949;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 10px;
-    font-family: Arial, sans-serif;
-  
-    /* ปรับตำแหน่ง */
-    top: 6.3%;
-    /* ด้านบน 50% */
-    left: 31.5%;
-    /* ด้านซ้าย 50% */
-    transform: translate(-50%, -50%);
-    /* เลื่อนจุดกึ่งกลาง */
-  }
-  
-  .rectangle1 {
-    position: absolute;
-    /* ใช้ตำแหน่งแบบ absolute */
-    width: 50px;
-    height: 310px;
-    background-color: #494949;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 10px;
-    font-family: Arial, sans-serif;
-  
-    /* ปรับตำแหน่ง */
-    top: 42%;
-    /* ด้านบน 50% */
-    left: 6.5%;
-    /* ด้านซ้าย 50% */
-    transform: translate(-50%, -50%);
-    /* เลื่อนจุดกึ่งกลาง */
-  }
-  
-  .rectangle2 {
-    position: absolute;
-    /* ใช้ตำแหน่งแบบ absolute */
-    width: 100px;
-    height: 30px;
-    background-color: #494949;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 10px;
-    font-family: Arial, sans-serif;
-  
-    /* ปรับตำแหน่ง */
-    top: 10.5%;
-    /* ด้านบน 50% */
-    left: 87.5%;
-    /* ด้านซ้าย 50% */
-    transform: translate(-50%, -50%);
-    /* เลื่อนจุดกึ่งกลาง */
-  }
-  
-  .rectangle3 {
-    position: absolute;
-    /* ใช้ตำแหน่งแบบ absolute */
-    width: 150px;
-    height: 20px;
-    background-color: #494949;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 10px;
-    font-family: Arial, sans-serif;
-  
-    /* ปรับตำแหน่ง */
-    top: 100%;
-    /* ด้านบน 50% */
-    left: 50%;
-    /* ด้านซ้าย 50% */
-    transform: translate(-50%, -50%);
-    /* เลื่อนจุดกึ่งกลาง */
-  }
-  .rectangle4 {
-    position: absolute;
-    /* ใช้ตำแหน่งแบบ absolute */
-    width: 10px;
-    height: 10px;
-    background-color: #ff6f00;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 10px;
-    font-family: Arial, sans-serif;
-  
-    /* ปรับตำแหน่ง */
-    top: 90%;
-    /* ด้านบน 50% */
-    left: 5%;
-    /* ด้านซ้าย 50% */
-    transform: translate(-50%, -50%);
-    /* เลื่อนจุดกึ่งกลาง */
-  }
-  .rectangle4-text {
-    position: absolute;
-    /* วางตำแหน่ง */
-    top: 90%;
-    /* จัดให้ตรงกับ .rectangle4 */
-    left: 8%;
-    /* ข้อความอยู่ด้านขวา */
-    transform: translateY(-50%);
-    /* จัดตรงกลางแนวตั้ง */
-    font-size: 14px;
-    font-family: Arial, sans-serif;
-    color: #333;
-    /* สีข้อความ */
-  }
-  .rectangle5 {
-    position: absolute;
-    /* ใช้ตำแหน่งแบบ absolute */
-    width: 10px;
-    height: 10px;
-    background-color: gray;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 10px;
-    font-family: Arial, sans-serif;
-  
-    /* ปรับตำแหน่ง */
-    top: 95%;
-    /* ด้านบน 50% */
-    left: 5%;
-    /* ด้านซ้าย 50% */
-    transform: translate(-50%, -50%);
-    /* เลื่อนจุดกึ่งกลาง */
-  }
-  .rectangle5-text {
-    position: absolute;
-    /* วางตำแหน่ง */
-    top: 95%;
-    /* จัดให้ตรงกับ .rectangle4 */
-    left: 8%;
-    /* ข้อความอยู่ด้านขวา */
-    transform: translateY(-50%);
-    /* จัดตรงกลางแนวตั้ง */
-    font-size: 14px;
-    font-family: Arial, sans-serif;
-    color: #333;
-    /* สีข้อความ */
-  }
-  /* CSS for Review Button */
-  #review {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 10vh;
-    /* Full viewport height */
-    margin-top: 20px;
-    /* เพิ่มระยะห่างด้านบน */
-  }
-  
-  .review-button {
-    display: inline-block;
-    padding: 15px 30px;
-    background-color: #ff6600;
-    /* Orange color */
-    color: #ffffff;
-    /* White text */
-    text-decoration: none;
-    /* Remove underline */
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 8px;
-    /* Rounded corners */
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
-    /* Slight shadow */
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    /* Hover effect */
-  }
-  
-  .review-button:hover {
-    background-color: #e65500;
-    /* Darker orange on hover */
-    transform: scale(1.05);
-    /* Slightly enlarge on hover */
-  }
-  
+.rectangle-box {
+  width: 400px;
+  /* ความกว้างของสี่เหลี่ยม */
+  height: 400px;
+  /* ความสูงของสี่เหลี่ยม */
+  background-color: rgb(228, 228, 228);
+  /* สีพื้นหลัง */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.2rem;
+  text-align: center;
+  border-radius: 5px;
+  /* ขอบโค้ง */
+  position: relative;
+  /* กำหนดให้ .rectangle-box เป็นตำแหน่งพื้นฐานสำหรับ .table */
+}
+
+.rectangle-box p {
+  margin: 0;
+}
+
+/* การตั้งค่า table ให้อยู่ภายในสี่เหลี่ยม */
+.table {
+  position: absolute;
+  background-color: #ff6f00;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: white;
+  border-radius: 5px;
+}
+.reserved-table {
+  background-color: gray !important; /* สีเทาสำหรับโต๊ะที่ถูกจอง */
+  color: white;
+  font-weight: bold;
+  cursor: not-allowed;
+}
+
+.available-table {
+  background-color: green;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* การตั้งตำแหน่งของโต๊ะภายในสี่เหลี่ยม */
+.table1 {
+  top: 30%;
+  left: 32%;
+  width: 9%;
+  height: 10%;
+}
+
+.table2 {
+  top: 40.2%;
+  left: 23%;
+  width: 18%;
+  height: 10%;
+}
+
+.table3 {
+  top: 50.5%;
+  left: 23%;
+  width: 18%;
+  height: 10%;
+}
+
+.table4 {
+  top: 60.9%;
+  left: 23%;
+  width: 18%;
+  height: 10%;
+}
+
+.table5 {
+  top: 20%;
+  left: 54%;
+  width: 9%;
+  height: 10%;
+}
+
+.table6 {
+  top: 30.3%;
+  left: 54%;
+  width: 9%;
+  height: 10%;
+}
+
+.table7 {
+  top: 40.5%;
+  left: 54%;
+  width: 9%;
+  height: 10%;
+}
+
+.table8 {
+  top: 50.8%;
+  left: 54%;
+  width: 9%;
+  height: 10%;
+}
+
+.table9 {
+  top: 61%;
+  left: 54%;
+  width: 9%;
+  height: 10%;
+}
+
+.table10 {
+  top: 20%;
+  left: 65%;
+  width: 9%;
+  height: 10%;
+}
+
+.table11 {
+  top: 30.3%;
+  left: 65%;
+  width: 9%;
+  height: 10%;
+}
+
+.table12 {
+  top: 40.5%;
+  left: 65%;
+  width: 9%;
+  height: 10%;
+}
+
+.table13 {
+  top: 50.8%;
+  left: 65%;
+  width: 9%;
+  height: 10%;
+}
+
+.table14 {
+  top: 61%;
+  left: 65%;
+  width: 9%;
+  height: 10%;
+}
+
+.table15 {
+  top: 15%;
+  left: 90%;
+  width: 9%;
+  height: 10%;
+}
+
+.table16 {
+  top: 25.3%;
+  left: 90%;
+  width: 9%;
+  height: 10%;
+}
+
+.table17 {
+  top: 35.6%;
+  left: 90%;
+  width: 9%;
+  height: 10%;
+}
+
+.table18 {
+  top: 45.9%;
+  left: 90%;
+  width: 9%;
+  height: 10%;
+}
+
+.table19 {
+  top: 56.3%;
+  left: 90%;
+  width: 9%;
+  height: 10%;
+}
+
+.table20 {
+  top: 66.7%;
+  left: 90%;
+  width: 9%;
+  height: 10%;
+}
+
+.table.booked {
+  background-color: gray;
+  color: rgb(255, 255, 255);
+  cursor: not-allowed;
+}
+
+.rectangle {
+  position: absolute;
+  /* ใช้ตำแหน่งแบบ absolute */
+  width: 250px;
+  height: 50px;
+  background-color: #494949;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  font-family: Arial, sans-serif;
+
+  /* ปรับตำแหน่ง */
+  top: 6.3%;
+  /* ด้านบน 50% */
+  left: 31.5%;
+  /* ด้านซ้าย 50% */
+  transform: translate(-50%, -50%);
+  /* เลื่อนจุดกึ่งกลาง */
+}
+
+.rectangle1 {
+  position: absolute;
+  /* ใช้ตำแหน่งแบบ absolute */
+  width: 50px;
+  height: 310px;
+  background-color: #494949;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  font-family: Arial, sans-serif;
+
+  /* ปรับตำแหน่ง */
+  top: 42%;
+  /* ด้านบน 50% */
+  left: 6.5%;
+  /* ด้านซ้าย 50% */
+  transform: translate(-50%, -50%);
+  /* เลื่อนจุดกึ่งกลาง */
+}
+
+.rectangle2 {
+  position: absolute;
+  /* ใช้ตำแหน่งแบบ absolute */
+  width: 100px;
+  height: 30px;
+  background-color: #494949;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  font-family: Arial, sans-serif;
+
+  /* ปรับตำแหน่ง */
+  top: 10.5%;
+  /* ด้านบน 50% */
+  left: 87.5%;
+  /* ด้านซ้าย 50% */
+  transform: translate(-50%, -50%);
+  /* เลื่อนจุดกึ่งกลาง */
+}
+
+.rectangle3 {
+  position: absolute;
+  /* ใช้ตำแหน่งแบบ absolute */
+  width: 150px;
+  height: 20px;
+  background-color: #494949;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  font-family: Arial, sans-serif;
+
+  /* ปรับตำแหน่ง */
+  top: 100%;
+  /* ด้านบน 50% */
+  left: 50%;
+  /* ด้านซ้าย 50% */
+  transform: translate(-50%, -50%);
+  /* เลื่อนจุดกึ่งกลาง */
+}
+.rectangle4 {
+  position: absolute;
+  /* ใช้ตำแหน่งแบบ absolute */
+  width: 10px;
+  height: 10px;
+  background-color: #ff6f00;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  font-family: Arial, sans-serif;
+
+  /* ปรับตำแหน่ง */
+  top: 90%;
+  /* ด้านบน 50% */
+  left: 5%;
+  /* ด้านซ้าย 50% */
+  transform: translate(-50%, -50%);
+  /* เลื่อนจุดกึ่งกลาง */
+}
+.rectangle4-text {
+  position: absolute;
+  /* วางตำแหน่ง */
+  top: 90%;
+  /* จัดให้ตรงกับ .rectangle4 */
+  left: 8%;
+  /* ข้อความอยู่ด้านขวา */
+  transform: translateY(-50%);
+  /* จัดตรงกลางแนวตั้ง */
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  /* สีข้อความ */
+}
+.rectangle5 {
+  position: absolute;
+  /* ใช้ตำแหน่งแบบ absolute */
+  width: 10px;
+  height: 10px;
+  background-color: gray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  font-family: Arial, sans-serif;
+
+  /* ปรับตำแหน่ง */
+  top: 95%;
+  /* ด้านบน 50% */
+  left: 5%;
+  /* ด้านซ้าย 50% */
+  transform: translate(-50%, -50%);
+  /* เลื่อนจุดกึ่งกลาง */
+}
+.rectangle5-text {
+  position: absolute;
+  /* วางตำแหน่ง */
+  top: 95%;
+  /* จัดให้ตรงกับ .rectangle4 */
+  left: 8%;
+  /* ข้อความอยู่ด้านขวา */
+  transform: translateY(-50%);
+  /* จัดตรงกลางแนวตั้ง */
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  /* สีข้อความ */
+}
+/* CSS for Review Button */
+#review {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10vh;
+  /* Full viewport height */
+  margin-top: 20px;
+  /* เพิ่มระยะห่างด้านบน */
+}
+
+.review-button {
+  display: inline-block;
+  padding: 15px 30px;
+  background-color: #ff6600;
+  /* Orange color */
+  color: #ffffff;
+  /* White text */
+  text-decoration: none;
+  /* Remove underline */
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  /* Rounded corners */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+  /* Slight shadow */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  /* Hover effect */
+}
+
+.review-button:hover {
+  background-color: #e65500;
+  /* Darker orange on hover */
+  transform: scale(1.05);
+  /* Slightly enlarge on hover */
+}
