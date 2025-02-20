@@ -2,7 +2,7 @@
 $host = "localhost";
 $user = "root";
 $password = "123456";
-$database = "winaishabu";
+$database = "a_shabu";
 
 // เชื่อมต่อฐานข้อมูล
 $conn = new mysqli($host, $user, $password, $database);
@@ -55,6 +55,8 @@ $package_result = $conn->query($package_sql);
 $promotion_sql = "SELECT promotion_id, promotions_name FROM promotion";
 $promotion_result = $conn->query($promotion_sql);
 
+// สุ่มรหัสพนักงานให้เป็น 1 หรือ 2
+$employee_id = rand(1, 2);
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -95,10 +97,8 @@ $promotion_result = $conn->query($promotion_sql);
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label for="employee_id" class="form-label"><strong>รหัสพนักงาน:</strong></label>
-                <input type="number" name="employee_id" class="form-control" required>
-            </div>
+            <!-- กำหนดค่ารหัสพนักงานโดยอัตโนมัติ -->
+            <input type="hidden" name="employee_id" value="<?php echo $employee_id; ?>">
 
             <button type="submit" class="btn btn-success">ยืนยันการเลือก</button>
             <a href="assign_table.php" class="btn btn-secondary">ย้อนกลับ</a>
