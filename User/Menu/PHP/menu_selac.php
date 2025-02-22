@@ -4,7 +4,7 @@ $user = "root";
 $password = "123456";
 $database = "a_shabu";
 
-define('BASE_URL', 'http://localhost:8081/winai-customer-main-main/User/Menu/img/');
+define('BASE_URL', 'http://localhost:8081/Uploads');
 
 $conn = new mysqli($host, $user, $password, $database);
 if ($conn->connect_error) {
@@ -88,7 +88,7 @@ while ($row = $result->fetch_assoc()) {
             <h2>รายการที่เลือก</h2>
             <ul id="order-list"></ul>
             <button onclick="submitOrder()">สั่งออเดอร์</button>
-            <button onclick="window.location.href='winai/Homepage/html/payment.php'">ชำระเงิน</button>
+            <button onclick="window.location.href='payment.php'">ชำระเงิน</button>
         </aside>
     </main>
 </body>
