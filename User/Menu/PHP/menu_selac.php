@@ -88,7 +88,7 @@ while ($row = $result->fetch_assoc()) {
             <h2>รายการที่เลือก</h2>
             <ul id="order-list"></ul>
             <button onclick="submitOrder()">สั่งออเดอร์</button>
-            <button onclick="window.location.href='winai/Homepage/html/payment.php'">ชำระเงิน</button>
+            <button onclick="window.location.href='payment.php'">ชำระเงิน</button>
         </aside>
     </main>
 </body>
