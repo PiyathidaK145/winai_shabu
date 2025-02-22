@@ -20,7 +20,7 @@ if (isset($_GET['getting_table_id']) && isset($_GET['payment_method']) && isset(
     $payment_method = $_GET['payment_method'];
     $total_payment = $_GET['total_payment'];
 
-    $sql = "SELECT payment_id FROM payment_verificatio WHERE approve = ?";
+    $sql = "SELECT approve FROM payment_verificatio WHERE payment_id = ?"; // ใช้คอลัมน์ที่ถูกต้องที่นี่
     $stmt = $conn->prepare($sql);
     if ($stmt === false) {
         die("Error preparing statement: " . $conn->error);
@@ -29,16 +29,18 @@ if (isset($_GET['getting_table_id']) && isset($_GET['payment_method']) && isset(
     $stmt->bind_param("i", $getting_table_id);
     if ($stmt->execute()) {
         // ดึงข้อมูลจากฐานข้อมูล
-        $stmt->bind_result($payment_status);
+        $stmt->bind_result($approve_status);
         $stmt->fetch();
-        
+
         // หากสถานะเป็น "Complete" จะเปลี่ยนข้อความในหน้า HTML
-        if ($payment_status == 'Complete') {
+        if ($approve_status == 'completed') {
             $status_message = "ชำระเสร็จสิ้น";
             $hide_description = "none"; // ซ่อนข้อความ description
+            $show_button = "block"; // แสดงปุ่มถัดไป
         } else {
             $status_message = "กำลังตรวจสอบการชำระเงิน...";
             $hide_description = "block"; // ให้แสดงข้อความ description
+            $show_button = "none"; // ซ่อนปุ่มถัดไป
         }
     } else {
         die("Query failed: " . $stmt->error);
@@ -74,8 +76,17 @@ $conn->close();
         <p class="success-text"><?php echo $status_message; ?></p>
         <p class="description" style="display: <?= $hide_description; ?>;">กรุณารอสักครู่
             ข้อมูลของคุณกำลังอยู่ในระหว่างการตรวจสอบจากทางร้าน</p>
+
+        <!-- ปุ่มถัดไปจะแสดงเสมอ แต่เริ่มต้นเป็นสีเทาและกดไม่ได้ -->
+        <div class="next-button" style="display: block; margin-top: 20px;">
+            <button id="nextButton" disabled
+                style="background-color: gray; color: white; border-radius: 10px; padding: 10px 50px; border: none; cursor: not-allowed;">
+                ถัดไป
+            </button>
+        </div>
     </div>
 
     <script src="Makepayment.js"></script>
 </body>
+
 </html>

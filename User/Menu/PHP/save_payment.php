@@ -18,7 +18,13 @@ $data = json_decode(file_get_contents('php://input'), true);
 $get_table_id = $data['getting_table_id'];
 $payment_method = $data['payment_method'];
 $total_payment = $data['total_payment'];
-
+if ($count > 0) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Payment for this table already exists'
+    ]);
+    exit();
+}
 // บันทึกข้อมูลลงฐานข้อมูล
 $stmt = $conn->prepare("INSERT INTO payment (getting_table_id, payment_method, total_payment) VALUES (?, ?, ?)");
 $stmt->bind_param("isi", $get_table_id, $payment_method, $total_payment);

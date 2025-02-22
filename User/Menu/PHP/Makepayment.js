@@ -1,35 +1,46 @@
-window.onload = function () {
-  const circleProgress = document.querySelector(".circle-progress");
-  const checkmark = document.querySelector(".checkmark");
-  const successText = document.querySelector(".success-text");
-  const descriptionText = document.querySelector(".description");
+ window.onload = function () {
+        const circleProgress = document.querySelector(".circle-progress");
+        const checkmark = document.querySelector(".checkmark");
+        const successText = document.querySelector(".success-text");
+        const descriptionText = document.querySelector(".description");
+        const nextButton = document.getElementById("nextButton");
 
-  // เริ่มการหมุนวงกลม
-  setTimeout(function () {
-      // เปลี่ยนค่า stroke-dashoffset ให้เป็น 0 เพื่อให้วงกลมหมุนครบ
-      circleProgress.style.strokeDashoffset = '0';
+        // เริ่มการหมุนวงกลม
+        setTimeout(function () {
+            circleProgress.style.strokeDashoffset = '0';
 
-      // หลังจากหมุนเสร็จแล้ว ให้แสดงเครื่องหมายเช็ค
-      setTimeout(function () {
-          checkmark.style.visibility = 'visible';
-          checkmark.style.opacity = '1';
+            // หลังจากหมุนเสร็จ ให้แสดงเครื่องหมายเช็ค
+            setTimeout(function () {
+                checkmark.style.visibility = 'visible';
+                checkmark.style.opacity = '1';
 
-          // เปลี่ยนข้อความใน success-text
-          if (successText) {
-              successText.textContent = "ชำระเสร็จสิ้น";
-          }
+                // เปลี่ยนข้อความ
+                if (successText) {
+                    successText.textContent = "ชำระเสร็จสิ้น";
+                }
 
-          // ลบข้อความใน description-text
-          if (descriptionText) {
-              descriptionText.style.display = "none";  // ซ่อนข้อความ description
-          }
+                // เปลี่ยนข้อความ description
+                if (descriptionText) {
+                    descriptionText.style.display = "block";
+                    descriptionText.textContent = "กดถัดไปเพื่อรับใบเสร็จ";
+                }
 
-          // เปลี่ยนหน้าไปที่ Receipt.php ทันทีหลังจากแสดงเครื่องหมายเช็ค
-          const url = "Receipt.php?getting_table_id=" + encodeURIComponent("<?php echo $getting_table_id; ?>") +
-                      "&payment_method=" + encodeURIComponent("<?php echo $payment_method; ?>") +
-                      "&total_payment=" + encodeURIComponent("<?php echo $total_payment; ?>");
-          console.log("Redirecting to: " + url);
-          window.location.href = url;  // เปลี่ยนหน้าไปที่ Receipt.php
-      }, 500); // หลังจากหมุนเสร็จ 500ms จะแสดงเครื่องหมายเช็ค
-  }, 100); // เริ่มหมุนทันที
-};
+                // เปลี่ยนปุ่มเป็นสีเขียวและกดได้
+                nextButton.style.backgroundColor = "green";
+                nextButton.style.cursor = "pointer";
+                nextButton.removeAttribute("disabled");
+
+                // เพิ่ม Event ให้ปุ่ม เมื่อกดแล้วไปที่ Receipt.php
+                nextButton.addEventListener("click", function () {
+                    // รับค่าจาก PHP ที่ฝังไว้ใน data attributes
+                    const gettingTableId = document.getElementById("nextButton").getAttribute("data-getting-table-id");
+                    const paymentMethod = document.getElementById("nextButton").getAttribute("data-payment-method");
+                    const totalPayment = document.getElementById("nextButton").getAttribute("data-total-payment");
+
+                    // Redirect ไปที่ Receipt.php พร้อมส่งค่า
+                    window.location.href = `Receipt.php?getting_table_id=${encodeURIComponent(gettingTableId)}&payment_method=${encodeURIComponent(paymentMethod)}&total_payment=${encodeURIComponent(totalPayment)}`;
+                });
+
+            }, 3000); // แสดง checkmark หลังจากหมุนเสร็จ 3 วินาที
+        }, 1500);
+    };
