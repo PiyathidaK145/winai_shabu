@@ -68,7 +68,7 @@
                 $servername = "localhost";
                 $username = "root"; // เปลี่ยนเป็นชื่อผู้ใช้ของคุณ
                 $password = "123456"; // เปลี่ยนเป็นรหัสผ่านของคุณ
-                $dbname = "winaishabu"; // เปลี่ยนเป็นชื่อฐานข้อมูลของคุณ
+                $dbname = "a_shabu"; // เปลี่ยนเป็นชื่อฐานข้อมูลของคุณ
                 
                 // เชื่อมต่อกับฐานข้อมูล
                 $conn = new mysqli($servername, $username, $password, $dbname);
