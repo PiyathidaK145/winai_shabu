@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 $host = "localhost";
 $user = "root";
 $password = "123456";
@@ -28,10 +31,10 @@ function generateUniqueId($conn)
 
 // ตรวจสอบว่ามีการส่งข้อมูลผ่าน POST หรือไม่
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $reservation_id = $_POST["reservation_id"];
-    $package_id = $_POST["package_id"];
-    $promotion_id = isset($_POST['promotion_id']) && $_POST['promotion_id'] !== "" ? $_POST['promotion_id'] : NULL;
-    $employee_id = isset($_POST['employee_id']) && $_POST['employee_id'] !== "" ? $_POST['employee_id'] : NULL;
+    $reservation_id = intval($_POST["reservation_id"]);
+    $package_id = intval($_POST["package_id"]);
+    $promotion_id = isset($_POST['promotion_id']) && $_POST['promotion_id'] !== "" ? intval($_POST['promotion_id']) : NULL;
+    $employee_id = isset($_POST['employee_id']) && $_POST['employee_id'] !== "" ? intval($_POST['employee_id']) : NULL;
     $getting_table_id = generateUniqueId($conn); // สร้างรหัส 6 หลักโดยอัตโนมัติ
 
     // คำนวณราคาทั้งหมด
@@ -45,12 +48,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = $stmt->get_result();
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        $total_amount = $row["price"];
+        $total_amount = floatval($row["price"]);
     }
     $stmt->close();
 
-    // ตรวจสอบว่า promotion_id มีอยู่จริงในฐานข้อมูลหรือไม่
-    if (!empty($promotion_id)) {
+    // ตรวจสอบโปรโมชั่น
+    if (!is_null($promotion_id) && $promotion_id !== 0) { // ตรวจสอบว่าไม่ใช่ "ไม่ใช้โปรโมชั่น"
         $sql = "SELECT discount_type, discount_value FROM promotion WHERE promotion_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $promotion_id);
@@ -59,10 +62,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            if ($row["discount_type"] == "persentage") {
-                $total_amount -= ($total_amount * $row["discount_value"] / 100);
+            if ($row["discount_type"] == "percentage") { // ตรวจสอบให้แน่ใจว่าสะกดถูกต้อง
+                $total_amount -= ($total_amount * floatval($row["discount_value"]) / 100);
             } else {
-                $total_amount -= $row["discount_value"];
+                $total_amount -= floatval($row["discount_value"]);
             }
         } else {
             $promotion_id = NULL; // ถ้าไม่มีโปรโมชันที่ตรงกัน ให้ใช้ค่า NULL
@@ -74,13 +77,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "INSERT INTO getting_table (getting_table_id, reservation_id, employee_id, package_id, promotion_id, total_amount) 
             VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("siiidi", $getting_table_id, $reservation_id, $employee_id, $package_id, $promotion_id, $total_amount);
+
+    // ตรวจสอบว่าต้อง bind_param() แบบไหน
+    if (!is_null($promotion_id)) {
+        $stmt->bind_param("siiidi", $getting_table_id, $reservation_id, $employee_id, $package_id, $promotion_id, $total_amount);
+    } else {
+        $stmt->bind_param("siiii", $getting_table_id, $reservation_id, $employee_id, $package_id, $total_amount);
+    }
 
     if ($stmt->execute()) {
         echo "<script>alert('บันทึกข้อมูลสำเร็จ!'); window.location.href='assign_table.php';</script>";
-        exit(); // หยุดการทำงานของสคริปต์หลังจาก redirect
+        exit();
     } else {
-        echo "<script>alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: " . $stmt->error . "'); window.history.back();</script>";
+        echo "<script>alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: " . addslashes($stmt->error) . "'); window.history.back();</script>";
     }
 
     $stmt->close();

@@ -1,5 +1,60 @@
+<?php
+// เชื่อมต่อกับฐานข้อมูล
+$servername = "localhost";
+$username = "root";
+$password = "123456";
+$dbname = "a_shabu";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// ตรวจสอบการเชื่อมต่อ
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// ตรวจสอบค่าจาก URL
+if (isset($_GET['getting_table_id']) && isset($_GET['payment_method']) && isset($_GET['total_payment'])) {
+    $getting_table_id = $_GET['getting_table_id'];
+    $payment_method = $_GET['payment_method'];
+    $total_payment = $_GET['total_payment'];
+
+    $sql = "SELECT payment_id FROM payment_verificatio WHERE approve = ?";
+    $stmt = $conn->prepare($sql);
+    if ($stmt === false) {
+        die("Error preparing statement: " . $conn->error);
+    }
+
+    $stmt->bind_param("i", $getting_table_id);
+    if ($stmt->execute()) {
+        // ดึงข้อมูลจากฐานข้อมูล
+        $stmt->bind_result($payment_status);
+        $stmt->fetch();
+        
+        // หากสถานะเป็น "Complete" จะเปลี่ยนข้อความในหน้า HTML
+        if ($payment_status == 'Complete') {
+            $status_message = "ชำระเสร็จสิ้น";
+            $hide_description = "none"; // ซ่อนข้อความ description
+        } else {
+            $status_message = "กำลังตรวจสอบการชำระเงิน...";
+            $hide_description = "block"; // ให้แสดงข้อความ description
+        }
+    } else {
+        die("Query failed: " . $stmt->error);
+    }
+    $stmt->close();
+} else {
+    echo "<script>alert('ข้อมูลการชำระเงินไม่สมบูรณ์');</script>";
+    exit();
+}
+
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,8 +71,9 @@
             </svg>
             <div class="checkmark hidden">&#10004;</div>
         </div>
-        <p class="success-text">กำลังตรวจสอบการชำระเงิน...</p>
-        <p class="description">กรุณารอสักครู่ ข้อมูลของคุณกำลังอยู่ในระหว่างการตรวจสอบจากทางร้าน</p>
+        <p class="success-text"><?php echo $status_message; ?></p>
+        <p class="description" style="display: <?= $hide_description; ?>;">กรุณารอสักครู่
+            ข้อมูลของคุณกำลังอยู่ในระหว่างการตรวจสอบจากทางร้าน</p>
     </div>
 
     <script src="Makepayment.js"></script>
