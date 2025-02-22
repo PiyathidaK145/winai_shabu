@@ -16,3 +16,7 @@ function handleTableClick(tableNumber) {
 if (typeof updateTableStatus === "function") {
     updateTableStatus();
 }
+// เพิ่ม event listener ให้กับแต่ละโต๊ะ
+for (let i = 1; i <= 20; i++) {
+    document.getElementById(`table-${i}`).addEventListener('click', () => handleTableClick(i));
+}

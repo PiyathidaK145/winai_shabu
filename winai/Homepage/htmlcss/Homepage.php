@@ -1,3 +1,50 @@
+<?php
+// เชื่อมต่อกับฐานข้อมูล
+$servername = "localhost";
+$username = "root"; // เปลี่ยนเป็นชื่อผู้ใช้ของคุณ
+$password = "123456"; // เปลี่ยนเป็นรหัสผ่านของคุณ
+$dbname = "a_shabu"; // เปลี่ยนเป็นชื่อฐานข้อมูลของคุณ
+
+// เชื่อมต่อฐานข้อมูล
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// ดึงหมายเลขโต๊ะทั้งหมด (ปรับตามโครงสร้างฐานข้อมูล)
+$sql_tables = "SELECT DISTINCT table_id FROM table_availability";
+$result_tables = $conn->query($sql_tables);
+
+$tables = [];
+
+if ($result_tables->num_rows > 0) {
+    while ($row = $result_tables->fetch_assoc()) {
+        $table_id = $row['table_id'];
+
+        // นับจำนวนเวลาที่จองแล้ว (Busy) สำหรับโต๊ะนี้
+        $sql_check_full = "SELECT COUNT(*) as total_busy FROM table_availability WHERE table_id = $table_id AND status = 'Busy'";
+        $result_check = $conn->query($sql_check_full);
+        $row_check = $result_check->fetch_assoc();
+        $total_busy = $row_check['total_busy'];
+
+        // ดึงจำนวนเวลาทั้งหมดในระบบ
+        $sql_total_times = "SELECT COUNT(*) as total_times FROM time_reserversion";
+        $result_total_times = $conn->query($sql_total_times);
+        $row_total_times = $result_total_times->fetch_assoc();
+        $total_times = $row_total_times['total_times'];
+
+        // ถ้าจองหมดทุกเวลา ให้เป็นสีเทาและสถานะ busy
+        if ($total_busy >= $total_times) {
+            $tables[$table_id] = ["color" => "gray", "status" => "busy"];
+        } else {
+            $tables[$table_id] = ["color" => "#ff5722", "status" => "available"];
+        }
+    }
+}
+
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="th">
 
@@ -6,7 +53,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A's Shabu</title>
     <link rel="stylesheet" href="stylesHomepage.css">
-    <!-- Preload Resource -->
     <link rel="preload" href="/img/meat/beef.jpg" as="image">
     <link rel="preload" href="/img/vegatable/vegatable.jpg" as="image">
     <link rel="preload" href="/img/seafood/seafood.jpg" as="image">
@@ -64,41 +110,15 @@
 
             <section id="map">
                 <h2>แผนผังร้าน</h2>
-                <?php
-                $servername = "localhost";
-                $username = "root"; // เปลี่ยนเป็นชื่อผู้ใช้ของคุณ
-                $password = "123456"; // เปลี่ยนเป็นรหัสผ่านของคุณ
-                $dbname = "a_shabu"; // เปลี่ยนเป็นชื่อฐานข้อมูลของคุณ
                 
-                // เชื่อมต่อกับฐานข้อมูล
-                $conn = new mysqli($servername, $username, $password, $dbname);
-                if ($conn->connect_error) {
-                    die("Connection failed: " . $conn->connect_error);
-                }
-
-                // ดึงข้อมูลการจองทั้งหมดที่มีสถานะเป็น 'Comfirm'
-                $sql = "SELECT availability_id FROM reservation WHERE status = 'Confirm'";
-                $result = $conn->query($sql);
-
-                $reservedTables = []; // เก็บจำนวนครั้งที่โต๊ะถูกจอง
-                
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        // คำนวณหมายเลขโต๊ะจาก availability_id
-                        $tableId = floor($row['availability_id'] / 100); // สมมติว่า availability_id มีรูปแบบ 1022 -> โต๊ะ 10
-                        if (!isset($reservedTables[$tableId])) {
-                            $reservedTables[$tableId] = 0;
-                        }
-                        $reservedTables[$tableId]++;
-                    }
-                }
-                ?>
-
                 <section id="rectangle-under-map">
                     <div class="rectangle-box">
                         <?php
+                        // จำนวนโต๊ะที่มีทั้งหมด (สมมติว่า 20 โต๊ะ)
                         for ($i = 1; $i <= 20; $i++) {
-                            echo "<div class=\"table table$i\" id=\"table-$i\" onclick=\"handleTableClick($i)\">$i</div>";
+                            $color = $tables[$i]['color'];
+                            $status = $tables[$i]['status'];
+                            echo "<div class=\"table table$i\" id=\"table-$i\" data-status=\"$status\" style=\"background-color: $color;\">$i</div>";
                         }
                         ?>
                         <div class="rectangle">ครัว</div>
@@ -115,12 +135,10 @@
         </main>
 
         <footer>
-            <p>ติดต่อเรา: <a href="tel:0123456789">012-345-6789</a> | <a
-                    href="https://facebook.com/example">Facebook</a> | <a href="https://maps.google.com">แผนที่ร้าน</a>
+            <p>ติดต่อเรา: <a href="tel:0123456789">012-345-6789</a> | <a href="https://facebook.com/example">Facebook</a> | <a href="https://maps.google.com">แผนที่ร้าน</a>
             </p>
         </footer>
     </div>
 </body>
 <script src="scriptHomepage.js"></script>
 </html>
-

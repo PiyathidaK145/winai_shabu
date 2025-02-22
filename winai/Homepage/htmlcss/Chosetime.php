@@ -98,7 +98,7 @@ if (isset($_GET['time'])) {
                     $availability_id = ($tableNumber * 100) + ($index * 2) + 16;
 
                     // ค้นหาสถานะของ availability_id นี้
-                    $sql = "SELECT status FROM reservation WHERE availability_id = ? LIMIT 1";
+                    $sql = "SELECT status FROM table_availability WHERE availability_id = ? LIMIT 1";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("i", $availability_id);
                     $stmt->execute();
@@ -111,7 +111,7 @@ if (isset($_GET['time'])) {
                     }
 
                     // แสดงปุ่มให้เปลี่ยนตามสถานะที่ตรวจพบ
-                    if ($status === 'Confirm') {
+                    if ($status === 'Busy') {
                         echo "<td class='reserved'>
                                 <a href='Cancel.php?availability_id=$availability_id&table=$tableNumber&time=$time' style='color: red; text-decoration: none;'>
                                     ยกเลิก
