@@ -14,7 +14,7 @@ $(document).ready(function () {
                 url: "check_member.php",
                 method: "POST",
                 data: { first_name: firstName, last_name: lastName },
-                success: function(response) {
+                success: function (response) {
                     console.log(response); // ดูคำตอบจาก PHP
 
                     var statusMessage = $("<span id='name_status'></span>").css({
@@ -34,7 +34,7 @@ $(document).ready(function () {
                     // แสดงข้อความใต้กล่องกรอกนามสกุล
                     $("#last_name").after(statusMessage);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.log("เกิดข้อผิดพลาด: " + error);
                 }
             });
