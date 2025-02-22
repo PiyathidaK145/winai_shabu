@@ -4,7 +4,7 @@ $user = "root";
 $password = "123456";
 $database = "a_shabu";
 
-define('BASE_URL', 'http://localhost:8081/winai-customer-main-main/User/Menu/img/');
+define('BASE_URL', 'http://localhost:8081/Uploads');
 
 $conn = new mysqli($host, $user, $password, $database);
 if ($conn->connect_error) {
