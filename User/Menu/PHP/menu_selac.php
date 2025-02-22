@@ -61,12 +61,14 @@ while ($row = $result->fetch_assoc()) {
 ?>
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <title>Winai's Shabu</title>
     <link rel="stylesheet" href="../CSS/style.css">
     <script src="../javascript/scripts.js" defer></script>
 </head>
+
 <body>
     <main>
         <section id="menu-section">
@@ -77,8 +79,10 @@ while ($row = $result->fetch_assoc()) {
                         <li class="menu-item">
                             <img src="<?php echo BASE_URL . htmlspecialchars($item['image_url']); ?>" width="100">
                             <p><?php echo htmlspecialchars($item['item_name']); ?></p>
-                            <button onclick="updateOrder(<?php echo $item['raw_material_id']; ?>, '<?php echo htmlspecialchars($item['item_name']); ?>', 1)">+</button>
-                            <button onclick="updateOrder(<?php echo $item['raw_material_id']; ?>, '<?php echo htmlspecialchars($item['item_name']); ?>', -1)">-</button>
+                            <button
+                                onclick="updateOrder(<?php echo $item['raw_material_id']; ?>, '<?php echo htmlspecialchars($item['item_name']); ?>', 1)">+</button>
+                            <button
+                                onclick="updateOrder(<?php echo $item['raw_material_id']; ?>, '<?php echo htmlspecialchars($item['item_name']); ?>', -1)">-</button>
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -88,8 +92,11 @@ while ($row = $result->fetch_assoc()) {
             <h2>รายการที่เลือก</h2>
             <ul id="order-list"></ul>
             <button onclick="submitOrder()">สั่งออเดอร์</button>
-            <button onclick="window.location.href='payment.php'">ชำระเงิน</button>
+            <button onclick="redirectToPayment('<?php echo $reservation_id; ?>')">ชำระเงิน</button>
         </aside>
     </main>
+    <script src="scriptmenu_selac.js"></script>
+
 </body>
+
 </html>
