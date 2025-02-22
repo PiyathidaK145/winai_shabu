@@ -159,7 +159,7 @@ if ($result) {
             <div class="payment">
                 <select id="payment-method" onchange="showPaymentOption()">
                     <option>เลือกวิธีชำระเงิน</option>
-                    <option value="qr">QR Promptpay</option>
+                    <option value="QR prompay">QR Promptpay</option>
                     <option value="credit">บัตรเครดิต/เดบิต</option>
                 </select>
             </div>

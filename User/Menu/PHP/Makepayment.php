@@ -80,13 +80,13 @@ $conn->close();
         <!-- ปุ่มถัดไปจะแสดงเสมอ แต่เริ่มต้นเป็นสีเทาและกดไม่ได้ -->
         <div class="next-button" style="display: block; margin-top: 20px;">
             <button id="nextButton" disabled
-                style="background-color: gray; color: white; border-radius: 10px; padding: 10px 50px; border: none; cursor: not-allowed;">
+                style="background-color: gray; color: white; border-radius: 10px; padding: 10px 50px; border: none; cursor: not-allowed;" >
                 ถัดไป
             </button>
         </div>
     </div>
 
-    <script src="Makepayment.js"></script>
+    <script src="Makepayment.js" defer></script>
 </body>
 
 </html>

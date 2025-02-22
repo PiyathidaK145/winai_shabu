@@ -12,7 +12,7 @@ function showPaymentOption() {
   console.log("วิธีชำระเงินที่เลือก:", paymentMethod); // Debug ค่า
 
   // แสดงหรือซ่อน QR code
-  qrCodeDiv.style.display = paymentMethod === "qr" ? "block" : "none";
+  qrCodeDiv.style.display = paymentMethod === "QR prompay" ? "block" : "none";
 }
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelector(".confirm-btn").addEventListener("click", confirmPayment);
@@ -64,8 +64,8 @@ function confirmPayment() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const confirmButton = document.querySelector(".confirm-btn");
+document.addEventListener('DOMContentLoaded', function () {
+  const nextButton = document.getElementById("nextButton");
 
   // ตรวจสอบว่า confirmButton มีการผูก event listener แล้วหรือไม่
   if (!confirmButton.hasListener) {

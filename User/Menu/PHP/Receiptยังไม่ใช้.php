@@ -1,17 +1,19 @@
 <?php
-// รับค่าจาก URL
-$getting_table_id = isset($_GET['getting_table_id']) ? $_GET['getting_table_id'] : null;
-$payment_method = isset($_GET['payment_method']) ? $_GET['payment_method'] : null;
-$total_payment = isset($_GET['total_payment']) ? $_GET['total_payment'] : null;
+echo '<pre>';
+echo '</pre>';
 
-// ตรวจสอบค่าที่ได้รับ
-if ($getting_table_id && $payment_method && $total_payment) {
-    echo "<p>หมายเลขโต๊ะ: $getting_table_id</p>";
-    echo "<p>วิธีการชำระเงิน: $payment_method</p>";
-    echo "<p>ยอดชำระเงิน: $total_payment</p>";
+if (isset($_GET['getting_table_id']) && isset($_GET['payment_method']) && isset($_GET['total_payment'])) {
+    $getting_table_id = $_GET['getting_table_id'];
+    $payment_method = $_GET['payment_method'];
+    $total_payment = $_GET['total_payment'];
+
+    echo "<p><strong>Getting Table ID:</strong> " . htmlspecialchars($getting_table_id) . "</p>";
+    echo "<p><strong>Payment Method:</strong> " . htmlspecialchars($payment_method) . "</p>";
+    echo "<p><strong>Total Payment:</strong> " . htmlspecialchars($total_payment) . "</p>";
 } else {
-    echo "<p>ข้อมูลการชำระเงินไม่สมบูรณ์</p>";
+    echo "<p>ข้อมูลไม่ครบถ้วน</p>";
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,7 +28,7 @@ if ($getting_table_id && $payment_method && $total_payment) {
         <!-- ปุ่มปิด -->
         <button class="close-btn" onclick="closeReceipt()">×</button>
         <div class="header">
-            <h1>Winai's Shabu</h1>
+            <h1>A's Shabu</h1>
             <p>ใบเสร็จ</p>
         </div>
         <div class="details">
