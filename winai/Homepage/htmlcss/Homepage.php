@@ -123,4 +123,3 @@
 </body>
 <script src="scriptHomepage.js"></script>
 </html>
-
