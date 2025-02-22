@@ -16,7 +16,7 @@
 <body>
     <div class="container">
     <header>
-            <h1>Winai's Shabu</h1>
+            <h1>A's Shabu</h1>
             <div class="profile-icon">
                 <a href="login_page.php">
                     <img src="../img/other/รูปโปรไฟล์.jpg" alt="image">

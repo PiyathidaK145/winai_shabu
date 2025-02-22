@@ -801,13 +801,13 @@ CREATE TABLE `receipt` (
 --
 
 CREATE TABLE `reservation` (
-  `reservation_id` int NOT NULL,
-  `first_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `number_of_guest` int NOT NULL,
-  `status` enum('Confirm','Cancel') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `time_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `availability_id` int NOT NULL
+  `reservation_id` int(11) NOT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `number_of_guest` int(11) NOT NULL,
+  `status` enum('Confirm','Cancel') NOT NULL,
+  `time_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `availability_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -815,8 +815,17 @@ CREATE TABLE `reservation` (
 --
 
 INSERT INTO `reservation` (`reservation_id`, `first_name`, `last_name`, `number_of_guest`, `status`, `time_update`, `availability_id`) VALUES
-(776787, 'ชบา', 'ชื่นชม', 2, 'Confirm', '2025-02-22 07:41:07', 218),
-(872898, 'ชบา', 'ชื่นชม', 3, 'Confirm', '2025-02-22 07:37:57', 220);
+(170771, 'สมหญิง', 'สุดสวย', 3, 'Confirm', '2025-02-11 11:29:47', 420),
+(333518, 'ชบา', 'ชื่นชม', 2, 'Confirm', '2025-02-10 20:58:48', 116),
+(490506, 'ชบา', 'ชื่นชม', 2, 'Cancel', '2025-02-11 06:35:46', 216),
+(494181, 'วินัย', 'ทองโต', 3, 'Confirm', '2025-02-12 09:43:21', 120),
+(502000, 'ชบา', 'ชื่นชม', 2, 'Cancel', '2025-02-10 20:53:54', 116),
+(506815, 'วินัย', 'ทองโต', 3, 'Confirm', '2025-02-20 23:02:44', 318),
+(563478, 'ดาวเรือง', 'พรศักดิ์ส่องแสง', 4, 'Confirm', '2025-02-11 11:29:17', 316),
+(573061, 'สมหมาย', 'สุดหล่อ', 5, 'Confirm', '2025-02-11 10:18:40', 118),
+(833076, 'ชบา', 'ชื่นชม', 2, 'Cancel', '2025-02-11 09:10:54', 316),
+(865697, 'วินัย', 'ทองโต', 3, 'Confirm', '2025-02-11 11:30:21', 1120),
+(981784, 'ชบา', 'ชื่นชม', 2, 'Cancel', '2025-02-11 04:12:29', 216);
 
 --
 -- Triggers `reservation`
