@@ -33,15 +33,15 @@ if (isset($_GET['getting_table_id']) && isset($_GET['payment_method']) && isset(
     $stmt->close();
 
     if ($reservation_id) {
-        // ดึง availability_id จาก reservation โดยใช้ reservation_id
-        $sql2 = "SELECT availability_id FROM reservation WHERE reservation_id = ?";
+        // ดึง availability_id และ number_of_guest จาก reservation โดยใช้ reservation_id
+        $sql2 = "SELECT availability_id, number_of_guest FROM reservation WHERE reservation_id = ?";
         $stmt2 = $conn->prepare($sql2);
         if (!$stmt2) {
             die('MySQL prepare error: ' . $conn->error);
         }
         $stmt2->bind_param("i", $reservation_id);
         $stmt2->execute();
-        $stmt2->bind_result($availability_id);
+        $stmt2->bind_result($availability_id, $number_of_guest); // ดึง number_of_guest มาพร้อมกัน
         $stmt2->fetch();
         $stmt2->close();
     }
@@ -58,25 +58,83 @@ if (isset($_GET['getting_table_id']) && isset($_GET['payment_method']) && isset(
         $stmt3->fetch();
         $stmt3->close();
     }
-    if ($first_name) {
-        // ใช้ first_name ไปดึง member_id จาก member
-        $sql4 = "SELECT member_id FROM member WHERE first_name = ?";
+    if ($reservation_id) {
+        // ใช้ reservation_id เพื่อดึง first_name และ member_id
+        $sql4 = "SELECT m.member_id 
+         FROM `member` m 
+         JOIN `reservation` r ON m.first_name = r.first_name
+         WHERE r.reservation_id = ?";
+
+
         $stmt4 = $conn->prepare($sql4);
-        if (!$stmt3) {
+
+        if (!$stmt4) {
             die('MySQL prepare error: ' . $conn->error);
-        }        
-        $stmt4->bind_param("s", $first_name); // ใช้ "s" สำหรับ string
+        }
+
+        $stmt4->bind_param("i", $reservation_id); // "i" สำหรับ int
         $stmt4->execute();
         $stmt4->bind_result($member_id);
-        $stmt4->fetch();
+
+        if ($stmt4->fetch()) {
+            // member_id ถูกดึงมาแล้ว สามารถใช้ได้
+        } else {
+            $member_id = null; // ถ้าไม่มีข้อมูล
+        }
+
         $stmt4->close();
     }
-}
 
+    if ($getting_table_id) {
+        // ใช้ getting_table_id เพื่อดึง package_name และ price
+        $sql5 = "SELECT p.package_name, p.price 
+                 FROM getting_table g
+                 JOIN package p ON g.package_id = p.package_id
+                 WHERE g.getting_table_id = ?";
+
+        $stmt5 = $conn->prepare($sql5);
+
+        if (!$stmt5) {
+            die('MySQL prepare error: ' . $conn->error);
+        }
+
+        $stmt5->bind_param("i", $getting_table_id);
+        $stmt5->execute();
+        $stmt5->bind_result($package_name, $price); // ดึง price มาพร้อมกับ package_name
+
+        if ($stmt5->fetch()) {
+            // package_name และ price ถูกดึงมาแล้ว
+        } else {
+            $package_name = "ไม่มีข้อมูล"; // ถ้าไม่มีข้อมูล
+            $price = 0;
+        }
+
+        $stmt5->close();
+    }
+    // ใช้ promotion_id ดึง discount_value
+    if ($promotion_id > 0) {
+        $sql7 = "SELECT discount_value FROM promotion_item WHERE promotion_id = ?";
+        $stmt7 = $conn->prepare($sql7);
+        if (!$stmt7) {
+            die('MySQL prepare error: ' . $conn->error);
+        }
+        $stmt7->bind_param("i", $promotion_id);
+        $stmt7->execute();
+        $stmt7->bind_result($discount_value);
+        $stmt7->fetch();
+        $stmt7->close();
+    } else {
+        $discount_value = 0; // ถ้า promotion_id = 0 ให้ discount_value = 0
+    }
+}
+echo "Package Name: " . $package_name . "<br>";
 echo "Reservation ID: " . $reservation_id . "<br>";
 echo "Table ID: " . $table_id . "<br>";
 echo "Member Info: " . $member_id . "<br>"; // แสดงข้อมูลของสมาชิก
-
+echo "Number of Guests: " . $number_of_guest . "<br>";
+echo "Price: " . $price . "<br>";
+echo "Discount Value: " . number_format($discount_value, 2) . "<br>";
+echo "Total Price After Discount: " . number_format($price * $number_of_guest - $discount_value, 2) . "<br>";
 // ปิดการเชื่อมต่อฐานข้อมูล
 $conn->close();
 ?>
@@ -106,18 +164,62 @@ $conn->close();
             $employeeId = isset($_POST['employeeId']) ? htmlspecialchars($_POST['employeeId']) : "00-000-0";
             $dateTime = date("d/m/y H:i:s");
             $receipt_id = "RCPT" . rand(100000, 999999);
-            ?> 
+            $total_price = $number_of_guest * $price;            
+            $Total = $price * $number_of_guest - $discount_value;
+            $vatable = $total_price / 1.07;
+            $vat = $total_price - $vatable; // คำนวณ VAT
+            ?>
             <p>พนักงาน: <?php echo $employeeId; ?></p>
             <p><?php echo $dateTime; ?></p>
-            </div>
-            <div class="additional-details">
-                <p>รหัสใบเสร็จ: <?php echo $receipt_id; ?></p>
-
-
-
-            </div>
         </div>
-
+        <div class="additional-details">
+            <p>รหัสใบเสร็จ: <?php echo $receipt_id; ?></p>
+        </div>
+        <div class="additional-details">
+            <p>รหัสลูกค้า: <?php echo $member_id; ?></p>
+            <p>โต๊ะ: <?php echo $table_id; ?></p>
+        </div>
+        <div class="line"></div>
+        <div class="item">
+            <p><?php echo $package_name; ?></p>
+            <p>
+                <?php
+                echo $number_of_guest . ' @ ' . number_format($price, 2) . ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   '
+                    . number_format($total_price, 2);
+                ?>
+            </p>
+        </div>
+        <div class="line"></div>
+        <div class="item">
+            <p>SubTotal</p>
+            <p></p>
+            <p><?php echo number_format($total_price, 2); ?></p>
+        </div>
+        <div class="item">
+            <p>Discount</p>
+            <p></p>
+            <p><?php echo number_format($discount_value, 2); ?></p>
+        </div>
+        <div class="item">
+            <p>Total</p>
+            <p></p>
+            <p><?php echo number_format($Total, 2); ?></p>
+        </div>
+        <div class="item">
+            <p>Vatable</p>
+            <p></p>
+            <p><?php echo number_format($vatable, 2); ?></p>
+        </div>
+        <div class="item">
+            <p>VAT</p>
+            <p></p>
+            <p><?php echo number_format($vat, 2); ?></p>
+        </div>
+        <p class="vat-included">VAT INCLUDED</p>
+        <div class="line"></div>
+        <div class="footer">
+            <p>Thank You</p>
+        </div>
         <script src="jsreceipt.js"></script>
 </body>
 
