@@ -112,6 +112,72 @@ if (isset($_GET['getting_table_id']) && isset($_GET['payment_method']) && isset(
     } else {
         $discount_value = 0; // ถ้า promotion_id = 0 ให้ discount_value = 0
     }
+
+    $sqlPaymentId = "SELECT payment_id FROM payment WHERE getting_table_id = ?";
+    $stmtPaymentId = $conn->prepare($sqlPaymentId);
+    if (!$stmtPaymentId) {
+        die('MySQL prepare error: ' . $conn->error);
+    }
+    $stmtPaymentId->bind_param("i", $getting_table_id);
+    $stmtPaymentId->execute();
+    $stmtPaymentId->bind_result($payment_id);
+
+    // ตรวจสอบว่ามีข้อมูลหรือไม่
+    if ($stmtPaymentId->fetch()) {
+        // payment_id ถูกดึงมาแล้ว
+    } else {
+        die('ไม่พบ payment_id สำหรับ getting_table_id: ' . $getting_table_id);
+    }
+
+    $stmtPaymentId->close();
+
+    // ดึง payment_verification_id จากตาราง payment_verification โดยใช้ payment_id
+    $sqlPaymentVerification = "SELECT payment_verification_id FROM payment_verificatio WHERE payment_id = ?";
+    $stmtPaymentVerification = $conn->prepare($sqlPaymentVerification);
+    if (!$stmtPaymentVerification) {
+        die('MySQL prepare error: ' . $conn->error);
+    }
+    $stmtPaymentVerification->bind_param("i", $payment_id);
+    $stmtPaymentVerification->execute();
+    $stmtPaymentVerification->bind_result($payment_verification_id);
+
+    // ตรวจสอบว่ามีข้อมูลหรือไม่
+    if ($stmtPaymentVerification->fetch()) {
+        // payment_verification_id ถูกดึงมาแล้ว
+    } else {
+        die('ไม่พบ payment_verification_id สำหรับ payment_id: ' . $payment_id);
+    }
+
+    $stmtPaymentVerification->close();
+
+    $receipt_id = rand(100000, 999999);
+
+    // สมมติว่า employee_id ได้รับจาก POST หรือข้อมูลที่มีอยู่
+    $employee_id = htmlspecialchars($_POST['employeeId']);  // ค่าจาก POST
+
+    // สร้างคำสั่ง SQL สำหรับแทรกข้อมูลลงในตาราง receipt
+    $sqlInsert = "INSERT INTO receipt (receipt_id, payment_verification_id, employee_id) 
+              VALUES (?, ?, ?)";
+
+    // เตรียมคำสั่ง SQL และทำการ bind parameters
+    $stmtInsert = $conn->prepare($sqlInsert);
+    if (!$stmtInsert) {
+        die('MySQL prepare error: ' . $conn->error);
+    }
+    $stmtInsert->bind_param("iii", $receipt_id, $payment_verification_id, $employee_id);
+
+    // Execute the query
+    $stmtInsert->execute();
+
+    // ตรวจสอบการแทรกข้อมูลสำเร็จหรือไม่
+    if ($stmtInsert->affected_rows > 0) {
+        echo "ข้อมูลใบเสร็จถูกบันทึกลงในฐานข้อมูลแล้ว";
+    } else {
+        echo "ไม่สามารถบันทึกข้อมูลใบเสร็จ";
+    }
+
+    // ปิด statement
+    $stmtInsert->close();
 }
 
 // ปิดการเชื่อมต่อฐานข้อมูล
@@ -142,7 +208,6 @@ $conn->close();
             date_default_timezone_set('Asia/Bangkok');
             $employeeId = isset($_POST['employeeId']) ? htmlspecialchars($_POST['employeeId']) : "00-000-0";
             $dateTime = date("d/m/y H:i:s");
-            $receipt_id = "RCPT" . rand(100000, 999999);
             $total_price = $number_of_guest * $price;
             $Total = $price * $number_of_guest - $discount_value;
             $vatable = $total_price / 1.07;
@@ -152,7 +217,7 @@ $conn->close();
             <p><?php echo $dateTime; ?></p>
         </div>
         <div class="additional-details">
-            <p>รหัสใบเสร็จ: <?php echo $receipt_id; ?></p>
+            <p>รหัสใบเสร็จ: <?php echo "RCPT" . $receipt_id; ?></p>
         </div>
         <div class="additional-details">
             <p>รหัสลูกค้า: <?php echo $member_id; ?></p>
@@ -205,6 +270,9 @@ $conn->close();
             <p>Thank You</p>
         </div>
         <script src="jsreceipt.js"></script>
+        <script type="text/javascript">
+            var receipt_id = <?php echo json_encode($receipt_id); ?>; // ส่งค่า PHP ไปยัง JavaScript
+        </script>
 </body>
 
 </html>
