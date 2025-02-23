@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 23, 2025 at 09:15 AM
+-- Generation Time: Feb 23, 2025 at 05:12 PM
 -- Server version: 8.0.17
 -- PHP Version: 7.3.10
 
@@ -96,6 +96,7 @@ CREATE TABLE `getting_table` (
 INSERT INTO `getting_table` (`getting_table_id`, `walkin_id`, `reservation_id`, `employee_id`, `package_id`, `promotion_id`, `total_amount`) VALUES
 (229654, NULL, 981786, 1, 701, 0, '899'),
 (667600, NULL, 981785, 1, 702, 0, '8299'),
+(863710, NULL, 981793, 1, 704, 0, '699'),
 (994548, NULL, 981790, 1, 703, 0, '1299');
 
 -- --------------------------------------------------------
@@ -640,7 +641,9 @@ CREATE TABLE `payment` (
 --
 
 INSERT INTO `payment` (`payment_id`, `getting_table_id`, `payment_method`, `promotion_id`, `total_payment`) VALUES
-(102, 994548, 'credit', 0, 3897);
+(102, 994548, 'credit', 0, 3897),
+(103, 994548, 'credit', 0, 3897),
+(104, 863710, 'QR prompay', 0, 2796);
 
 --
 -- Triggers `payment`
@@ -687,7 +690,9 @@ CREATE TABLE `payment_verificatio` (
 --
 
 INSERT INTO `payment_verificatio` (`payment_verification_id`, `payment_id`, `approve`) VALUES
-(45, 102, 'completed');
+(45, 102, 'completed'),
+(46, 103, 'completed'),
+(47, 104, 'completed');
 
 -- --------------------------------------------------------
 
@@ -845,6 +850,14 @@ CREATE TABLE `receipt` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `receipt`
+--
+
+INSERT INTO `receipt` (`receipt_id`, `payment_verification_id`, `employee_id`) VALUES
+(297721, 47, 0),
+(863990, 47, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -874,7 +887,8 @@ INSERT INTO `reservation` (`reservation_id`, `first_name`, `last_name`, `number_
 (981789, 'วินัย', 'ทองโต', 4, 'Confirm', 1020),
 (981790, 'สมหมาย', 'สุดหล่อ', 3, 'Confirm', 1022),
 (981791, 'สมหญิง', 'สุดสวย', 4, 'Cancel', 1024),
-(981792, 'สมหญิง', 'สุดสวย', 4, 'Confirm', 1024);
+(981792, 'สมหญิง', 'สุดสวย', 4, 'Confirm', 1024),
+(981793, 'Jeremy', 'Carck', 4, 'Confirm', 2020);
 
 --
 -- Triggers `reservation`
@@ -899,7 +913,7 @@ DELIMITER ;
 CREATE TABLE `review` (
   `review_id` int(11) NOT NULL,
   `receipt_id` int(11) NOT NULL,
-  `comment_text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `comment_text` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ไม่มีความคิดเห็น',
   `tag_food_id` int(11) DEFAULT NULL,
   `tag_clean_id` int(11) DEFAULT NULL,
   `tag_price_id` int(11) DEFAULT NULL,
@@ -907,6 +921,15 @@ CREATE TABLE `review` (
   `tag_other_id` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `review`
+--
+
+INSERT INTO `review` (`review_id`, `receipt_id`, `comment_text`, `tag_food_id`, `tag_clean_id`, `tag_price_id`, `tag_service_id`, `tag_other_id`) VALUES
+(53, 446304, 'ดฟดฟด', 11, 0, 23, 34, 44),
+(54, 519771, 'รทัรรรททรทะั', 13, 4, 25, 0, 43),
+(55, 863990, 'gooddddd', 13, 0, 25, 35, 43);
 
 -- --------------------------------------------------------
 
@@ -1115,7 +1138,7 @@ INSERT INTO `table_availability` (`availability_id`, `table_id`, `time_id`, `sta
 (1924, 19, 1005, 'Free'),
 (2016, 20, 1001, 'Free'),
 (2018, 20, 1002, 'Free'),
-(2020, 20, 1003, 'Free'),
+(2020, 20, 1003, 'Busy'),
 (2022, 20, 1004, 'Free'),
 (2024, 20, 1005, 'Free');
 
@@ -1620,13 +1643,13 @@ ALTER TABLE `order`
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
 
 --
 -- AUTO_INCREMENT for table `payment_verificatio`
 --
 ALTER TABLE `payment_verificatio`
-  MODIFY `payment_verification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `payment_verification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `promotion`
@@ -1644,19 +1667,19 @@ ALTER TABLE `raw_material`
 -- AUTO_INCREMENT for table `receipt`
 --
 ALTER TABLE `receipt`
-  MODIFY `receipt_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `receipt_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=992480;
 
 --
 -- AUTO_INCREMENT for table `reservation`
 --
 ALTER TABLE `reservation`
-  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=981793;
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=981794;
 
 --
 -- AUTO_INCREMENT for table `review`
 --
 ALTER TABLE `review`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT for table `selecting_item`

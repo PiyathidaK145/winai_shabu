@@ -171,7 +171,7 @@ if (isset($_GET['getting_table_id']) && isset($_GET['payment_method']) && isset(
 
     // ตรวจสอบการแทรกข้อมูลสำเร็จหรือไม่
     if ($stmtInsert->affected_rows > 0) {
-        echo "ข้อมูลใบเสร็จถูกบันทึกลงในฐานข้อมูลแล้ว";
+        echo "";
     } else {
         echo "ไม่สามารถบันทึกข้อมูลใบเสร็จ";
     }
