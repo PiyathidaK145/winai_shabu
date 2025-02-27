@@ -1,0 +1,55 @@
+/* ตั้งค่าพื้นฐาน */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* พื้นหลัง */
+body {
+    background: linear-gradient(to right, #e69f7c, #e98485);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* กล่องล็อกอิน */
+.login-container {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    text-align: center;
+}
+
+/* หัวข้อ */
+.login-container h2 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+/* ช่องกรอกข้อมูล */
+.login-container input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+/* ปุ่มล็อกอิน */
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #ff5e62;
+    border: none;
+    color: white;
+    font-size: 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}

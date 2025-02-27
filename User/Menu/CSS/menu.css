@@ -1,0 +1,330 @@
+/* General Body Styling */
+body {
+  font-family: "Prompt", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: #333;
+  color: #fff;
+  text-align: left;
+  padding: 2rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.top-bar {
+  background-color: #e44b1b;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.top-bar .back-button {
+  font-size: 18px;
+  margin-right: 10px;
+  cursor: pointer;
+  color: white;
+}
+
+.top-bar .search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #ece6f0;
+  border-radius: 20px;
+  padding: 5px 10px;
+  flex-grow: 1;
+}
+
+.top-bar .search-bar input {
+  border: none;
+  outline: none;
+  flex-grow: 1;
+  padding: 5px 10px;
+  background-color: #ece6f0;
+}
+
+.top-bar .search-bar button {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #757575;
+}
+
+/* Promotion Banner */
+.promotion-banner {
+  background-color: #ff5722;
+  color: #fff;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Section */
+main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Filter Section with Tabs */
+#filter-section {
+  padding: 1rem 2rem;
+  background-color: #ffefe0;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ff6f61;
+  border-radius: 10px;
+  margin: 1rem auto;
+  max-width: 90%;
+  display: flex;
+  justify-content: center;
+}
+
+.filter-container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.tabs {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-evenly;
+  gap: 20px;
+  align-items: center;
+}
+
+.tabs li {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 8px;
+  background-color: #ffcc99;
+  /* background-color: #fff; */
+  transition: all 0.3s ease;
+  width: 120px;
+  text-align: center;
+}
+
+.tabs li:hover {
+  background-color: #ffa64d;
+  transform: scale(1);
+}
+
+.tabs li.active {
+  background-color: #ff8c1a;
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.tabs li img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border-radius: 10%;
+  border: none;
+  transition: border-color 0.3s ease;
+}
+
+.tabs li:hover img {
+  border-color: #ffa64d;
+}
+
+.tabs li p {
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Menu Items */
+.menu-carousel {
+  display: flex;
+  overflow-x: hidden;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  scroll-snap-type: x mandatory;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-item {
+  flex: 0 0 auto;
+  width: 180px;
+  height: 150px;
+  background-color: #ffe0b2;
+  color: #ff6f00;
+  text-align: center;
+  position: relative;
+  border-radius: 10px;
+  font-size: 1rem;
+  scroll-snap-align: center;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.menu-item a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.menu-item p {
+  text-decoration: none; /* ลบเส้นใต้ */
+  color: #000; /* เปลี่ยนสีข้อความเป็นสีดำ */
+  font-size: 0.9rem; /* กำหนดขนาดตัวอักษร */
+  margin: 10px 0 0 0; /* เพิ่มระยะห่างด้านบนข้อความ */
+  font-weight: normal; /* ปรับน้ำหนักตัวอักษร (ถ้าจำเป็น) */
+  text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+  margin: 15px auto 0;
+}
+
+.menu-item:hover {
+  background-color: #ffab40;
+  transform: scale(1.05);
+}
+
+/* Image Gallery */
+#image-gallery {
+  padding: 2rem;
+  background-color: #f4f4f4;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  justify-items: center;
+}
+
+.image-item p {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  white-space: normal; /* อนุญาตให้มีการตัดบรรทัด */
+  line-height: 1.5em; /* เพิ่มระยะห่างระหว่างบรรทัด */
+  max-width: 100%; /* ควบคุมให้ข้อความไม่เกินกรอบ */
+  word-break: break-word; /* ตัดคำอัตโนมัติถ้ายาวเกิน */
+}
+
+.image-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.image-item img:hover {
+  transform: scale(1.05);
+}
+
+.menu-quantity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-quantity button {
+  width: 30px;
+  height: 30px;
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.menu-quantity button:hover {
+  background-color: #ff5722;
+}
+
+.menu-quantity .quantity {
+  font-size: 1rem;
+  font-weight: bold;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .tabs {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .tabs li {
+    width: 80px;
+  }
+
+  .tabs li img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .tabs li p {
+    font-size: 12px;
+  }
+
+  .menu-carousel {
+    gap: 0.2rem;
+    padding: 0;
+  }
+}
+
+/* หมายเลขโต๊ะ */
+#selected-table {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}

@@ -1,0 +1,36 @@
+.menu-item {
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.menu-item.selected {
+  border: 2px solid #ff6600; /* ขอบสีส้ม */
+  background-color: #ffe6cc; /* สีพื้นหลัง */
+  border-radius: 8px; /* มุมโค้ง */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* เงา */
+}
+
+#confirm-button-container {
+  display: flex;
+  justify-content: center; /* จัดปุ่มให้อยู่ตรงกลางแนวนอน */
+  align-items: center; /* จัดปุ่มให้อยู่ตรงกลางแนวตั้ง */
+  margin-top: 20px; /* เพิ่มระยะห่างจากเนื้อหาอื่น */
+}
+
+#confirm-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#confirm-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
