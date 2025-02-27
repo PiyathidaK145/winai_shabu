@@ -4,7 +4,7 @@ $user = "root";
 $password = "123456";
 $database = "a_shabu";
 
-define('BASE_URL', 'http://localhost:8081/Uploads');
+define('BASE_URL', 'http://localhost:8081/winai_shabu-main/');
 
 $conn = new mysqli($host, $user, $password, $database);
 if ($conn->connect_error) {
@@ -91,11 +91,12 @@ while ($row = $result->fetch_assoc()) {
         <aside>
             <h2>รายการที่เลือก</h2>
             <ul id="order-list"></ul>
-            <button onclick="submitOrder()">สั่งออเดอร์</button>
+            <button onclick="submitOrder('<?php echo $reservation_id; ?>')">สั่งออเดอร์</button>
             <button onclick="redirectToPayment('<?php echo $reservation_id; ?>')">ชำระเงิน</button>
         </aside>
     </main>
     <script src="scriptmenu_selac.js"></script>
+    <script src="../javascript/submitOrder.js"></script>
 
 </body>
 
