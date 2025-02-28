@@ -2,33 +2,34 @@
     <nav id="sidebarMenu" class="col-md-3 col-lg-3 d-md-block sidebar collapse">
         <div class="position-sticky py-4 px-3 sidebar-sticky">
             <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php">
-                        <span><i class="fa-solid fa-house me-2"></i> ภาพรวม</span> <!-- หน้าสถิติ -->
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="table_order_list.php">
-                        <span><i class="fa-solid fa-list me-2"></i> รายการอาหารอาหารแต่ละโต๊ะ</span> <!-- หน้ารายการอาหารแต่ละโต๊ะ -->
-                    </a>
-                </li>
-
-                <!-- ยอดขาย -->
+                <!-- ภาพรวม -->
                 <a class="nav-link collapsed d-flex justify-content-between align-items-center" href="#"
                     data-bs-toggle="collapse"
                     data-bs-target="#collapseSale" aria-expanded="false" aria-controls="collapseSale">
-                    <span><i class="fa-solid fa-money-bill me-2"></i> ยอดขาย</span>
+                    <span><i class="fa-solid fa-house me-2"></i> ภาพรวม</span>
                     <i class="fas fa-angle-down"></i>
                 </a>
 
                 <div class="collapse" id="collapseSale" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav flex-column">
-                        <a class="nav-link" href="daily_sales.php">รายวัน</a>
-                        <a class="nav-link" href="#">รายเดือน</a>
-                        <a class="nav-link" href="#">รายปี</a>
+                        <a class="nav-link" href="#">จองโต๊ะ</a>
+                        <a class="nav-link" href="dashboard.php">Dashboard</a>
                     </nav>
                 </div>
+
+                <!-- หน้ารายการอาหารแต่ละโต๊ะ -->
+                <li class="nav-item">
+                    <a class="nav-link" href="table_order_list.php">
+                        <span><i class="fa-solid fa-list me-2"></i> รายการอาหารอาหารแต่ละโต๊ะ</span> 
+                    </a>
+                </li>
+
+                <!-- ยอดขาย -->
+                <li class="nav-item">
+                    <a class="nav-link" href="sales.php">
+                        <span><i class="fa-solid fa-money-bill me-2"></i>ยอดขาย</span> 
+                    </a>
+                </li>
 
                 <!-- คลังสินค้า -->
                 <a class="nav-link collapsed d-flex justify-content-between align-items-center" href="#"
@@ -129,7 +130,7 @@
 
                 <li class="nav-item">
                     <a class="nav-link" href="#">
-                        <span><i class="fa-solid fa-user me-2"></i> ลูกค้าที่สมัครเป็นสมาชิก</span> <!-- หน้ารายชื่อลูกค้าที่สมัครเป็นสมาชิก -->
+                        <span><i class="fa-solid fa-user me-2"></i> ลูกค้า</span> <!-- หน้ารายชื่อลูกค้าที่สมัครเป็นสมาชิก -->
                     </a>
                 </li>
 
