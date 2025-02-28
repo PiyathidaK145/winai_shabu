@@ -1,80 +1,78 @@
+// ฟังก์ชันดึง reservation_id จาก URL
+function getReservationIdFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('reservation_id');  // ดึง reservation_id จาก URL
+}
+
 // ฟังก์ชันแสดงการเลือกชำระเงิน
 function showPaymentOption() {
   const paymentMethod = document.getElementById("payment-method").value;
   const qrCodeDiv = document.getElementById("qr-code");
 
-  console.log(paymentMethod); // ดูค่าที่ถูกเลือก
+  console.log("วิธีชำระเงินที่เลือก:", paymentMethod); // Debug ค่า
 
   // แสดงหรือซ่อน QR code
-  if (paymentMethod === "qr") {
-    qrCodeDiv.style.display = "block";  // แสดงรูป QR
-  } else {
-    qrCodeDiv.style.display = "none";   // ซ่อนรูป QR
-  }
+  qrCodeDiv.style.display = paymentMethod === "QR prompay" ? "block" : "none";
 }
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelector(".confirm-btn").addEventListener("click", confirmPayment);
+});
 
-// ฟังก์ชันยืนยันการชำระเงิน
-/*function confirmPayment() {
-  const paymentMethod = document.getElementById("payment-method").value;
-  
-  // ตรวจสอบวิธีการชำระเงิน
-  if (paymentMethod === "credit") {
-    window.location.href = "Makepayment.php"; // ไปยังหน้ารอการตรวจสอบการชำระเงิน
-  }
-  else if (paymentMethod === "qr") {
-    // ส่งข้อมูลสำหรับการชำระเงิน QR
-    const paymentData = {
-      packageName: document.getElementById("package-name").innerText,
-      peopleCount: document.getElementById("people-count").innerText,
-      totalPrice: document.getElementById("total-price").innerText,
-      discount: document.getElementById("discount").innerText,
-      finalPrice: document.getElementById("final-price").innerText
-    };
+let isFetching = false;
 
-    // เก็บข้อมูลใน localStorage
-    localStorage.setItem("paymentData", JSON.stringify(paymentData));
-
-    // ไปยังหน้ารอตรวจสอบ
-    window.location.href = "Makepayment.php";
-  
-}*/
 function confirmPayment() {
-  const tableID = document.getElementById("table-number").innerText;
-  const packageID = document.getElementById("package-id").value;
-  const promotionID = document.getElementById("promotion-id").value;
-  const packagePrice = document.getElementById("package-price").value;
-  const paymentMethod = document.getElementById("payment-method").value;
+  if (isFetching) return;  // ถ้ากำลังส่งข้อมูลอยู่แล้ว ให้หยุดทำงาน
 
-  if (paymentMethod === "เลือกวิธีชำระเงิน") {
-      alert("กรุณาเลือกวิธีชำระเงิน");
-      return;
+  isFetching = true;  // ตั้งค่ากำลังทำการส่งข้อมูล
+
+  const gettingTableId = document.getElementById("getting-table-id").value;
+  const tableId = document.getElementById("table-number").textContent.trim();
+  const paymentMethod = document.getElementById("payment-method").value;
+  const totalPayment = document.getElementById("final-price").textContent.replace(/,/g, "").trim();
+
+  if (!gettingTableId || !tableId || !totalPayment || paymentMethod === "เลือกวิธีชำระเงิน") {
+    alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+    isFetching = false;
+    return;
   }
 
-  const data = {
-      table_id: tableID,
-      package_id: packageID,
-      promotion_id: promotionID,
-      package_price: packagePrice,
-      payment_method: paymentMethod
-  };
-
-  console.log("กำลังส่งข้อมูลการชำระเงิน...", data);
-
-  fetch("process_payment.php", {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
+  fetch("save_payment.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      getting_table_id: gettingTableId,
+      payment_method: paymentMethod,
+      total_payment: totalPayment
+    })
   })
-  .then(response => response.json())
-  .then(result => {
-      if (result.success) {
-          alert("ชำระเงินสำเร็จ!");
-          window.location.href = "success_page.php"; // ไปที่หน้าหลังชำระเงินเสร็จ
+    .then(response => response.json())
+    .then(data => {
+      isFetching = false;  // รีเซ็ตสถานะหลังจากการทำงานเสร็จ
+      if (data.success) {
+        window.location.replace(`Makepayment.php?getting_table_id=${data.getting_table_id}&payment_method=${data.payment_method}&total_payment=${data.total_payment}`);
       } else {
-          alert("เกิดข้อผิดพลาด: " + result.message);
+        console.error("เกิดข้อผิดพลาด: " + data.message);
+        alert("เกิดข้อผิดพลาด: " + data.message);
       }
-  })
-  .catch(error => console.error("Error:", error));
+    })
+    .catch(error => {
+      isFetching = false;  // รีเซ็ตสถานะในกรณีที่เกิดข้อผิดพลาด
+      console.error("Error:", error);
+      alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+    });
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+  const nextButton = document.getElementById("nextButton");
+
+  // ตรวจสอบว่า confirmButton มีการผูก event listener แล้วหรือไม่
+  if (!confirmButton.hasListener) {
+    confirmButton.addEventListener("click", confirmPayment);
+    confirmButton.hasListener = true;  // เพิ่ม flag เพื่อตรวจสอบ
+  }
+});
+
+
+

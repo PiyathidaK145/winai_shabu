@@ -9,6 +9,8 @@ $last_name = isset($_SESSION['last_name']) ? $_SESSION['last_name'] : '';
 $table = isset($_GET['table']) ? htmlspecialchars($_GET['table']) : '';
 $time = isset($_GET['time']) ? htmlspecialchars($_GET['time']) : '';
 $availability_id = isset($_GET['availability_id']) ? htmlspecialchars($_GET['availability_id']) : '';
+$maxPeople = in_array($table, ['2', '3', '4']) ? 8 : 4;
+
 ?>
 
 <!DOCTYPE html>
@@ -32,13 +34,16 @@ $availability_id = isset($_GET['availability_id']) ? htmlspecialchars($_GET['ava
             <input type="hidden" id="availability_id" name="availability_id" value="<?php echo $availability_id; ?>">
 
             <label for="first_name">ชื่อ</label>
-            <input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($first_name); ?>" required readonly>
+            <input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($first_name); ?>"
+                required readonly>
 
             <label for="last_name">นามสกุล</label>
-            <input type="text" id="last_name" name="last_name" value="<?php echo htmlspecialchars($last_name); ?>" required readonly>
+            <input type="text" id="last_name" name="last_name" value="<?php echo htmlspecialchars($last_name); ?>"
+                required readonly>
 
             <label for="people">จำนวนคน</label>
-            <input type="number" id="people" name="people" placeholder="จำนวนคน" min="1" max="10" required>
+            <input type="number" id="people" name="people" placeholder="จำนวนคน" min="1" max="<?php echo $maxPeople; ?>"
+                required>
 
             <label for="time">เวลาในการจอง</label>
             <input type="text" id="time" name="time" value="<?php echo $time; ?>" readonly required>
@@ -48,10 +53,12 @@ $availability_id = isset($_GET['availability_id']) ? htmlspecialchars($_GET['ava
                 <label for="terms">อ่าน <a href="Booking_rules.php">กฎการจอง</a> แล้ว</label>
             </div>
 
-            <button type="submit" id="submitBtn">จอง</button> 
+            <button type="submit" id="submitBtn">จอง</button>
         </form>
+
     </div>
 
     <script src="scriptForm.js"></script>
 </body>
+
 </html>

@@ -1,4 +1,4 @@
+// ฟังก์ชันนี้จะถูกเรียกเมื่อคลิกปุ่มปิด (×)
 function closeReceipt() {
-    // เมื่อกดปุ่มปิดให้เปลี่ยนหน้าไปที่หน้ารีวิว
-    window.location.href = "review.php";
+    window.location.href = "review.php?receipt_id=" + receipt_id; // ส่ง receipt_id ไปที่ review.php
 }

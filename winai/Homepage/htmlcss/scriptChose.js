@@ -24,3 +24,4 @@ if (urlParams.has('cancel') && urlParams.get('cancel') === 'true') {
         link.href = link.href.replace("Cancel.php", "Form.php"); // เปลี่ยนลิงก์จากการยกเลิกเป็นจอง
     });
 }
+

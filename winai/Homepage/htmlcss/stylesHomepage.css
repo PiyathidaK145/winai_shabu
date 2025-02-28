@@ -34,7 +34,7 @@ body {
     letter-spacing: 1px;
   }
   
-  nav {
+  /*nav {
     background: #ffefe0;
     display: flex;
     justify-content: space-around;
@@ -52,7 +52,7 @@ body {
   
   nav a:hover {
     color: #ff5722;
-  }
+  }*/
   
   .promotion-banner {
     background-color: #ff5722;
@@ -66,23 +66,20 @@ body {
   
   main {
     flex-grow: 1;
-    /* ขยายส่วนนี้ให้เต็มพื้นที่ */
-    display: flex;
-    flex-direction: column;
-    /* เรียงเนื้อหาในแนวตั้ง */
-    gap: 2rem;
-    /* ระยะห่างระหว่างแต่ละส่วน */
+    display: flex; /* ขยายส่วนนี้ให้เต็มพื้นที่ */
+    flex-direction: column; /* เรียงเนื้อหาในแนวตั้ง */
+    gap: 2rem; /* ระยะห่างระหว่างแต่ละส่วน */
     padding: 2rem;
     box-sizing: border-box;
   }
   
   /* ส่วนการตั้งค่าในหน้าจอปกติ */
-  .menu-section {
+  /*.menu-section {
     display: flex;
-    justify-content: center; /* จัดให้อยู่ตรงกลางแนวนอน */
-    align-items: center; /* จัดให้อยู่ตรงกลางแนวตั้ง */
-    height: 100%; /* ครอบคลุมหน้าจอ */
-  }
+    justify-content: center; /* จัดให้อยู่ตรงกลางแนวนอน 
+    align-items: center; /* จัดให้อยู่ตรงกลางแนวตั้ง 
+    height: 100%; /* ครอบคลุมหน้าจอ 
+  }*/
   .menu-carousel {
     display: flex;
     overflow-x: auto; /* เปิดการเลื่อนแนวนอน */
@@ -183,32 +180,27 @@ body {
   #rectangle-under-map {
     display: flex;
     justify-content: center;
-    /* จัดสี่เหลี่ยมให้อยู่กลางจอ */
-    margin-top: 2rem;
+    margin-top: 2rem; /* จัดสี่เหลี่ยมให้อยู่กลางจอ */
   }
   
   .rectangle-box {
-    width: 400px;
-    /* ความกว้างของสี่เหลี่ยม */
-    height: 400px;
-    /* ความสูงของสี่เหลี่ยม */
-    background-color: rgb(228, 228, 228);
-    /* สีพื้นหลัง */
+    width: 400px; /* ความกว้างของสี่เหลี่ยม */
+    height: 400px; /* ความสูงของสี่เหลี่ยม */
+    background-color: rgb(228, 228, 228); /* สีพื้นหลัง */
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
     font-size: 1.2rem;
     text-align: center;
-    border-radius: 5px;
-    /* ขอบโค้ง */
-    position: relative;
-    /* กำหนดให้ .rectangle-box เป็นตำแหน่งพื้นฐานสำหรับ .table */
+    border-radius: 5px; /* ขอบโค้ง */
+    position: relative; /* กำหนดให้ .rectangle-box เป็นตำแหน่งพื้นฐานสำหรับ .table */
+    
   }
   
-  .rectangle-box p {
+  /*.rectangle-box p {
     margin: 0;
-  }
+  }*/
   
   /* การตั้งค่า table ให้อยู่ภายในสี่เหลี่ยม */
   .table {
@@ -222,6 +214,7 @@ body {
     color: white;
     border-radius: 5px;
   }
+  
   
   /* การตั้งตำแหน่งของโต๊ะภายในสี่เหลี่ยม */
   .table1 {
@@ -364,11 +357,11 @@ body {
     height: 10%;
   }
   
-  .table.booked {
+  /*.table.booked {
     background-color: gray;
     color: rgb(255, 255, 255);
     cursor: not-allowed;
-  }
+  }*/
   
   .rectangle {
     position: absolute;
@@ -383,12 +376,10 @@ body {
     font-family: Arial, sans-serif;
   
     /* ปรับตำแหน่ง */
-    top: 6.3%;
-    /* ด้านบน 50% */
-    left: 31.5%;
-    /* ด้านซ้าย 50% */
-    transform: translate(-50%, -50%);
-    /* เลื่อนจุดกึ่งกลาง */
+    top: 6.3%; /* ด้านบน 50% */
+    left: 31.5%;  /* ด้านซ้าย 50% */
+    transform: translate(-50%, -50%); /* เลื่อนจุดกึ่งกลาง */
+    
   }
   
   .rectangle1 {
@@ -404,12 +395,10 @@ body {
     font-family: Arial, sans-serif;
   
     /* ปรับตำแหน่ง */
-    top: 42%;
-    /* ด้านบน 50% */
-    left: 6.5%;
-    /* ด้านซ้าย 50% */
-    transform: translate(-50%, -50%);
-    /* เลื่อนจุดกึ่งกลาง */
+    top: 42%; /* ด้านบน 50% */
+    left: 6.5%; /* ด้านซ้าย 50% */
+    transform: translate(-50%, -50%); /* เลื่อนจุดกึ่งกลาง */
+    
   }
   
   .rectangle2 {
@@ -425,12 +414,10 @@ body {
     font-family: Arial, sans-serif;
   
     /* ปรับตำแหน่ง */
-    top: 10.5%;
-    /* ด้านบน 50% */
-    left: 87.5%;
-    /* ด้านซ้าย 50% */
-    transform: translate(-50%, -50%);
-    /* เลื่อนจุดกึ่งกลาง */
+    top: 10.5%; /* ด้านบน 50% */
+    left: 87.5%; /* ด้านซ้าย 50% */
+    transform: translate(-50%, -50%); /* เลื่อนจุดกึ่งกลาง */
+    
   }
   
   .rectangle3 {
@@ -532,31 +519,31 @@ body {
     /* เพิ่มระยะห่างด้านบน */
   }
   
-  .review-button {
+  /*.review-button {
     display: inline-block;
     padding: 15px 30px;
     background-color: #ff6600;
-    /* Orange color */
+    /* Orange color 
     color: #ffffff;
-    /* White text */
+    /* White text 
     text-decoration: none;
-    /* Remove underline */
+    /* Remove underline 
     font-size: 18px;
     font-weight: bold;
     border-radius: 8px;
-    /* Rounded corners */
+    /* Rounded corners 
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
-    /* Slight shadow */
+    /* Slight shadow 
     transition: background-color 0.3s ease, transform 0.3s ease;
-    /* Hover effect */
+    /* Hover effect 
   }
   
   .review-button:hover {
     background-color: #e65500;
-    /* Darker orange on hover */
+    /* Darker orange on hover 
     transform: scale(1.05);
-    /* Slightly enlarge on hover */
-  }
+    /* Slightly enlarge on hover 
+  }*/
   .profile-icon {
     position: absolute;
     top: 20px;
@@ -583,5 +570,10 @@ body {
   .profile-icon:hover {
     transform: scale(1.1);
   }
+
+.busy {
+    background-color: #B0B0B0; /* สีเทา สำหรับโต๊ะที่ถูกจอง */
+}
+
   
   

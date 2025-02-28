@@ -90,7 +90,6 @@ $employee_id = rand(1, 2);
             <div class="mb-3">
                 <label for="promotion" class="form-label"><strong>เลือกโปรโมชั่น:</strong></label>
                 <select class="form-control" name="promotion_id">
-                    <option value="">-- ไม่ใช้โปรโมชั่น --</option>
                     <?php while ($row = $promotion_result->fetch_assoc()) { ?>
                         <option value="<?php echo $row['promotion_id']; ?>"><?php echo htmlspecialchars($row['promotions_name']); ?></option>
                     <?php } ?>
