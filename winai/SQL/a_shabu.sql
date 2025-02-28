@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 27, 2025 at 10:47 PM
+-- Generation Time: Feb 28, 2025 at 08:45 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -94,9 +94,11 @@ CREATE TABLE `getting_table` (
 
 INSERT INTO `getting_table` (`getting_table_id`, `walkin_id`, `reservation_id`, `employee_id`, `package_id`, `promotion_id`, `total_amount`, `created_at`) VALUES
 (229654, NULL, 981786, 1, 701, 0, 899, '2025-02-27 14:33:27'),
+(252641, NULL, 981797, 1, 701, 0, 899, '2025-02-28 07:37:43'),
 (415813, NULL, 981794, 2, 703, 0, 1299, '2025-02-27 14:42:17'),
 (563578, NULL, 981795, 2, 704, 0, 699, '2025-02-27 18:05:40'),
 (667600, NULL, 981785, 1, 702, 0, 8299, '2025-02-27 14:33:27'),
+(792628, NULL, 981796, 2, 701, 1, 898, '2025-02-28 07:32:55'),
 (863710, NULL, 981793, 1, 704, 0, 699, '2025-02-27 14:33:27'),
 (994548, NULL, 981790, 1, 703, 0, 1299, '2025-02-27 14:33:27');
 
@@ -255,18 +257,6 @@ CREATE TABLE `notification` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notification_order`
---
-
-CREATE TABLE `notification_order` (
-  `notifine_order_id` int(11) NOT NULL,
-  `select_item_id` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `order`
 --
 
@@ -275,7 +265,7 @@ CREATE TABLE `order` (
   `getting_table_id` int(11) NOT NULL,
   `menu_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `order_date` int(11) NOT NULL,
+  `order_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `status` enum('in_progress','complete','','') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -284,9 +274,18 @@ CREATE TABLE `order` (
 --
 
 INSERT INTO `order` (`order_id`, `getting_table_id`, `menu_id`, `quantity`, `order_date`, `status`) VALUES
-(1, 563578, 128, 2, 2147483647, ''),
-(2, 563578, 129, 2, 2147483647, ''),
-(3, 563578, 133, 2, 2147483647, '');
+(1, 563578, 128, 2, '0000-00-00 00:00:00', ''),
+(2, 563578, 129, 2, '0000-00-00 00:00:00', ''),
+(3, 563578, 133, 2, '0000-00-00 00:00:00', ''),
+(4, 792628, 142, 2, '0000-00-00 00:00:00', ''),
+(5, 792628, 155, 2, '0000-00-00 00:00:00', ''),
+(6, 792628, 156, 2, '0000-00-00 00:00:00', ''),
+(7, 792628, 159, 2, '0000-00-00 00:00:00', ''),
+(8, 792628, 155, 3, '2025-02-28 07:42:24', ''),
+(9, 792628, 156, 2, '2025-02-28 07:42:24', ''),
+(10, 792628, 159, 2, '2025-02-28 07:42:24', ''),
+(11, 792628, 155, 3, '2025-02-28 07:44:13', 'in_progress'),
+(12, 792628, 156, 2, '2025-02-28 07:44:13', 'in_progress');
 
 -- --------------------------------------------------------
 
@@ -736,7 +735,8 @@ CREATE TABLE `promotion` (
 --
 
 INSERT INTO `promotion` (`promotion_id`, `promotions_name`) VALUES
-(0, '-- ไม่ใช้โปรโมชั่น --');
+(0, '-- ไม่ใช้โปรโมชั่น --'),
+(1, 'โปรโมชั่นวันพิเศษ ลด 10%');
 
 -- --------------------------------------------------------
 
@@ -746,17 +746,25 @@ INSERT INTO `promotion` (`promotion_id`, `promotions_name`) VALUES
 
 CREATE TABLE `promotion_item` (
   `promotion_item_id` int(11) NOT NULL,
-  `promotion_id` int(11) NOT NULL,
-  `raw_material_id` int(11) NOT NULL,
-  `description` text NOT NULL,
-  `discount_type` enum('persentage','fixed_amount') NOT NULL,
-  `discount_value` decimal(10,2) NOT NULL,
-  `start_date` int(11) NOT NULL,
-  `end_date` int(11) NOT NULL,
-  `status` enum('active','expired') NOT NULL,
+  `promotion_id` int(11) DEFAULT NULL,
+  `menu_id` int(11) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `discount_type` enum('persentage','fixed_amount') DEFAULT NULL,
+  `discount_value` decimal(10,2) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `status` enum('active','expired') DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `quantity` int(11) NOT NULL
+  `quantity` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `promotion_item`
+--
+
+INSERT INTO `promotion_item` (`promotion_item_id`, `promotion_id`, `menu_id`, `description`, `discount_type`, `discount_value`, `start_date`, `end_date`, `status`, `created_at`, `quantity`) VALUES
+(1700, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-02-28 07:02:59', NULL),
+(1701, 1, NULL, 'ลดวันพิเศษ ตั้งแต่วันนี้จนถึงสิ้นเดือนมีนาคม', 'persentage', 0.10, '2025-02-28', '2025-03-31', 'active', '2025-02-28 07:08:05', NULL);
 
 -- --------------------------------------------------------
 
@@ -916,7 +924,9 @@ INSERT INTO `reservation` (`reservation_id`, `first_name`, `last_name`, `number_
 (981792, 'สมหญิง', 'สุดสวย', 4, 'Cancel', '2025-02-27 14:39:19', 1024),
 (981793, 'Jeremy', 'Carck', 4, 'Confirm', '2025-02-27 14:33:28', 2020),
 (981794, 'สมหญิง', 'สุดสวย', 4, 'Cancel', '2025-02-27 18:03:20', 1024),
-(981795, 'สมหญิง', 'สุดสวย', 2, 'Confirm', '2025-02-27 18:03:47', 1024);
+(981795, 'สมหญิง', 'สุดสวย', 2, 'Confirm', '2025-02-27 18:03:47', 1024),
+(981796, 'สมปอง', 'ทองสุก', 3, 'Confirm', '2025-02-28 07:12:00', 516),
+(981797, 'สมปอง', 'ทองสุก', 2, 'Confirm', '2025-02-28 07:37:26', 518);
 
 --
 -- Triggers `reservation`
@@ -1076,8 +1086,8 @@ INSERT INTO `table_availability` (`availability_id`, `table_id`, `time_id`, `sta
 (420, 4, 1003, 'Free', '2025-02-27 14:33:28'),
 (422, 4, 1004, 'Free', '2025-02-27 14:33:28'),
 (424, 4, 1005, 'Free', '2025-02-27 14:33:28'),
-(516, 5, 1001, 'Free', '2025-02-27 14:33:28'),
-(518, 5, 1002, 'Free', '2025-02-27 14:33:28'),
+(516, 5, 1001, 'Busy', '2025-02-28 07:12:00'),
+(518, 5, 1002, 'Busy', '2025-02-28 07:37:26'),
 (520, 5, 1003, 'Free', '2025-02-27 14:33:28'),
 (522, 5, 1004, 'Free', '2025-02-27 14:33:28'),
 (524, 5, 1005, 'Free', '2025-02-27 14:33:28'),
@@ -1435,12 +1445,6 @@ ALTER TABLE `notification`
   ADD PRIMARY KEY (`Notification`);
 
 --
--- Indexes for table `notification_order`
---
-ALTER TABLE `notification_order`
-  ADD PRIMARY KEY (`notifine_order_id`);
-
---
 -- Indexes for table `order`
 --
 ALTER TABLE `order`
@@ -1489,7 +1493,7 @@ ALTER TABLE `promotion`
 ALTER TABLE `promotion_item`
   ADD PRIMARY KEY (`promotion_item_id`),
   ADD KEY `promotion_id` (`promotion_id`),
-  ADD KEY `raw_material_id` (`raw_material_id`);
+  ADD KEY `menu_id` (`menu_id`);
 
 --
 -- Indexes for table `raw_material`
@@ -1635,16 +1639,10 @@ ALTER TABLE `notification`
   MODIFY `Notification` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `notification_order`
---
-ALTER TABLE `notification_order`
-  MODIFY `notifine_order_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `order`
 --
 ALTER TABLE `order`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `payment`
@@ -1680,7 +1678,7 @@ ALTER TABLE `receipt`
 -- AUTO_INCREMENT for table `reservation`
 --
 ALTER TABLE `reservation`
-  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=981796;
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=981798;
 
 --
 -- AUTO_INCREMENT for table `review`
@@ -1743,8 +1741,8 @@ ALTER TABLE `payment_verificatio`
 -- Constraints for table `promotion_item`
 --
 ALTER TABLE `promotion_item`
-  ADD CONSTRAINT `fk_promotion_I` FOREIGN KEY (`promotion_id`) REFERENCES `promotion` (`promotion_id`),
-  ADD CONSTRAINT `fk_raw_material` FOREIGN KEY (`raw_material_id`) REFERENCES `raw_material` (`raw_material_id`);
+  ADD CONSTRAINT `fk_menu_P` FOREIGN KEY (`menu_id`) REFERENCES `menu` (`menu_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_promotion_PP` FOREIGN KEY (`promotion_id`) REFERENCES `promotion` (`promotion_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `raw_material`

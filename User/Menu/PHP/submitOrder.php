@@ -71,7 +71,7 @@ foreach ($items as $item_id => $item) {
     // 🔹 บันทึกข้อมูลลงในตาราง `order`
     $query = "
         INSERT INTO `order` (menu_id, getting_table_id, quantity, order_date, status) 
-        VALUES (?, ?, ?, NOW(), 'in_process')";
+        VALUES (?, ?, ?, NOW(), 'in_progress')";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("iii", $menu_id, $getting_table_id, $quantity);
 
