@@ -52,26 +52,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $stmt->close();
 
-    // ตรวจสอบโปรโมชั่น
-    if (!is_null($promotion_id) && $promotion_id !== 0) { // ตรวจสอบว่าไม่ใช่ "ไม่ใช้โปรโมชั่น"
-        $sql = "SELECT discount_type, discount_value FROM promotion WHERE promotion_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $promotion_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
+// ตรวจสอบโปรโมชั่นที่ใช้งาน
+if (!is_null($promotion_id) && $promotion_id !== 0) { // ตรวจสอบว่าไม่ใช่ "ไม่ใช้โปรโมชั่น"
+    $sql = "SELECT discount_type, discount_value FROM promotion_item 
+            WHERE promotion_id = ? AND status = 'active' 
+            AND NOW() BETWEEN start_date AND end_date";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $promotion_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            if ($row["discount_type"] == "percentage") { // ตรวจสอบให้แน่ใจว่าสะกดถูกต้อง
-                $total_amount -= ($total_amount * floatval($row["discount_value"]) / 100);
-            } else {
-                $total_amount -= floatval($row["discount_value"]);
-            }
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+
+        // ตรวจสอบประเภทส่วนลด
+        if ($row["discount_type"] == "persentage") { // ⚠️ คีย์ผิด "persentage" ควรเป็น "percentage"
+            $total_amount -= ($total_amount * floatval($row["discount_value"]) / 100);
         } else {
-            $promotion_id = NULL; // ถ้าไม่มีโปรโมชันที่ตรงกัน ให้ใช้ค่า NULL
+            $total_amount -= floatval($row["discount_value"]);
         }
-        $stmt->close();
+    } else {
+        $promotion_id = NULL; // ถ้าไม่มีโปรโมชั่นที่ตรงกัน ให้ใช้ค่า NULL
     }
+    $stmt->close();
+}
+
 
     // บันทึกข้อมูลลง getting_table
     $sql = "INSERT INTO getting_table (getting_table_id, reservation_id, employee_id, package_id, promotion_id, total_amount) 
