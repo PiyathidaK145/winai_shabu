@@ -35,7 +35,7 @@
                 <a class="nav-link collapsed d-flex justify-content-between align-items-center" href="#"
                     data-bs-toggle="collapse"
                     data-bs-target="#collapseWarehouse" aria-expanded="false" aria-controls="collapseWarehouse">
-                    <span><i class="fa-solid fa-warehouse me-2"></i> คลังสินค้า</span>
+                    <span><i class="fa-solid fa-warehouse me-2"></i> คลังวัตถุดิบ</span>
                     <i class="fas fa-angle-down"></i>
                 </a>
 
