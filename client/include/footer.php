@@ -13,4 +13,6 @@
 <script src="js/bootstrap.bundle.min.js"></script>
 <script src="js/apexcharts.min.js"></script>
 <script src="js/custom.js"></script>
+<script src="js/fetch_dashboard_data.js"></script>
+
 </script>
