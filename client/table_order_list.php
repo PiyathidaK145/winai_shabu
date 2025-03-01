@@ -1,149 +1,197 @@
 <?php
-include 'include/header.php';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Simulating a sample database update process
+if (!isset($_GET['ajax'])) {
+    include 'include/header.php';
+}
+
+$servername = "localhost";
+$username = "root";
+$password = "123456";
+$dbname = "a_shabu";
+
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
+}
+
+// ✅ **อัปเดตสถานะผ่าน AJAX**
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orderId'], $_POST['newStatus'])) {
-    $orderId = $_POST['orderId'];
+    $orderId = filter_input(INPUT_POST, 'orderId', FILTER_VALIDATE_INT);
     $newStatus = $_POST['newStatus'];
 
-    // Here, you would update the database with the new status
-    // Simulating a successful update response
-    echo json_encode(['success' => true, 'message' => 'Status updated successfully.']);
+    if ($orderId && in_array($newStatus, ['in_progress', 'complete'])) {
+        $stmt = $conn->prepare("UPDATE `order` SET status = :status WHERE order_id = :orderId");
+        $stmt->execute(['status' => $newStatus, 'orderId' => $orderId]);
+        echo json_encode(['success' => true, 'message' => 'Status updated successfully.']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Invalid input.']);
+    }
+    exit;
+}
+
+// ✅ **ตั้งค่าการเรียงลำดับ**
+$orderColumn = $_GET['orderColumn'] ?? 'getting_table_id';
+$orderDirection = ($_GET['orderDirection'] ?? 'ASC') === 'ASC' ? 'ASC' : 'DESC';
+
+// ✅ **กรองเฉพาะ Order ที่เป็น `in_progress`**
+$whereClause = "WHERE o.status = 'in_progress'";
+$params = [];
+
+if (!empty($_GET['table_id'])) {
+    $tableId = intval($_GET['table_id']);
+    $whereClause .= " AND t.table_id = :tableId";
+    $params['tableId'] = $tableId;
+}
+
+// ✅ **Query ดึงข้อมูล Order**
+$query = "
+    SELECT
+        o.order_id,
+        g.getting_table_id,
+        GROUP_CONCAT(DISTINCT t.table_id ORDER BY t.table_id ASC SEPARATOR ', ') AS table_numbers,
+        rm.item_name AS menu_item,
+        o.quantity,
+        o.order_date,
+        o.status
+    FROM `order` o
+    LEFT JOIN getting_table g ON o.getting_table_id = g.getting_table_id
+    LEFT JOIN reservation r ON g.reservation_id = r.reservation_id
+    LEFT JOIN table_availability t ON r.availability_id = t.availability_id
+    LEFT JOIN menu m ON o.menu_id = m.menu_id
+    LEFT JOIN raw_material rm ON m.raw_material_id = rm.raw_material_id
+    $whereClause
+    GROUP BY g.getting_table_id, o.order_id, rm.item_name, o.quantity, o.order_date, o.status
+    ORDER BY $orderColumn $orderDirection
+";
+
+$stmt = $conn->prepare($query);
+$stmt->execute($params);
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$newOrderDirection = $orderDirection == 'ASC' ? 'DESC' : 'ASC';
+
+// ✅ **สร้าง order_number**
+$orderNumbers = [];
+$orderCounter = 1;
+$tableOptions = [];
+
+foreach ($result as &$row) {
+    $tableId = $row['getting_table_id'];
+
+    if (!isset($orderNumbers[$tableId])) {
+        $orderNumbers[$tableId] = str_pad($orderCounter++, 3, '0', STR_PAD_LEFT);
+    }
+
+    $row['order_number'] = $orderNumbers[$tableId];
+
+    // ✅ เพิ่มค่าโต๊ะในตัวเลือกดรอปดาวน์โดยตรวจสอบค่าซ้ำ
+    foreach (explode(', ', $row['table_numbers']) as $table) {
+        $tableOptions[$table] = $table;
+    }
+}
+unset($row);
+
+// ✅ **โหลดเฉพาะตารางผ่าน AJAX**
+if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
+    include 'table_content.php';
     exit;
 }
 ?>
 
+<!-- ✅ **DataTables Framework Integration** -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 <div class="container-fluid">
     <div class="row">
         <main class="main-wrapper col-md-9 ms-sm-auto py-4 col-lg-9 px-md-4 border-start">
-            <div class="title-group mb-3"></div>
-            <h1 class="h2 mb-0">รายการอาหารแต่ละโต๊ะ</h1>
+            <h1 class="h2 mb-3">รายการอาหารแต่ละโต๊ะ</h1>
+            <div class="mb-3">
+    <label for="tableFilter" class="form-label">เลือกโต๊ะ:</label>
+    <select id="tableFilter" class="form-select">
+        <option value="">ทั้งหมด</option>
+        <?php foreach ($tableOptions as $tableId): ?>
+            <option value="<?= htmlspecialchars($tableId) ?>">
+                <?= htmlspecialchars($tableId) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+</div>
 
-            <!-- Table Selection Dropdown -->
-            <div class="card mb-4 p-3">
-                <label for="tableSelect" class="form-label">เลือกโต๊ะ:</label>
-                <select id="tableSelect" class="form-select" onchange="filterTable()">
-                    <option value="all">All Tables</option>
-                    <?php for ($i = 1; $i <= 20; $i++): ?>
-                        <option value="table-<?php echo $i; ?>">Table <?php echo $i; ?></option>
-                    <?php endfor; ?>
-                </select>
-            </div>
 
-            <!-- Table Display -->
             <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead class="table-dark">
+                <table id="orderTable" class="display">
+                    <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Order ID</th>
-                            <th>Item Name</th>
+                            <th>Order Number</th>
+                            <th>Table</th>
+                            <th>Menu</th>
                             <th>Quantity</th>
-                            <th>Order Time</th>
+                            <th>Order Date</th>
                             <th>Status</th>
-                            <th>Table Number</th>
                         </tr>
                     </thead>
-                    <tbody id="orderTableBody">
-                        <?php
-                        $sampleData = [
-                            ['1', 'O001', 'น้ำดำ', 2, '2024-12-24 12:00:00', 'Served', 'table-1'],
-                            ['2', 'O002', 'ต้มยำ', 1, '2024-12-24 12:05:00', 'Preparing', 'table-2'],
-                            ['3', 'O003', 'น้ำใส', 3, '2024-12-24 12:10:00', 'Pending', 'table-3'],
-                            ['4', 'O004', 'หม่าล่า', 4, '2024-12-24 12:15:00', 'Served', 'table-4'],
-                            ['5', 'O005', 'เนื้อออสเตเรีย', 2, '2024-12-24 12:20:00', 'Preparing', 'table-1'],
-                            ['6', 'O006', 'เนื้อวากิว', 1, '2024-12-24 12:25:00', 'Pending', 'table-6'],
-                            ['7', 'O007', 'ผักกาดขาว', 3, '2024-12-24 12:30:00', 'Served', 'table-7'],
-                        ];
-
-                        foreach ($sampleData as $row) {
-                            echo "<tr class='{$row[6]}'>";
-                            echo "<td>{$row[0]}</td>"; // #
-                            echo "<td>{$row[1]}</td>"; // Order ID
-                            echo "<td>{$row[2]}</td>"; // Item Name
-                            echo "<td>{$row[3]}</td>"; // Quantity
-                            echo "<td>{$row[4]}</td>"; // Order Time
-                            echo "<td>
-                                    <select class='status-select' data-order-id='{$row[1]}'>
-                                        <option value='Served'" . ($row[5] === 'Served' ? ' selected' : '') . ">Served</option>
-                                        <option value='Preparing'" . ($row[5] === 'Preparing' ? ' selected' : '') . ">Preparing</option>
-                                        <option value='Pending'" . ($row[5] === 'Pending' ? ' selected' : '') . ">Pending</option>
-                                    </select>
-                                  </td>";
-                            echo "<td>" . ucfirst(str_replace('table-', 'Table ', $row[6])) . "</td>"; // Table Number
-                            echo "</tr>";
-                        }
-                        ?>
+                    <tbody>
+                        <?php foreach ($result as $row): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($row['order_number']) ?></td>
+                            <td><?= htmlspecialchars($row['table_numbers']) ?></td>
+                            <td><?= htmlspecialchars($row['menu_item']) ?></td>
+                            <td><?= htmlspecialchars($row['quantity']) ?></td>
+                            <td><?= htmlspecialchars($row['order_date']) ?></td>
+                            <td>
+                                <select class="status-dropdown" data-order-id="<?= $row['order_id'] ?>">
+                                    <option value="in_progress" <?= $row['status'] == 'in_progress' ? 'selected' : '' ?>>In Progress</option>
+                                    <option value="complete" <?= $row['status'] == 'complete' ? 'selected' : '' ?>>Complete</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
-                <p id="noDataMessage" class="no-data" style="display: none;">No data available for this table.</p>
             </div>
         </main>
     </div>
-
-    <script>
-        function filterTable() {
-            const selectedTable = document.getElementById('tableSelect').value;
-            const rows = document.querySelectorAll('#orderTableBody tr');
-            let visibleRowCount = 0;
-
-            rows.forEach(row => {
-                if (selectedTable === 'all' || row.classList.contains(selectedTable.toLowerCase())) {
-                    row.style.display = '';
-                    visibleRowCount++;
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-
-            const noDataMessage = document.getElementById('noDataMessage');
-            noDataMessage.style.display = visibleRowCount === 0 ? 'block' : 'none';
-
-            updateRowNumbers();
-        }
-
-        function updateRowNumbers() {
-            const rows = document.querySelectorAll('#orderTableBody tr');
-            let currentIndex = 1;
-
-            rows.forEach(row => {
-                if (row.style.display !== 'none') {
-                    const indexCell = row.querySelector('td:first-child');
-                    if (indexCell) {
-                        indexCell.textContent = currentIndex++;
-                    }
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            updateRowNumbers();
-
-            // Add event listeners to status dropdowns
-            document.querySelectorAll('.status-select').forEach(select => {
-                select.addEventListener('change', event => {
-                    const orderId = event.target.getAttribute('data-order-id');
-                    const newStatus = event.target.value;
-
-                    // Update status via AJAX
-                    fetch('current_file.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: `orderId=${orderId}&newStatus=${newStatus}`
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Status updated successfully!');
-                        } else {
-                            alert('Failed to update status.');
-                        }
-                    })
-                    .catch(err => console.error('Error:', err));
-                });
-            });
-        });
-    </script>
-
-    <script src="js/bootstrap.bundle.min.js"></script>
 </div>
+
+<script>
+$(document).ready(function() {
+    let table = $('#orderTable').DataTable({
+        "order": [[0, "asc"]],
+        "columnDefs": [{
+            "targets": [5], 
+            "orderable": false
+        }]
+    });
+
+    // กรองตามหมายเลขโต๊ะที่เลือก
+    $('#tableFilter').on('change', function() {
+        let tableId = $(this).val();
+        if (tableId) {
+            table.column(1).search('\\b' + tableId + '\\b', true, false).draw(); 
+        } else {
+            table.column(1).search('').draw();
+        }
+    });
+
+    // อัปเดตสถานะ order ผ่าน AJAX
+    $(document).on("change", ".status-dropdown", function() {
+        let orderId = $(this).data("order-id");
+        let newStatus = $(this).val();
+
+        fetch("table_order_list.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `orderId=${orderId}&newStatus=${newStatus}`
+        })
+        .then(response => response.json())
+        .then(data => console.log(data.message))
+        .catch(error => console.error("Error:", error));
+    });
+});
+
+</script>
