@@ -2,12 +2,15 @@
 date_default_timezone_set("Asia/Bangkok");
 include dirname(__FILE__) . '/include/header.php';
 include dirname(__FILE__) . '/../../config/connect_db.php';
-
+include dirname(__FILE__) . '/model/modal_reserved.php';
+include dirname(__FILE__) . '/model/modal_occupied.php';
+include dirname(__FILE__) . '/model/modal_available.php';
 
 $today = date("Y-m-d");
 $current_time = date("H:i:s");
 
-function getTimeRange($selected_time, $today) {
+function getTimeRange($selected_time, $today)
+{
     switch ($selected_time) {
         case '16-18':
             $start = "$today 00:00:00";
@@ -26,7 +29,6 @@ function getTimeRange($selected_time, $today) {
             $end   = "$today 23:59:59";
             break;
         case '00-02':
-            // คืนวันใหม่ ต้องบวกวัน
             $tomorrow = date("Y-m-d", strtotime($today . " +1 day"));
             $start = "$today 00:00:00";
             $end   = "$tomorrow 01:59:59";
@@ -38,7 +40,6 @@ function getTimeRange($selected_time, $today) {
     return [$start, $end];
 }
 
-// ถ้ามีค่า GET มา → ใช้ตามนั้น
 if (isset($_GET['time'])) {
     $selected_time = $_GET['time'];
 } else {
@@ -54,7 +55,6 @@ if (isset($_GET['time'])) {
     } elseif ($current_hour >= 0 || $current_hour < 2) {
         $selected_time = "00-02";
     } else {
-        // fallback ถ้าเวลาไม่เข้าเงื่อนไข (เช่นช่วงเช้า)
         $selected_time = "16-18";
     }
 }
@@ -258,17 +258,23 @@ foreach ($tables as $t) {
                             // จำนวนโต๊ะที่มีทั้งหมด (สมมติว่า 20 โต๊ะ)
                             for ($i = 1; $i <= 20; $i++) {
                                 $status_class = 'table-available'; // default = เขียว
-
+                                
                                 switch ($tables[$i]['status']) {
+                                    case 'available':
+                                        $status_class = 'table-available'; // เขียว
+                                        $onclick = "data-bs-toggle='modal' data-bs-target='#walkinModal' onclick='openWalkinModal($i)'";
+                                        break;
                                     case 'reserved':
                                         $status_class = 'table-reserved'; // ส้ม
+                                        $onclick = "data-bs-toggle='modal' data-bs-target='#reservedModal' onclick='openReservedModal($i, \"$selected_time\")'";
                                         break;
                                     case 'occupied':
                                         $status_class = 'table-occupied'; // แดง
+                                        $onclick = '';
                                         break;
                                 }
 
-                                echo "<div class=\"table table$i $status_class\" id=\"table-$i\">$i</div>";
+                                echo "<div class=\"table table$i $status_class\" id=\"table-$i\" $onclick>$i</div>";
                             }
                             ?>
                             <div class="rectangle">ครัว</div>
@@ -278,7 +284,19 @@ foreach ($tables as $t) {
 
                     </section>
                 </section>
+            </main>
         </div>
+    </div>
+    <script>
+        function openReservedModal(tableNumber, timeSlot) {
+            document.getElementById('reservedTableNumber').textContent = tableNumber;
+            document.getElementById('reservedTimeSlot').textContent = timeSlot;
+        }
 
+        function openWalkinModal(tableNumber) {
+    document.getElementById('walkinTableNumber').innerText = tableNumber;
+    document.getElementById('walkinTableId').value = tableNumber;
+        }
+    </script>
 </body>
 <?php include dirname(__FILE__) . '/include/footer.php'; ?>
