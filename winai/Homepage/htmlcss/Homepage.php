@@ -53,7 +53,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A's Shabu</title>
     <link rel="stylesheet" href="stylesHomepage.css">
-    <link rel="preload" href="/img/meat/beef.jpg" as="image">
+    <link rel="preload" href="../Uploads/.jpg" as="image">
     <link rel="preload" href="/img/vegatable/vegatable.jpg" as="image">
     <link rel="preload" href="/img/seafood/seafood.jpg" as="image">
     <link rel="preload" href="/img/other/other.jpg" as="image">

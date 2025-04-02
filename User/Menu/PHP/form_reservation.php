@@ -1,8 +1,5 @@
 <?php
-$host = "localhost";
-$user = "root";
-$password = "123456";
-$database = "a_shabu";
+include '../../../include/header.php';
 
 // เชื่อมต่อฐานข้อมูล
 $conn = new mysqli($host, $user, $password, $database);
