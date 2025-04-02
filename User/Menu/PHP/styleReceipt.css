@@ -85,3 +85,7 @@ body {
     color: #555;
     cursor: pointer;
 }
+.employee-id {
+    margin-top: 12px; /* ปรับระยะห่างด้านบน */
+    margin-bottom: 12px; /* ปรับระยะห่างด้านล่าง */
+}

@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     function fetchDashboardData(startDate = "", endDate = "") {
-        let url = "/winai_shabu/client/api/fetch_dashboard_data.php";
+        let url = "/winai_shabu-main/client/api/fetch_dashboard_data.php";
         if (startDate && endDate) {
             url += `?start_date=${startDate}&end_date=${endDate}`;
         }

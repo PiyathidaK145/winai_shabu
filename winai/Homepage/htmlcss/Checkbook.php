@@ -6,14 +6,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'first_name' => $_POST['first_name'],
         'last_name' => $_POST['last_name'],
         'number_of_guest' => $_POST['people'],
-        'availability_id' => $_POST['availability_id'], // ✅ เพิ่ม availability_id
+        'availability_id' => $_POST['availability_id'],
         'table' => $_POST['table'],
         'time' => $_POST['time']
     ];
     header("Location: Checkbook.php");
     exit();
 }
-
 
 if (!isset($_SESSION['booking_data']) || empty($_SESSION['booking_data'])) {
     echo "<script>alert('ไม่มีข้อมูลการจอง!'); window.location.href='Homepage.php';</script>";
@@ -25,26 +24,36 @@ $booking = $_SESSION['booking_data'];
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
-// สมมติว่าข้อมูลการจองถูกส่งจากฟอร์มใน Checkbook.php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // รับค่าจากฟอร์ม
-    $first_name = $_POST['first_name'];  // ชื่อลูกค้า
-    $table = $_POST['table'];  // หมายเลขโต๊ะ
-    $people = $_POST['people'];  // จำนวนคน
-    $time = $_POST['time'];  // เวลา
 
-    // เก็บข้อมูลลงใน session
-    $_SESSION['booking_data'] = [
-        'first_name' => $first_name,
-        'table' => $table,
-        'people' => $people,
-        'time' => $time
+// ตั้งค่าภาษาไทยสำหรับวันที่
+setlocale(LC_TIME, 'th_TH.UTF-8');
+date_default_timezone_set('Asia/Bangkok');
+
+// ฟังก์ชันแปลงชื่อเดือนเป็นภาษาไทย
+function formatDateThai($date) {
+    $thai_months = [
+        "January" => "มกราคม",
+        "February" => "กุมภาพันธ์",
+        "March" => "มีนาคม",
+        "April" => "เมษายน",
+        "May" => "พฤษภาคม",
+        "June" => "มิถุนายน",
+        "July" => "กรกฎาคม",
+        "August" => "สิงหาคม",
+        "September" => "กันยายน",
+        "October" => "ตุลาคม",
+        "November" => "พฤศจิกายน",
+        "December" => "ธันวาคม"
     ];
 
-    // เปลี่ยนเส้นทางไปที่ booking.php
-    header("Location: booking.php");
-    exit();
+    $day = date("d", strtotime($date)); // วันที่
+    $month = $thai_months[date("F", strtotime($date))]; // แปลงชื่อเดือนเป็นไทย
+    $year = date("Y", strtotime($date)) + 543; // เปลี่ยน ค.ศ. เป็น พ.ศ.
+
+    return "$day $month $year";
 }
+
+$thai_date = formatDateThai(date("Y-m-d")); // ใช้วันที่ปัจจุบัน
 ?>
 
 <!DOCTYPE html>
@@ -64,6 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <p><strong>นามสกุล:</strong> <?php echo htmlspecialchars($booking['last_name']); ?></p>
         <p><strong>จำนวนคน:</strong> <?php echo htmlspecialchars($booking['number_of_guest']); ?></p>
         <p><strong>หมายเลขโต๊ะ:</strong> <?php echo htmlspecialchars($booking['table']); ?></p>
+        <p><strong>วันที่:</strong> <?php echo $thai_date; ?></p> <!-- ✅ แสดงวันที่เป็น "วัน เดือน ปี" -->
         <p><strong>เวลา:</strong> <?php echo htmlspecialchars($booking['time']); ?></p>
 
         <form action="Booking.php" method="POST">
@@ -73,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="hidden" name="table" value="<?php echo htmlspecialchars($booking['table']); ?>">
             <input type="hidden" name="time" value="<?php echo htmlspecialchars($booking['time']); ?>">
             <input type="hidden" name="availability_id"
-                value="<?php echo htmlspecialchars($booking['availability_id']); ?>"> <!-- ✅ เพิ่มตรงนี้ -->
+                value="<?php echo htmlspecialchars($booking['availability_id']); ?>">
             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
             <div class="buttons">
@@ -81,7 +91,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="submit" class="button confirm">ยืนยัน</button>
             </div>
         </form>
-
 
         <div class="note">
             <p><strong>* หมายเหตุ</strong></p>

@@ -98,23 +98,19 @@ if (isset($_GET['getting_table_id']) && isset($_GET['payment_method']) && isset(
         $stmt5->close();
     }
     // ใช้ promotion_id ดึง discount_value
-    // ✅ ดึง promotion_id และ discount_value จาก getting_table โดยใช้ JOIN
-    $sql_promo = "SELECT g.promotion_id, COALESCE(p.discount_value, 0) AS discount_value
-FROM getting_table g
-LEFT JOIN promotion_item p ON g.promotion_id = p.promotion_id
-WHERE g.getting_table_id = ?";
-
-    $stmt_promo = $conn->prepare($sql_promo);
-    $stmt_promo->bind_param("i", $getting_table_id);
-    $stmt_promo->execute();
-    $stmt_promo->bind_result($promotion_id, $discount_value);
-    $stmt_promo->fetch();
-    $stmt_promo->close();
-
-    // ถ้าไม่มี promotion_id ให้กำหนดค่าเป็น NULL และ discount_value = 0
-    if (empty($promotion_id)) {
-        $promotion_id = null;
-        $discount_value = 0;
+    if ($promotion_id > 0) {
+        $sql6 = "SELECT discount_value FROM promotion_item WHERE promotion_id = ?";
+        $stmt6 = $conn->prepare($sql6);
+        if (!$stmt6) {
+            die('MySQL prepare error: ' . $conn->error);
+        }
+        $stmt6->bind_param("i", $promotion_id);
+        $stmt6->execute();
+        $stmt6->bind_result($discount_value);
+        $stmt6->fetch();
+        $stmt6->close();
+    } else {
+        $discount_value = 0; // ถ้า promotion_id = 0 ให้ discount_value = 0
     }
 
     $sqlPaymentId = "SELECT payment_id FROM payment WHERE getting_table_id = ?";
@@ -157,21 +153,7 @@ WHERE g.getting_table_id = ?";
     $receipt_id = rand(100000, 999999);
 
     // สมมติว่า employee_id ได้รับจาก POST หรือข้อมูลที่มีอยู่
-    // ✅ ดึง employee_id จาก getting_table
-    $sql_employee = "SELECT g.employee_id
-FROM getting_table g
-WHERE g.getting_table_id = ?";
-
-    $stmt_employee = $conn->prepare($sql_employee);
-    $stmt_employee->bind_param("i", $getting_table_id);
-    $stmt_employee->execute();
-    $stmt_employee->bind_result($employee_id);
-    $stmt_employee->fetch();
-    $stmt_employee->close();
-
-    // ✅ นำค่า employee_id มาเก็บไว้ที่ $_POST['employeeId']
-    $_POST['employeeId'] = $employee_id;
-    // ค่าจาก POST
+    $employee_id = htmlspecialchars($_POST['employeeId']);  // ค่าจาก POST
 
     // สร้างคำสั่ง SQL สำหรับแทรกข้อมูลลงในตาราง receipt
     $sqlInsert = "INSERT INTO receipt (receipt_id, payment_verification_id, employee_id) 
@@ -197,7 +179,34 @@ WHERE g.getting_table_id = ?";
     // ปิด statement
     $stmtInsert->close();
 }
+// ดึงเวลาเริ่มต้นจาก getting_table และเวลาสิ้นสุดจาก payment
+$sqlTime = "SELECT 
+DATE_FORMAT(g.created_at, '%H:%i') AS start_time, 
+DATE_FORMAT(p.payment_timestamp, '%H:%i') AS end_time
+FROM 
+getting_table g
+JOIN 
+payment p ON g.getting_table_id = p.getting_table_id
+WHERE 
+g.getting_table_id = ? AND 
+p.payment_method = ? AND 
+p.total_payment = ?";
 
+$stmtTime = $conn->prepare($sqlTime);
+if (!$stmtTime) {
+    die('MySQL prepare error: ' . $conn->error);
+}
+$stmtTime->bind_param("isi", $getting_table_id, $payment_method, $total_payment);
+$stmtTime->execute();
+$stmtTime->bind_result($start_time, $end_time);
+
+// ดึงข้อมูลเวลา
+if ($stmtTime->fetch()) {
+    // เก็บค่าเวลา
+} else {
+    die('ไม่พบข้อมูลเวลา');
+}
+$stmtTime->close();
 // ปิดการเชื่อมต่อฐานข้อมูล
 $conn->close();
 ?>
@@ -227,12 +236,16 @@ $conn->close();
             $employeeId = isset($_POST['employeeId']) ? htmlspecialchars($_POST['employeeId']) : "00-000-0";
             $dateTime = date("d/m/y H:i:s");
             $total_price = $number_of_guest * $price;
-            $Total = ($price * $number_of_guest)*(1 - $discount_value);
+            $Total = $price * $number_of_guest - $discount_value;
             $vatable = $total_price / 1.07;
             $vat = $total_price - $vatable; // คำนวณ VAT
             ?>
+            <p><?php echo date("d/m/y"); ?></p> <!-- แสดงแค่วันที่ -->
+            <p>เวลาเริ่ม: <?php echo $start_time; ?></p>
+            <p>เวลาสิ้นสุด: <?php echo $end_time; ?></p>
+        </div>
+        <div class="employee-id">
             <p>พนักงาน: <?php echo $employeeId; ?></p>
-            <p><?php echo $dateTime; ?></p>
         </div>
         <div class="additional-details">
             <p>รหัสใบเสร็จ: <?php echo "RCPT" . $receipt_id; ?></p>
@@ -260,7 +273,7 @@ $conn->close();
         <div class="item">
             <p>Discount</p>
             <p></p>
-            <p><?php echo number_format($discount_value*100, 2) . "%"; ?></p>
+            <p><?php echo number_format($discount_value, 2); ?></p>
         </div>
         <div class="item">
             <p>Total</p>
