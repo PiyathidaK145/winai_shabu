@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 include '../../config/connect_db.php';
 
 header('Content-Type: application/json');
@@ -18,16 +20,17 @@ if (isset($_GET['table_id']) && isset($_GET['time'])) {
     $time_id = $time_map[$time] ?? 1001;
 
     // ตรวจสอบจาก Walk-in
-    $walkin_sql = "SELECT w.first_name, w.last_name, w.number_of_guest, 'walkin' AS type
-                   FROM walkin w
-                   INNER JOIN table_availability a ON w.availability_id = a.availability_id
-                   WHERE a.table_id = $table_id AND a.time_id = $time_id
-                   LIMIT 1";
+    $walkin_sql = "SELECT w.walkin_id, w.first_name, w.last_name, w.number_of_guest, 'walkin' AS type
+        FROM walkin w
+        INNER JOIN table_availability a ON w.availability_id = a.availability_id
+        WHERE a.table_id = $table_id AND a.time_id = $time_id
+        LIMIT 1";
     $walkin_result = mysqli_query($conn, $walkin_sql);
 
-    if ($walkin_data = mysqli_fetch_assoc($walkin_result)) {
+    if ($walkin_result && $walkin_data = mysqli_fetch_assoc($walkin_result)) {
         echo json_encode([
             'type' => 'walkin',
+            'walkin_id' => $walkin_data['walkin_id'],
             'first_name' => $walkin_data['first_name'],
             'last_name' => $walkin_data['last_name'],
             'number_of_guest' => $walkin_data['number_of_guest']
@@ -36,11 +39,11 @@ if (isset($_GET['table_id']) && isset($_GET['time'])) {
     }
 
     // ตรวจสอบจาก Reservation
-    $reserve_sql = "SELECT r.first_name, r.last_name, r.number_of_guest, 'reservation' AS type
-                    FROM reservation r
-                    INNER JOIN table_availability a ON r.availability_id = a.availability_id
-                    WHERE a.table_id = $table_id AND a.time_id = $time_id
-                    LIMIT 1";
+    $reserve_sql = "SELECT r.reservation_id, r.first_name, r.last_name, r.number_of_guest, 'reservation' AS type
+                FROM reservation r
+                INNER JOIN table_availability a ON r.availability_id = a.availability_id
+                WHERE a.table_id = $table_id AND a.time_id = $time_id
+                LIMIT 1";
     $reserve_result = mysqli_query($conn, $reserve_sql);
 
     if ($reserve_data = mysqli_fetch_assoc($reserve_result)) {
@@ -48,7 +51,8 @@ if (isset($_GET['table_id']) && isset($_GET['time'])) {
             'type' => 'reservation',
             'first_name' => $reserve_data['first_name'],
             'last_name' => $reserve_data['last_name'],
-            'number_of_guest' => $reserve_data['number_of_guest']
+            'number_of_guest' => $reserve_data['number_of_guest'],
+            'reservation_id' => $reserve_data['reservation_id']
         ]);
         exit;
     }
@@ -60,4 +64,3 @@ if (isset($_GET['table_id']) && isset($_GET['time'])) {
     http_response_code(400);
     echo json_encode(['error' => 'พารามิเตอร์ไม่ครบ']);
 }
-?>

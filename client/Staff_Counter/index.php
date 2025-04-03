@@ -314,11 +314,13 @@ foreach ($tables as $t) {
             document.getElementById('reservedTableNumber').textContent = tableId;
             document.getElementById('reservedTimeSlot').textContent = timeSlot;
 
+            console.log(`Fetching: get_reserved_data.php?table_id=${tableId}&time=${timeSlot}`); // Debug
             fetch(`get_reserved_data.php?table_id=${tableId}&time=${timeSlot}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log("✅ Reserved Data", data); // Debug
                     if (data.type === 'walkin') {
+                        document.getElementById('walkinCodeDisplay').innerText = `รหัส - ${data.walkin_id}`;
                         document.getElementById('walkinTableNumber').innerText = tableId;
                         document.getElementById('walkinTimeSlot').innerText = timeSlot;
                         document.getElementById('walkinFirstName').innerText = data.first_name;
@@ -330,6 +332,7 @@ foreach ($tables as $t) {
 
                         new bootstrap.Modal(document.getElementById('walkinReservedModal')).show();
                     } else if (data.type === 'reservation') {
+                        document.getElementById('reservationIdHidden').value = data.reservation_id;
                         document.getElementById('reservedTableNumber').innerText = tableId;
                         document.getElementById('reservedTimeSlot').innerText = timeSlot;
                         document.getElementById('reservedFirstName').innerText = data.first_name;
@@ -367,6 +370,9 @@ foreach ($tables as $t) {
                     bookingTime = "00.00";
                     break;
             }
+
+            const walkinForm = document.getElementById('walkinForm');
+            walkinForm.reset();
 
             document.getElementById('walkinTableNumber').innerText = tableNumber;
             document.getElementById('walkinTableId').value = tableId;
