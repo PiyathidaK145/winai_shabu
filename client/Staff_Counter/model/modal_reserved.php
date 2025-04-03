@@ -95,7 +95,7 @@
             </div>
 
             <div class="modal-footer justify-content-end">
-                <button class="btn btn-primary" id="verifyWalkinBtn">รับโต๊ะ</button>
+            <a href="#" class="btn btn-primary" id="verifyWalkinBtn">รับโต๊ะ</a>
             </div>
         </div>
     </div>

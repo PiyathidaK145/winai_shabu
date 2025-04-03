@@ -304,6 +304,15 @@ foreach ($tables as $t) {
                             <div class="rectangle3">ประตู</div>
 
                     </section>
+                    <form id="walkinRedirectForm" action="show_walk_in.php" method="POST" style="display: none;">
+                        <input type="hidden" name="walkin_id" id="formWalkinId">
+                        <input type="hidden" name="first_name" id="formFirstName">
+                        <input type="hidden" name="last_name" id="formLastName">
+                        <input type="hidden" name="table_number" id="formTableNumber">
+                        <input type="hidden" name="table_id" id="formTableId"> <!-- ✅ เพิ่มตรงนี้ -->
+                        <input type="hidden" name="time_slot" id="formTimeSlot">
+                        <input type="hidden" name="number_of_guest" id="formGuests">
+                    </form>
                 </section>
             </main>
         </div>
@@ -347,6 +356,33 @@ foreach ($tables as $t) {
                     console.error("ไม่สามารถโหลดข้อมูลการจองได้", error);
                     alert("ไม่สามารถโหลดข้อมูลการจองได้");
                 });
+
+            document.getElementById('verifyWalkinBtn').addEventListener('click', function() {
+                const walkinId = document.getElementById('walkinCodeDisplay').innerText.replace('รหัส - ', '');
+                const firstName = document.getElementById('walkinFirstName').innerText;
+                const lastName = document.getElementById('walkinLastName').innerText;
+                const tableNumber = document.getElementById('walkinTableNumber').innerText;
+                const timeSlot = document.getElementById('walkinTimeSlot').innerText;
+                const guests = document.getElementById('walkinGuests').innerText;
+
+                // ✅ เพิ่มฟิลด์ table_id
+                document.getElementById('formTableId').value = tableId;
+
+                // ✅ ใส่ค่าอื่น ๆ ตามเดิม
+                document.getElementById('formWalkinId').value = walkinId;
+                document.getElementById('formFirstName').value = firstName;
+                document.getElementById('formLastName').value = lastName;
+                document.getElementById('formTableNumber').value = tableNumber;
+                document.getElementById('formTimeSlot').value = timeSlot;
+                document.getElementById('formGuests').value = guests;
+
+                // ตั้ง action
+                document.getElementById('walkinRedirectForm').action = `show_walk_in.php?id=${walkinId}`;
+
+                // ส่งฟอร์ม
+                document.getElementById('walkinRedirectForm').submit();
+            });
+
         }
         // ฟังก์ชันเปิด modal สำหรับโต๊ะว่าง
         function openWalkinModal(tableId, tableNumber, timeSlot, timeId) {
@@ -396,17 +432,26 @@ foreach ($tables as $t) {
 
             const walkinModal = new bootstrap.Modal(document.getElementById('walkinModal'));
             walkinModal.show();
+
+            const verifyBtn = document.getElementById('verifyWalkinBtn');
+
+            // ลบ Event เดิมออก ถ้ามี
+            const newBtn = verifyBtn.cloneNode(true);
+            verifyBtn.parentNode.replaceChild(newBtn, verifyBtn);
+
+            // เพิ่ม Event ใหม่
+            newBtn.addEventListener('click', function() {
+                const walkinId = document.getElementById('walkinCodeDisplay').innerText.replace('รหัส - ', '');
+                window.location.href = `show_walk_in.php?id=${walkinId}`;
+            });
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const walkinModal = document.getElementById('walkinModal');
-            if (walkinModal) {
-                walkinModal.addEventListener('hidden.bs.modal', () => {
-                    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-                    document.body.classList.remove('modal-open');
-                    document.body.style = '';
-                });
-            }
+        document.getElementById('verifyWalkinBtn').addEventListener('click', function() {
+            const walkinId = document.getElementById('walkinCodeDisplay').innerText.replace('รหัส - ', '');
+            const tableNumber = document.getElementById('walkinTableNumber').innerText;
+            const timeSlot = document.getElementById('walkinTimeSlot').innerText;
+
+            window.location.href = `show_walk_in.php?id=${walkinId}&table_number=${tableNumber}&time=${timeSlot}`;
         });
     </script>
 </body>
