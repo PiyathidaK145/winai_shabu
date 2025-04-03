@@ -30,9 +30,9 @@ function getTimeRange($selected_time, $today)
             break;
         case '00-02':
             $yesterday = date('Y-m-d', strtotime($today . " -1 day"));
-            //$tomorrow = date("Y-m-d", strtotime($today . " +1 day"));
-            $start = "$yesterday 00:00:00";
-            $end   = "$today 01:59:59";
+            $tomorrow = date("Y-m-d", strtotime($today . " +1 day"));
+            $start = "$today 00:00:00";
+            $end   = "$tomorrow 01:59:59";
             break;
         default:
             $start = "$today 00:00:00";
@@ -51,9 +51,9 @@ if (isset($_GET['time'])) {
         $selected_time = "18-20";
     } elseif ($current_hour >= 20 && $current_hour < 22) {
         $selected_time = "20-22";
-    } elseif ($current_hour >= 22 || $current_hour < 0) {
+    } elseif ($current_hour >= 22 && $current_hour < 0) {
         $selected_time = "22-00";
-    } elseif ($current_hour >= 0 || $current_hour < 2) {
+    } elseif ($current_hour >= 0 && $current_hour < 2) {
         $selected_time = "00-02";
     } else {
         $selected_time = "16-18";
@@ -94,7 +94,8 @@ if ($result1 && mysqli_num_rows($result1) > 0) {
         $table_id = $row['table_id'];
         $payment_done = !empty($row['payment_timestamp']);
         if (!$payment_done) {
-            $tables[$table_id]['status'] = 'occupied'; // แดงถ้ายังกินอยู่
+            $tables[$table_id]['status'] = 'occupied';
+            $occupied_count++; // แดงถ้ายังกินอยู่
         } else {
             $tables[$table_id]['status'] = 'available'; // เขียวถ้าจ่ายเงินแล้ว
         }

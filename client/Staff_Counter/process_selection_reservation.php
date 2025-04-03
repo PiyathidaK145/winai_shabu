@@ -1,104 +1,52 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+date_default_timezone_set("Asia/Bangkok");
+include dirname(__FILE__) . '/../../config/connect_db.php';
 
-$host = "localhost";
-$user = "root";
-$password = "123456";
-$database = "a_shabu";
+// รับค่าจาก POST
+$walkin_id = null;
+$reservation_id = $_POST['reservation_id'] ?? null;
+$employee_id = $_POST['employee_id'] ?? null;
+$package_id = $_POST['package_id'] ?? null;
+$promotion_id = $_POST['promotion_id'] ?? null;
+$created_at = date("Y-m-d H:i:s");
 
-// เชื่อมต่อฐานข้อมูล
-$conn = new mysqli($host, $user, $password, $database);
-if ($conn->connect_error) {
-    die("การเชื่อมต่อล้มเหลว: " . $conn->connect_error);
+// ดึงราคาจากตาราง package
+$total_amount = 0;
+if ($package_id) {
+    $query_price = "SELECT price FROM package WHERE package_id = '$package_id'";
+    $result_price = mysqli_query($conn, $query_price);
+
+    if ($result_price && mysqli_num_rows($result_price) > 0) {
+        $row_price = mysqli_fetch_assoc($result_price);
+        $total_amount = $row_price['price'];
+    }
 }
 
-// ฟังก์ชันสร้าง getting_table_id แบบสุ่ม 6 หลัก
-function generateUniqueId($conn)
-{
-    do {
-        $uniqueId = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
-        $sql = "SELECT COUNT(*) AS count FROM getting_table WHERE getting_table_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $uniqueId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        $stmt->close();
-    } while ($row['count'] > 0);
-    return $uniqueId;
+// เตรียมคำสั่ง SQL สำหรับ insert
+$sql = "
+    INSERT INTO getting_table (
+        walkin_id,
+        reservation_id,
+        employee_id,
+        package_id,
+        promotion_id,
+        total_amount,
+        created_at
+    ) VALUES (
+        ?, ?, ?, ?, ?, ?, ?
+    )
+";
+
+// Prepare และ bind
+$stmt = mysqli_prepare($conn, $sql);
+mysqli_stmt_bind_param($stmt, "iiiiiis", $walkin_id, $reservation_id, $employee_id, $package_id, $promotion_id, $total_amount, $created_at);
+
+if (mysqli_stmt_execute($stmt)) {
+    echo "<script>alert('บันทึกการรับโต๊ะสำเร็จ'); window.location.href = 'index.php';</script>";
+} else {
+    echo "<script>alert('เกิดข้อผิดพลาดในการบันทึก'); history.back();</script>";
 }
 
-// ตรวจสอบว่ามีการส่งข้อมูลผ่าน POST หรือไม่
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $reservation_id = intval($_POST["reservation_id"]);
-    $package_id = intval($_POST["package_id"]);
-    $promotion_id = isset($_POST['promotion_id']) && $_POST['promotion_id'] !== "" ? intval($_POST['promotion_id']) : NULL;
-    $employee_id = isset($_POST['employee_id']) && $_POST['employee_id'] !== "" ? intval($_POST['employee_id']) : NULL;
-    $getting_table_id = generateUniqueId($conn); // สร้างรหัส 6 หลักโดยอัตโนมัติ
-
-    // คำนวณราคาทั้งหมด
-    $total_amount = 0;
-
-    // ดึงราคาของแพ็กเกจ
-    $sql = "SELECT price FROM package WHERE package_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $package_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $total_amount = floatval($row["price"]);
-    }
-    $stmt->close();
-
-// ตรวจสอบโปรโมชั่นที่ใช้งาน
-if (!is_null($promotion_id) && $promotion_id !== 0) { // ตรวจสอบว่าไม่ใช่ "ไม่ใช้โปรโมชั่น"
-    $sql = "SELECT discount_type, discount_value FROM promotion_item 
-            WHERE promotion_id = ? AND status = 'active' 
-            AND NOW() BETWEEN start_date AND end_date";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $promotion_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-
-        // ตรวจสอบประเภทส่วนลด
-        if ($row["discount_type"] == "persentage") { // ⚠️ คีย์ผิด "persentage" ควรเป็น "percentage"
-            $total_amount -= ($total_amount * floatval($row["discount_value"]) / 100);
-        } else {
-            $total_amount -= floatval($row["discount_value"]);
-        }
-    } else {
-        $promotion_id = NULL; // ถ้าไม่มีโปรโมชั่นที่ตรงกัน ให้ใช้ค่า NULL
-    }
-    $stmt->close();
-}
-
-
-    // บันทึกข้อมูลลง getting_table
-    $sql = "INSERT INTO getting_table (getting_table_id, reservation_id, employee_id, package_id, promotion_id, total_amount) 
-            VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-
-    // ตรวจสอบว่าต้อง bind_param() แบบไหน
-    if (!is_null($promotion_id)) {
-        $stmt->bind_param("siiidi", $getting_table_id, $reservation_id, $employee_id, $package_id, $promotion_id, $total_amount);
-    } else {
-        $stmt->bind_param("siiii", $getting_table_id, $reservation_id, $employee_id, $package_id, $total_amount);
-    }
-
-    if ($stmt->execute()) {
-        echo "<script>alert('บันทึกข้อมูลสำเร็จ!'); window.location.href='assign_table.php';</script>";
-        exit();
-    } else {
-        echo "<script>alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: " . addslashes($stmt->error) . "'); window.history.back();</script>";
-    }
-
-    $stmt->close();
-}
-
-$conn->close();
+mysqli_stmt_close($stmt);
+mysqli_close($conn);
 ?>
