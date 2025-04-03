@@ -43,7 +43,7 @@ function getTimeRange($selected_time, $today)
 if (isset($_GET['time'])) {
     $selected_time = $_GET['time'];
 } else {
-    $current_hou = (int) date("H");
+    $current_hour = (int) date("H");
     if ($current_hour >= 16 && $current_hour < 18) {
         $selected_time = "16-18";
     } elseif ($current_hour >= 18 && $current_hour < 20) {
@@ -103,7 +103,11 @@ if ($result1 && mysqli_num_rows($result1) > 0) {
 list($start_datetime, $end_datetime) = getTimeRange($selected_time, $today);
 // ดึงสถานะจาก table_availability สำหรับช่วงเวลาที่เลือก
 $sql2 = "
-    SELECT a.table_id, a.status
+    SELECT 
+        a.table_id, 
+        a.status,
+        r.reservation_id,
+        w.walkin_id
     FROM table_availability a
     INNER JOIN time_reserversion t ON a.time_id = t.time_id
     LEFT JOIN reservation r ON a.availability_id = r.availability_id
@@ -119,7 +123,6 @@ $sql2 = "
           OR
           (
               w.walkin_id IS NOT NULL
-              AND r.status = 'Confirm'
               AND a.last_update BETWEEN '$start_datetime' AND '$end_datetime'
           )
       )
@@ -132,12 +135,23 @@ $result2 = mysqli_query($conn, $sql2);
 if ($result2 && mysqli_num_rows($result2) > 0) {
     while ($row = mysqli_fetch_assoc($result2)) {
         $table_id = $row['table_id'];
+
         if ($tables[$table_id]['status'] !== 'occupied') {
             $tables[$table_id]['status'] = 'reserved';
             $reserved_count++;
+
+            // 🔍 กำหนด type ให้แยกว่าเป็น walkin หรือ reservation
+            if (!empty($row['reservation_id'])) {
+                $tables[$table_id]['type'] = 'reservation';
+            } elseif (!empty($row['walkin_id'])) {
+                $tables[$table_id]['type'] = 'walkin';
+            } else {
+                $tables[$table_id]['type'] = 'unknown';
+            }
         }
     }
 }
+
 
 // นับโต๊ะว่าง
 $available_count = 0;
@@ -258,15 +272,22 @@ foreach ($tables as $t) {
                             // จำนวนโต๊ะที่มีทั้งหมด (สมมติว่า 20 โต๊ะ)
                             for ($i = 1; $i <= 20; $i++) {
                                 $status_class = 'table-available'; // default = เขียว
-                                
+
                                 switch ($tables[$i]['status']) {
                                     case 'available':
                                         $status_class = 'table-available'; // เขียว
-                                        $onclick = "data-bs-toggle='modal' data-bs-target='#walkinModal' onclick='openWalkinModal($i)'";
+                                        $onclick = "data-bs-toggle='modal' data-bs-target='#walkinModal' onclick='openWalkinModal($i, $i, \"$selected_time\", $time_id)'";
+
                                         break;
                                     case 'reserved':
                                         $status_class = 'table-reserved'; // ส้ม
-                                        $onclick = "data-bs-toggle='modal' data-bs-target='#reservedModal' onclick='openReservedModal($i, \"$selected_time\")'";
+                                        if (isset($tables[$i]['type']) && $tables[$i]['type'] === 'reservation') {
+                                            $onclick = "onclick='openReservedModal($i, \"$selected_time\")'";
+                                        } elseif (isset($tables[$i]['type']) && $tables[$i]['type'] === 'walkin') {
+                                            $onclick = "onclick='openReservedModal($i, \"$selected_time\")'";
+                                        } else {
+                                            $onclick = '';
+                                        }
                                         break;
                                     case 'occupied':
                                         $status_class = 'table-occupied'; // แดง
@@ -288,15 +309,99 @@ foreach ($tables as $t) {
         </div>
     </div>
     <script>
-        function openReservedModal(tableNumber, timeSlot) {
-            document.getElementById('reservedTableNumber').textContent = tableNumber;
+        // ฟังก์ชันเปิด modal สำหรับโต๊ะที่จองแล้ว
+        function openReservedModal(tableId, timeSlot) {
+            document.getElementById('reservedTableNumber').textContent = tableId;
             document.getElementById('reservedTimeSlot').textContent = timeSlot;
+
+            fetch(`get_reserved_data.php?table_id=${tableId}&time=${timeSlot}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("✅ Reserved Data", data); // Debug
+                    if (data.type === 'walkin') {
+                        document.getElementById('walkinTableNumber').innerText = tableId;
+                        document.getElementById('walkinTimeSlot').innerText = timeSlot;
+                        document.getElementById('walkinFirstName').innerText = data.first_name;
+                        document.getElementById('walkinLastName').innerText = data.last_name;
+                        document.getElementById('walkinGuests').innerText = data.number_of_guest;
+
+                        const confirmInput = document.getElementById('confirmTableId_walkin');
+                        if (confirmInput) confirmInput.value = tableId;
+
+                        new bootstrap.Modal(document.getElementById('walkinReservedModal')).show();
+                    } else if (data.type === 'reservation') {
+                        document.getElementById('reservedTableNumber').innerText = tableId;
+                        document.getElementById('reservedTimeSlot').innerText = timeSlot;
+                        document.getElementById('reservedFirstName').innerText = data.first_name;
+                        document.getElementById('reservedLastName').innerText = data.last_name;
+                        document.getElementById('reservedGuests').innerText = data.number_of_guest;
+                        document.getElementById('confirmTableId').value = tableId;
+
+                        new bootstrap.Modal(document.getElementById('reservedModal')).show();
+                    }
+                })
+                .catch(error => {
+                    console.error("ไม่สามารถโหลดข้อมูลการจองได้", error);
+                    alert("ไม่สามารถโหลดข้อมูลการจองได้");
+                });
+        }
+        // ฟังก์ชันเปิด modal สำหรับโต๊ะว่าง
+        function openWalkinModal(tableId, tableNumber, timeSlot, timeId) {
+            const selectedTime = "<?= $selected_time ?>";
+            let bookingTime = "16.00";
+
+            switch (selectedTime) {
+                case "16-18":
+                    bookingTime = "16.00";
+                    break;
+                case "18-20":
+                    bookingTime = "18.00";
+                    break;
+                case "20-22":
+                    bookingTime = "20.00";
+                    break;
+                case "22-00":
+                    bookingTime = "22.00";
+                    break;
+                case "00-02":
+                    bookingTime = "00.00";
+                    break;
+            }
+
+            document.getElementById('walkinTableNumber').innerText = tableNumber;
+            document.getElementById('walkinTableId').value = tableId;
+            document.getElementById('walkinTimeId').value = timeId;
+            document.getElementById('bookingTimeInput').value = bookingTime;
+
+            // ✅ แก้เป็น backticks ตรงนี้
+            fetch(`get_table_capacity.php?table_id=${tableId}`)
+                .then(response => response.text())
+                .then(text => {
+                    console.log("Raw Response:", text);
+                    const data = JSON.parse(text);
+                    const guestInput = document.querySelector('#walkinForm input[name="number_of_guest"]');
+                    guestInput.max = data.capacity;
+                    //guestInput.placeholder = `สูงสุด ${data.capacity} คน`;
+                })
+                .catch(error => {
+                    alert("ไม่สามารถโหลดข้อมูลความจุโต๊ะได้");
+                    console.error("❌ Error fetching capacity:", error);
+                });
+
+            const walkinModal = new bootstrap.Modal(document.getElementById('walkinModal'));
+            walkinModal.show();
         }
 
-        function openWalkinModal(tableNumber) {
-    document.getElementById('walkinTableNumber').innerText = tableNumber;
-    document.getElementById('walkinTableId').value = tableNumber;
-        }
+        document.addEventListener("DOMContentLoaded", function() {
+            const walkinModal = document.getElementById('walkinModal');
+            if (walkinModal) {
+                walkinModal.addEventListener('hidden.bs.modal', () => {
+                    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style = '';
+                });
+            }
+        });
     </script>
 </body>
 <?php include dirname(__FILE__) . '/include/footer.php'; ?>
