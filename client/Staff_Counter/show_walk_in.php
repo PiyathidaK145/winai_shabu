@@ -34,7 +34,7 @@ $table_id = $_POST['table_id'] ?? '';
         <div class="row">
             <main class="main-wrapper col-md-9 ms-sm-auto py-4 col-lg-9 px-md-4 border-start">
                 <h2 class="mb-4">รับโต๊ะ <?php echo htmlspecialchars($table_number); ?> (Walk-in id: <?php echo htmlspecialchars($walkin_id); ?>)</h2>
-                <form action="process_selection.php" method="POST">
+                <form action="process_selection_walkin.php" method="POST">
 
                     <!-- Hidden Walk-in Data -->
                     <input type="hidden" name="walkin_id" value="<?php echo htmlspecialchars($walkin_id); ?>">
@@ -65,20 +65,55 @@ $table_id = $_POST['table_id'] ?? '';
                         </select>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="promotion" class="form-label"><strong>เลือกโปรโมชั่น:</strong></label>
-                        <select class="form-control" name="promotion_id">
-                            <?php while ($row = $promotion_result->fetch_assoc()) { ?>
-                                <option value="<?php echo $row['promotion_id']; ?>"><?php echo htmlspecialchars($row['promotions_name']); ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
+                    <?php
+                    $sql = "
+    SELECT 
+        p.promotion_id, 
+        p.promotions_name, 
+        pi.quantity 
+    FROM 
+        promotion p
+    JOIN 
+        promotion_item pi ON p.promotion_id = pi.promotion_id
+    WHERE 
+        (pi.for_customer_type = 'walk_in' OR pi.for_customer_type = 'both')
+        AND pi.status = 'active'
+";
+                    $result = $conn->query($sql);
+                    ?>
+
+                    <select class="form-control" name="promotion_id">
+                        <?php while ($row = $result->fetch_assoc()) {
+                            $promotion_id = $row['promotion_id'];
+                            $name = htmlspecialchars($row['promotions_name'], ENT_QUOTES, 'UTF-8');
+                            $quantity = is_null($row['quantity']) ? '' : " (คงเหลือ: {$row['quantity']})";
+                        ?>
+                            <option value="<?= htmlspecialchars($promotion_id, ENT_QUOTES, 'UTF-8') ?>">
+                                <?= $name . $quantity ?>
+                            </option>
+                        <?php } ?>
+                    </select>
 
                     <!-- กำหนดค่ารหัสพนักงานโดยอัตโนมัติ -->
-                    <input type="hidden" name="employee_id" value="<?php echo $employee_id; ?>">
-                    <button type="submit" class="btn btn-success">ยืนยันการเลือก</button>
-                    <a href="assign_table.php" class="btn btn-secondary">ย้อนกลับ</a>
+                    <?php
+                    $sql_random_employee = "SELECT employee_id FROM employee ORDER BY RAND() LIMIT 1";
+                    $result = mysqli_query($conn, $sql_random_employee);
+                    $employee_id = '';
 
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        $row = mysqli_fetch_assoc($result);
+                        $employee_id = $row['employee_id'];
+                    }
+                    ?>
+                    <input type="hidden" name="employee_id" value="<?php echo htmlspecialchars($employee_id); ?>">
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success">ยืนยันการเลือก</button>
+                        <a href="index.php" class="btn btn-secondary">ย้อนกลับ</a>
+                    </div>
                 </form>
+
         </div>
         </main>
+</body>
+<?php include dirname(__FILE__) . '/include/footer.php'; ?>

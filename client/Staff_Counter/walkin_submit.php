@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $first_name = mysqli_real_escape_string($conn, $first_name);
     $last_name = mysqli_real_escape_string($conn, $last_name);
 
-    $check_sql = "SELECT * FROM member WHERE first_name = '$first_name' AND last_name = '$last_name'";
+    $check_sql = "SELECT * FROM customer WHERE first_name = '$first_name' AND last_name = '$last_name'";
     $check_result = mysqli_query($conn, $check_sql);
 
     if (mysqli_num_rows($check_result) === 0) {

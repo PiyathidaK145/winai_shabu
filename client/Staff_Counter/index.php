@@ -29,9 +29,10 @@ function getTimeRange($selected_time, $today)
             $end   = "$today 23:59:59";
             break;
         case '00-02':
-            $tomorrow = date("Y-m-d", strtotime($today . " +1 day"));
-            $start = "$today 00:00:00";
-            $end   = "$tomorrow 01:59:59";
+            $yesterday = date('Y-m-d', strtotime($today . " -1 day"));
+            //$tomorrow = date("Y-m-d", strtotime($today . " +1 day"));
+            $start = "$yesterday 00:00:00";
+            $end   = "$today 01:59:59";
             break;
         default:
             $start = "$today 00:00:00";
@@ -313,6 +314,15 @@ foreach ($tables as $t) {
                         <input type="hidden" name="time_slot" id="formTimeSlot">
                         <input type="hidden" name="number_of_guest" id="formGuests">
                     </form>
+
+                    <form id="reservationRedirectForm" action="show_reservation.php" method="POST" style="display: none;">
+                        <input type="hidden" name="reservation_id" id="formReservationId">
+                        <input type="hidden" name="table_id" id="formReservationTableId">
+                        <input type="hidden" name="time_slot" id="formReservationTimeSlot">
+                        <input type="hidden" name="first_name" id="formReservationFirstName">
+                        <input type="hidden" name="last_name" id="formReservationLastName">
+                        <input type="hidden" name="number_of_guest" id="formReservationGuests">
+                    </form>
                 </section>
             </main>
         </div>
@@ -383,6 +393,29 @@ foreach ($tables as $t) {
                 document.getElementById('walkinRedirectForm').submit();
             });
 
+            document.getElementById('checkBookingBtn').addEventListener('click', function() {
+                const reservationId = document.getElementById('reservationIdHidden').value;
+                const tableId = document.getElementById('confirmTableId').value;
+                const timeSlot = document.getElementById('reservedTimeSlot').innerText;
+                const firstName = document.getElementById('reservedFirstName').innerText;
+                const lastName = document.getElementById('reservedLastName').innerText;
+                const guests = document.getElementById('reservedGuests').innerText;
+
+                // ✅ ใส่ค่าลงในฟอร์ม
+                document.getElementById('formReservationId').value = reservationId;
+                document.getElementById('formReservationTableId').value = tableId;
+                document.getElementById('formReservationTimeSlot').value = timeSlot;
+                document.getElementById('formReservationFirstName').value = firstName;
+                document.getElementById('formReservationLastName').value = lastName;
+                document.getElementById('formReservationGuests').value = guests;
+
+                // ✅ ตั้ง action พร้อม id
+                document.getElementById('reservationRedirectForm').action = `show_reservation.php?id=${reservationId}`;
+
+                // ✅ ส่งฟอร์ม
+                document.getElementById('reservationRedirectForm').submit();
+            });
+
         }
         // ฟังก์ชันเปิด modal สำหรับโต๊ะว่าง
         function openWalkinModal(tableId, tableNumber, timeSlot, timeId) {
@@ -433,6 +466,12 @@ foreach ($tables as $t) {
             const walkinModal = new bootstrap.Modal(document.getElementById('walkinModal'));
             walkinModal.show();
 
+            document.getElementById('walkinModal').addEventListener('hidden.bs.modal', function() {
+                document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                document.body.classList.remove('modal-open');
+                document.body.style = '';
+            });
+
             const verifyBtn = document.getElementById('verifyWalkinBtn');
 
             // ลบ Event เดิมออก ถ้ามี
@@ -452,6 +491,42 @@ foreach ($tables as $t) {
             const timeSlot = document.getElementById('walkinTimeSlot').innerText;
 
             window.location.href = `show_walk_in.php?id=${walkinId}&table_number=${tableNumber}&time=${timeSlot}`;
+        });
+
+        document.getElementById('checkBookingBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const reservationCode = document.getElementById('reservationCode').value.trim();
+
+            if (!reservationCode) {
+                alert("กรุณากรอกรหัสการจอง");
+                return;
+            }
+
+            fetch(`check_reservation_id.php?id=${reservationCode}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'found') {
+                        // ✅ กำหนดค่าจาก response ลงใน hidden input
+                        document.getElementById('formReservationId').value = data.reservation_id;
+                        document.getElementById('formReservationTableId').value = data.table_id;
+                        document.getElementById('formReservationTimeSlot').value = data.time_slot;
+                        document.getElementById('formReservationFirstName').value = data.first_name;
+                        document.getElementById('formReservationLastName').value = data.last_name;
+                        document.getElementById('formReservationGuests').value = data.number_of_guest;
+
+                        // ✅ ตั้ง action แล้วส่งฟอร์มไป show_reservation.php
+                        const form = document.getElementById('reservationRedirectForm');
+                        form.action = `show_reservation.php?id=${data.reservation_id}`;
+                        form.submit();
+                    } else {
+                        alert("ไม่พบรหัสการจองนี้ในระบบ");
+                    }
+                })
+                .catch(error => {
+                    console.error('เกิดข้อผิดพลาด', error);
+                    alert("เกิดข้อผิดพลาดในการตรวจสอบรหัส");
+                });
         });
     </script>
 </body>
