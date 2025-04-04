@@ -22,6 +22,21 @@ if ($package_id) {
     }
 }
 
+if ($promotion_id) {
+    // ตรวจสอบว่า quantity ไม่เป็น NULL
+    $check_quantity_sql = "SELECT quantity FROM promotion_item WHERE promotion_id = '$promotion_id'";
+    $check_quantity_result = mysqli_query($conn, $check_quantity_sql);
+
+    if ($check_quantity_result && mysqli_num_rows($check_quantity_result) > 0) {
+        $row_q = mysqli_fetch_assoc($check_quantity_result);
+        if (!is_null($row_q['quantity'])) {
+            // ทำการลดค่า quantity ลง 1
+            $update_quantity_sql = "UPDATE promotion_item SET quantity = quantity - 1 WHERE promotion_id = '$promotion_id'";
+            mysqli_query($conn, $update_quantity_sql);
+        }
+    }
+}
+
 // เตรียมคำสั่ง SQL สำหรับ insert
 $sql = "
     INSERT INTO getting_table (
