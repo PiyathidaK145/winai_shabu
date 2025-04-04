@@ -23,7 +23,7 @@ $number_of_guest = $_POST['number_of_guest'] ?? '';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>หน้าหลัก</title>
+    <title>รับโต๊ะ-Reservation</title>
 </head>
 
 <body>

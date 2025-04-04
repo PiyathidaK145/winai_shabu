@@ -5,7 +5,16 @@
                 <!-- หน้ารายการอาหารแต่ละโต๊ะ -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">
-                        <span><i class="fa-solid fa-list me-2"></i>หน้าหลัก</span> 
+                        <span><i class="fa-solid fa-list me-2"></i>หน้าหลัก</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="notification.php">
+                        <span><i class="fa-solid fa-bell me-2"></i>การแจ้งเตือน</span>
+                        <span id="notifyCount" class="position-absolute start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                        </span>
                     </a>
                 </li>
 
@@ -19,3 +28,17 @@
         </div>
     </nav>
 </div>
+<script>
+    function loadNotifyCount() {
+        fetch('get_notify_count.php')
+            .then(res => res.text())
+            .then(count => {
+                const badge = document.getElementById('notifyCount');
+                badge.innerText = count;
+                badge.style.display = parseInt(count) > 0 ? 'inline-block' : 'none';
+            });
+    }
+
+    loadNotifyCount();
+    setInterval(loadNotifyCount, 5000);
+</script>
