@@ -16,6 +16,10 @@
     <link href="../assets/css/table_status.css" rel="stylesheet">
     <!-- fontawesome -->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    
+
 </head>
 
 <body>

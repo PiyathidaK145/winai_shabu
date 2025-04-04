@@ -14,15 +14,15 @@ function getTimeRange($selected_time, $today)
     switch ($selected_time) {
         case '16-18':
             $start = "$today 00:00:00";
-            $end   = "$today 17:59:59";
+            $end   = "$today 23:59:59";
             break;
         case '18-20':
             $start = "$today 00:00:00";
-            $end   = "$today 19:59:59";
+            $end   = "$today 23:59:59";
             break;
         case '20-22':
             $start = "$today 00:00:00";
-            $end   = "$today 21:59:59";
+            $end   = "$today 23:59:59";
             break;
         case '22-00':
             $start = "$today 00:00:00";
@@ -37,7 +37,7 @@ function getTimeRange($selected_time, $today)
             break;
         default:
             $start = "$today 00:00:00";
-            $end   = "$today 17:59:59";
+            $end   = "$today 23:59:59";
     }
     return [$start, $end];
 }
@@ -331,20 +331,6 @@ foreach ($tables as $t) {
                     <h4 class="text-start my-6">
                         <div class="fw-bold">🟥 สถานะการใช้งานโต๊ะ</div>
                     </h4>
-                    <table class="table table-bordered table-striped table-hover">
-                        <thead class="table-warning">
-                            <tr>
-                                <th>หมายเลขโต๊ะ</th>
-                                <th>ชื่อ</th>
-                                <th>นามสกุล</th>
-                                <th>แพ็คเกจ</th>
-                                <th>โปรโมชัน</th>
-                                <th>เวลาเริ่มต้น</th>
-                                <th>เวลาคงเหลือ</th>
-                                <th>สถานะ</th>
-                            </tr>
-                        </thead>
-                    </table>
                     <?php include 'table_reservation_status.php'; ?>
                 </div>
 
