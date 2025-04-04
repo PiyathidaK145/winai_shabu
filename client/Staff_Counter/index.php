@@ -234,7 +234,7 @@ foreach ($tables as $t) {
                         <div class="col-12 text-center mb-2">
                             <h5 class="fw-bold text-secondary">
                                 📅 <span class="me-2">วันที่: <?= $today ?></span>
-                                🕒 เวลา: <?= $current_time ?>
+                                🕒 เวลา: <span id="current-time"></span>
                                 | <?= $selected_time ?>
                             </h5>
                         </div>
@@ -539,6 +539,26 @@ foreach ($tables as $t) {
                     alert("เกิดข้อผิดพลาดในการตรวจสอบรหัส");
                 });
         });
+
+        function updateDateTime() {
+            const now = new Date();
+
+            const date = now.toISOString().split('T')[0];
+
+            let hours = now.getHours().toString().padStart(2, "0");
+            let minutes = now.getMinutes().toString().padStart(2, "0");
+            let seconds = now.getSeconds().toString().padStart(2, "0");
+
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            const fullDateTime = `${date} ${timeString}`;
+
+            // อัปเดตเวลาใน span
+            document.getElementById("current-time").textContent = timeString;
+        }
+
+        // อัปเดตทุกวินาที
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); // เรียกทันทีเมื่อโหลด
     </script>
 </body>
 <?php include dirname(__FILE__) . '/include/footer.php'; ?>
