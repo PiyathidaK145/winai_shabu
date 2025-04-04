@@ -29,6 +29,7 @@ function getTimeRange($selected_time, $today)
             $end   = "$today 23:59:59";
             break;
         case '00-02':
+            //ตรงนี้ยังติดตรง logic
             $yesterday = date('Y-m-d', strtotime($today . " -1 day"));
             $tomorrow = date("Y-m-d", strtotime($today . " +1 day"));
             $start = "$today 00:00:00";
@@ -263,7 +264,6 @@ foreach ($tables as $t) {
                                 <div class="text-muted small">โต๊ะ</div>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -311,7 +311,7 @@ foreach ($tables as $t) {
                         <input type="hidden" name="first_name" id="formFirstName">
                         <input type="hidden" name="last_name" id="formLastName">
                         <input type="hidden" name="table_number" id="formTableNumber">
-                        <input type="hidden" name="table_id" id="formTableId"> <!-- ✅ เพิ่มตรงนี้ -->
+                        <input type="hidden" name="table_id" id="formTableId">
                         <input type="hidden" name="time_slot" id="formTimeSlot">
                         <input type="hidden" name="number_of_guest" id="formGuests">
                     </form>
@@ -335,7 +335,7 @@ foreach ($tables as $t) {
             document.getElementById('reservedTimeSlot').textContent = timeSlot;
 
             console.log(`Fetching: get_reserved_data.php?table_id=${tableId}&time=${timeSlot}`); // Debug
-            fetch(`get_reserved_data.php?table_id=${tableId}&time=${timeSlot}`)
+            fetch(`get_reserved_data.php?table_id=${tableId}&time=${timeSlot}`) //debug
                 .then(response => response.json())
                 .then(data => {
                     console.log("✅ Reserved Data", data); // Debug
@@ -503,7 +503,7 @@ foreach ($tables as $t) {
                 alert("กรุณากรอกรหัสการจอง");
                 return;
             }
-
+            //debug
             fetch(`check_reservation_id.php?id=${reservationCode}`)
                 .then(response => response.json())
                 .then(data => {

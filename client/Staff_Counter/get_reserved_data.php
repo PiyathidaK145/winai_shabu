@@ -20,11 +20,17 @@ if (isset($_GET['table_id']) && isset($_GET['time'])) {
     $time_id = $time_map[$time] ?? 1001;
 
     // ตรวจสอบจาก Walk-in
-    $walkin_sql = "SELECT w.walkin_id, w.first_name, w.last_name, w.number_of_guest, 'walkin' AS type
-        FROM walkin w
-        INNER JOIN table_availability a ON w.availability_id = a.availability_id
-        WHERE a.table_id = $table_id AND a.time_id = $time_id
-        LIMIT 1";
+    $walkin_sql = "SELECT 
+        w.walkin_id, 
+        c.first_name, 
+        c.last_name, 
+        w.number_of_guest, 
+        'walkin' AS type
+    FROM walkin w
+    INNER JOIN customer c ON w.customer_id = c.customer_id
+    INNER JOIN table_availability a ON w.availability_id = a.availability_id
+    WHERE a.table_id = $table_id AND a.time_id = $time_id
+    LIMIT 1";
     $walkin_result = mysqli_query($conn, $walkin_sql);
 
     if ($walkin_result && $walkin_data = mysqli_fetch_assoc($walkin_result)) {
@@ -39,11 +45,17 @@ if (isset($_GET['table_id']) && isset($_GET['time'])) {
     }
 
     // ตรวจสอบจาก Reservation
-    $reserve_sql = "SELECT r.reservation_id, r.first_name, r.last_name, r.number_of_guest, 'reservation' AS type
-                FROM reservation r
-                INNER JOIN table_availability a ON r.availability_id = a.availability_id
-                WHERE a.table_id = $table_id AND a.time_id = $time_id
-                LIMIT 1";
+    $reserve_sql = "SELECT 
+        r.reservation_id, 
+        c.first_name, 
+        c.last_name, 
+        r.number_of_guest, 
+        'reservation' AS type
+    FROM reservation r
+    INNER JOIN customer c ON r.customer_id = c.customer_id
+    INNER JOIN table_availability a ON r.availability_id = a.availability_id
+    WHERE a.table_id = $table_id AND a.time_id = $time_id
+    LIMIT 1";
     $reserve_result = mysqli_query($conn, $reserve_sql);
 
     if ($reserve_data = mysqli_fetch_assoc($reserve_result)) {
