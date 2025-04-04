@@ -8,10 +8,17 @@ if (!$reservation_id) {
     exit;
 }
 
-$sql = "SELECT r.reservation_id, r.first_name, r.last_name, r.number_of_guest, a.table_id, a.time_id
-        FROM reservation r
-        INNER JOIN table_availability a ON r.availability_id = a.availability_id
-        WHERE r.reservation_id = ?";
+$sql = "SELECT 
+    r.reservation_id, 
+    c.first_name, 
+    c.last_name, 
+    r.number_of_guest, 
+    a.table_id, 
+    a.time_id
+FROM reservation r
+INNER JOIN customer c ON r.customer_id = c.customer_id
+INNER JOIN table_availability a ON r.availability_id = a.availability_id
+WHERE r.reservation_id = ?";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $reservation_id);
@@ -22,7 +29,8 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
 
     // ✅ Map time_id เป็นช่วงเวลา
-    function getTimeSlotRange($time_id) {
+    function getTimeSlotRange($time_id)
+    {
         $map = [
             1001 => '16-18',
             1002 => '18-20',
@@ -47,6 +55,3 @@ if ($result->num_rows > 0) {
 } else {
     echo json_encode(['status' => 'not_found']);
 }
-
-?>
-
