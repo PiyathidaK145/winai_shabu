@@ -9,13 +9,6 @@
                     </a>
                 </li>
 
-                <!-- ยอดขาย -->
-                <li class="nav-item">
-                    <a class="nav-link" href="payment_list.php">
-                        <span><i class="fa-solid fa-money-bill me-2"></i>รายการจ่ายเงิน</span> 
-                    </a>
-                </li>
-
                 <li class="nav-item border-top mt-auto pt-2">
                     <a class="nav-link" href="#">
                         <i class="bi-box-arrow-left me-2"></i>

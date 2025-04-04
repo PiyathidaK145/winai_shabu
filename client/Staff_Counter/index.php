@@ -162,6 +162,7 @@ foreach ($tables as $t) {
     if ($t['status'] === 'available') $available_count++;
 }
 
+
 ?>
 
 <!DOCTYPE html>
@@ -241,7 +242,7 @@ foreach ($tables as $t) {
                         <!-- กำลังกินอยู่ -->
                         <div class="col-md-3 col-sm-6">
                             <div class="p-3 rounded-3 text-center" style="border: 1px solid #ccc;">
-                                <div class="fw-bold" style="color: #e53935;">🟥 กำลังกินอยู่</div>
+                                <div class="fw-bold" style="color: #e53935;">🟥 กำลังใช้งาน</div>
                                 <div class="display-6 fw-bold text-dark"><?= $occupied_count ?></div>
                                 <div class="text-muted small">โต๊ะ</div>
                             </div>
@@ -325,6 +326,29 @@ foreach ($tables as $t) {
                         <input type="hidden" name="number_of_guest" id="formReservationGuests">
                     </form>
                 </section>
+
+                <div class="mt-4">
+                    <h4 class="text-start my-6">
+                        <div class="fw-bold">🟥 สถานะการใช้งานโต๊ะ</div>
+                    </h4>
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="table-warning">
+                            <tr>
+                                <th>หมายเลขโต๊ะ</th>
+                                <th>ชื่อ</th>
+                                <th>นามสกุล</th>
+                                <th>แพ็คเกจ</th>
+                                <th>โปรโมชัน</th>
+                                <th>เวลาเริ่มต้น</th>
+                                <th>เวลาคงเหลือ</th>
+                                <th>สถานะ</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <?php include 'table_reservation_status.php'; ?>
+                </div>
+
+
             </main>
         </div>
     </div>
