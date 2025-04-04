@@ -132,7 +132,7 @@ include dirname(__FILE__) . '/include/header.php';
         }
 
         fetchNotifications();
-        setInterval(fetchNotifications, 5000); // auto-refresh every 5s
+        setInterval(fetchNotifications, 1000); // auto-refresh every 1s
     </script>
 </body>
 <?php include dirname(__FILE__) . '/include/footer.php'; ?>

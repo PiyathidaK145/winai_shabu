@@ -138,10 +138,15 @@ $result2 = mysqli_query($conn, $sql2);
 if ($result2 && mysqli_num_rows($result2) > 0) {
     while ($row = mysqli_fetch_assoc($result2)) {
         $table_id = $row['table_id'];
-
-        if ($tables[$table_id]['status'] !== 'occupied') {
+        if (
+            (!isset($tables[$table_id]['status']) || $tables[$table_id]['status'] !== 'occupied') &&
+            (!isset($tables[$table_id]['counted']) || $tables[$table_id]['counted'] !== true)
+        ) {
             $tables[$table_id]['status'] = 'reserved';
+            $tables[$table_id]['counted'] = true; // ✅ ป้องกันนับซ้ำ
             $reserved_count++;
+            // Debugging: Output reserved table details
+            //echo "$reserved_count DEBUG: Reserved Table ID = $table_id<br>";
 
             // 🔍 กำหนด type ให้แยกว่าเป็น walkin หรือ reservation
             if (!empty($row['reservation_id'])) {
