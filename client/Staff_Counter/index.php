@@ -3,7 +3,6 @@ date_default_timezone_set("Asia/Bangkok");
 include dirname(__FILE__) . '/include/header.php';
 include dirname(__FILE__) . '/../../config/connect_db.php';
 include dirname(__FILE__) . '/model/modal_reserved.php';
-include dirname(__FILE__) . '/model/modal_occupied.php';
 include dirname(__FILE__) . '/model/modal_available.php';
 
 $today = date("Y-m-d");

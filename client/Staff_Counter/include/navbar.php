@@ -2,7 +2,7 @@
     <nav id="sidebarMenu" class="col-md-3 col-lg-3 d-md-block sidebar collapse">
         <div class="position-sticky py-4 px-3 sidebar-sticky">
             <ul class="nav flex-column">
-                <!-- หน้ารายการอาหารแต่ละโต๊ะ -->
+                
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">
                         <span><i class="fa-solid fa-list me-2"></i>หน้าหลัก</span>
@@ -12,7 +12,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="notification.php">
                         <span><i class="fa-solid fa-bell me-2"></i>การแจ้งเตือน</span>
-                        <span id="notifyCount" class="position-absolute start-100 translate-middle badge rounded-pill bg-danger">
+                        <span id="notifyCount" class="position-absolute start-100 badge rounded-pill bg-danger">
                             0
                         </span>
                     </a>

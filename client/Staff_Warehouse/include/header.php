@@ -9,12 +9,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;700&display=swap" rel="stylesheet"> -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap-icons.css" rel="stylesheet">
-    <link href="css/apexcharts.css" rel="stylesheet">
-    <link href="css/tooplate-mini-finance.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap-icons.css" rel="stylesheet">
+    <link href="../assets/css/apexcharts.css" rel="stylesheet">
+    <link href="../assets/css/tooplate-mini-finance.css" rel="stylesheet">
+    <link href="../assets/css/table_status.css" rel="stylesheet">
     <!-- fontawesome -->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    
 </head>
 
 <body>
@@ -39,7 +43,7 @@
                 <div class="dropdown px-3">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="images/medium-shot-happy-man-smiling.jpg" class="profile-image img-fluid" alt="">  <!--รูปทดสอบ-->
-                    </a>
+               ฆ     </a>
                     <ul class="dropdown-menu bg-white shadow">
                         <li>
                             <div class="dropdown-menu-profile-thumb d-flex">
