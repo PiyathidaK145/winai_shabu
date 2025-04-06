@@ -10,10 +10,15 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <span><i class="fa-solid fa-bowl-food"></i>รายการวัตถุดิบ</span>
+                    <a class="nav-link" href="raw_material.php">
+                        <span><i class="fa-solid fa-bowl-food me-2"></i>รายการวัตถุดิบ</span>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="import_raw_material.php">
+                        <span><i class="fa-solid fa-clock-rotate-left me-2"></i>รายการนำเข้าวัตถุดิบ</span>
+                    </a>
 
                 <li class="nav-item">
                     <a class="nav-link" href="notification.php">
