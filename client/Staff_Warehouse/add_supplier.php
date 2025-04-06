@@ -21,6 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Error: " . mysqli_error($conn);
     }
 }
+
+include dirname(__FILE__) . '/include/header.php';
 ?>
 
 <!DOCTYPE html>

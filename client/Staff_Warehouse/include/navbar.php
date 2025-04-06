@@ -16,7 +16,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="import_raw_material.php">
                         <span><i class="fa-solid fa-clock-rotate-left me-2"></i>ประวัติการนำเข้าวัตถุดิบ</span>
                     </a>
                 </li>
