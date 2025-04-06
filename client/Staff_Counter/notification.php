@@ -53,8 +53,8 @@ include dirname(__FILE__) . '/include/header.php';
 <body>
     <div class="container-fluid">
         <main class="main-wrapper col-md-9 ms-sm-auto py-4 col-lg-9 px-md-4 border-start">
-            <h2 class="mb-4">การแจ้งเตือน</h2>
-            <table>
+            <h3 class="mb-4"><strong>การแจ้งเตือน</strong></h3>
+            <table class="table_use table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>ลำดับ</th>

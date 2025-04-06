@@ -1,0 +1,184 @@
+<?php
+date_default_timezone_set("Asia/Bangkok");
+include dirname(__FILE__) . '/include/header.php';
+include dirname(__FILE__) . '/../../config/connect_db.php';
+
+// รับค่าการกรอง
+$category_id = $_GET['category_id'] ?? '';
+
+// ดึงหมวดหมู่ทั้งหมด
+$category_query = "SELECT DISTINCT c.category_id, c.category_name 
+                   FROM category c 
+                   JOIN raw_material rm ON c.category_id = rm.category_id 
+                   JOIN supplier s ON rm.supplier_id = s.supplier_id";
+$category_result = mysqli_query($conn, $category_query);
+
+// ดึงเมนูตาม category_id
+$menu_query = "SELECT DISTINCT rm.item_name 
+               FROM raw_material rm 
+               WHERE 1 ";
+if (!empty($category_id)) {
+    $menu_query .= "AND rm.category_id = '$category_id'";
+}
+
+$menu_result = mysqli_query($conn, $menu_query);
+
+$sql = "
+    SELECT rm.*, w.name AS warehouse_name 
+    FROM raw_material rm
+    LEFT JOIN warehouse w ON rm.warehouse_id = w.warehouse_id
+    WHERE 1
+";
+
+if (!empty($category_id)) {
+    $sql .= " AND rm.category_id = '$category_id'";
+}
+
+
+$result = mysqli_query($conn, $sql);
+
+?>
+
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>รายการวัตถุดิบ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="row">
+        <main class="main-wrapper col-md-9 ms-sm-auto py-4 col-lg-9 px-md-4 border-start">
+            <div class="container mt-4">
+                <h3 class="mb-4"><strong>รายการวัตถุดิบ</strong></h3>
+
+                <!-- Filter Form -->
+                <form method="GET" class="row mb-4">
+                    <div class="col d-flex align-items-end justify-content-between">
+                        <div style="max-width: 300px; width: 100%;">
+                            <label for="category_id">หมวดหมู่</label>
+                            <select name="category_id" id="category_id" class="form-select" onchange="this.form.submit()">
+                                <option value="">ทั้งหมด</option>
+                                <?php while ($cat = mysqli_fetch_assoc($category_result)) : ?>
+                                    <option value="<?= $cat['category_id'] ?>" <?= ($cat['category_id'] == $category_id) ? 'selected' : '' ?>>
+                                        <?= $cat['category_name'] ?>
+                                    </option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+
+                        <div>
+                            <a href="add_raw_material.php" class="btn btn-success ms-3">
+                                <i class="fa-solid fa-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+
+                <!-- Supplier Table -->
+                <div class="table-responsive">
+                    <table id="tableUse" class="table_use table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ลำดับ</th>
+                                <th>ภาพประกอบ</th>
+                                <th>ชื่อวัตถุดิบ</th>
+                                <th onclick="sortTableByNumber()" style="cursor: pointer;">
+                                    จำนวน <i id="sortIcon" class="fa-solid fa-arrow-down"></i>
+                                </th>
+                                <th>สถานะ</th>
+                                <th>สถานที่เก็บ</th>
+                                <th>การดำเนินการ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (mysqli_num_rows($result) > 0): ?>
+                                <?php $no = 1;
+                                while ($row = mysqli_fetch_assoc($result)) : ?>
+                                    <tr>
+                                        <td><?= $no++ ?></td>
+                                        <td>
+                                            <?php if (!empty($row['image_url'])): ?>
+                                                <img src="../../<?= $row['image_url'] ?>" width="60">
+                                            <?php else: ?>
+                                                -
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><?= htmlspecialchars($row['item_name']) ?></td>
+                                        <td data-capacity="<?= htmlspecialchars($row['capacity']) ?>">
+                                            <?= htmlspecialchars($row['capacity']) ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            if ($row['status'] == 'available') {
+                                                if ($row['capacity'] > 20) {
+                                                    echo '<span class="badge bg-success">available</span>';
+                                                } elseif ($row['capacity'] > 0) {
+                                                    echo '<span class="badge bg-warning text-dark">low stock</span>';
+                                                } else {
+                                                    echo '<span class="badge bg-danger">out of stock</span>';
+                                                }
+                                            } elseif ($row['status'] == 'out_of_stock') {
+                                                echo '<span class="badge bg-danger">out of stock</span>';
+                                            } else {
+                                                echo '<span class="badge bg-secondary">ไม่ระบุ</span>';
+                                            }
+                                            ?>
+                                        </td>
+                                        <td><?= htmlspecialchars($row['warehouse_name']) ?></td>
+                                        <td>
+                                            <a href="edit_raw_material.php?id=<?= $row['raw_material_id'] ?>" class="btn btn-warning btn-sm">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a href="delete_raw_material.php?id=<?= $row['raw_material_id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('ยืนยันการลบหรือไม่?')">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="6" class="text-center">ไม่พบข้อมูลวัตถุดิบ</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <?php include dirname(__FILE__) . '/include/footer.php'; ?>
+    <script>
+        let sortAsc = true;
+
+        function sortTableByNumber() {
+            const table = document.getElementById("tableUse");
+            const tbody = table.querySelector("tbody");
+            const rows = Array.from(tbody.querySelectorAll("tr"));
+
+            rows.sort((a, b) => {
+                const aCap = parseFloat(a.cells[3].dataset.capacity || 0);
+                const bCap = parseFloat(b.cells[3].dataset.capacity || 0);
+                return sortAsc ? aCap - bCap : bCap - aCap;
+            });
+
+            tbody.innerHTML = "";
+            rows.forEach(row => tbody.appendChild(row));
+
+            // เปลี่ยน icon
+            const icon = document.getElementById("sortIcon");
+            icon.classList.remove("fa-arrow-down", "fa-arrow-up");
+            icon.classList.add(sortAsc ? "fa-arrow-up" : "fa-arrow-down");
+
+            sortAsc = !sortAsc;
+        }
+
+    </script>
+</body>
+
+</html>

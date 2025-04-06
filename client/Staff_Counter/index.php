@@ -176,6 +176,8 @@ foreach ($tables as $t) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>หน้าหลัก</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/table_status.css" rel="stylesheet">
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const labels = document.querySelectorAll(".filter-label");
@@ -272,7 +274,10 @@ foreach ($tables as $t) {
                     </div>
                 </div>
 
+
                 <section id="map">
+
+
                     <section id="rectangle-under-map">
                         <div class="rectangle-box">
                             <?php
@@ -563,6 +568,9 @@ foreach ($tables as $t) {
         // อัปเดตทุกวินาที
         setInterval(updateDateTime, 1000);
         updateDateTime(); // เรียกทันทีเมื่อโหลด
+        setInterval(() => {
+            window.location.reload();
+        }, 5000);
     </script>
 </body>
 <?php include dirname(__FILE__) . '/include/footer.php'; ?>

@@ -1,101 +1,116 @@
 <?php
-// สมมติฐานข้อมูลแพ็กเกจ
-$packages = [
-    ["id" => 1, "name" => "Basic Package", "description" => "Basic promotional package for beginners", "promotion" => "Yes"],
-    ["id" => 2, "name" => "Premium Package", "description" => "Advanced promotional package with extra benefits", "promotion" => "Yes"],
-    ["id" => 3, "name" => "Exclusive Package", "description" => "Exclusive package for top-tier customers", "promotion" => "No"],
-];
+date_default_timezone_set("Asia/Bangkok");
+include dirname(__FILE__) . '/include/header.php';
+include dirname(__FILE__) . '/../../config/connect_db.php';
+$sql = "
+    SELECT 
+        p.package_id,
+        p.package_name,
+        p.discription,
+        p.price,
+        GROUP_CONCAT(r.item_name SEPARATOR ', ') AS menu_list
+    FROM 
+        package AS p
+    LEFT JOIN package_item AS pi ON p.package_id = pi.package_id
+    LEFT JOIN menu AS m ON pi.menu_id = m.menu_id
+    LEFT JOIN raw_material AS r ON m.raw_material_id = r.raw_material_id
+    GROUP BY 
+        p.package_id
+";
 
-// เริ่มต้นการกรอง
-$filteredPackages = $packages;
 
-// ตรวจสอบหากมีการกรองจาก checkbox
-if (isset($_POST['filter_promotion']) && !empty($_POST['filter_promotion'])) {
-    $filterPromotions = $_POST['filter_promotion'];
-    $filteredPackages = array_filter($packages, function ($package) use ($filterPromotions) {
-        // กรองตามโปรโมชั่นที่ตรงกับที่เลือก
-        return in_array($package['promotion'], $filterPromotions);
-    });
-}
+$result = mysqli_query($conn, $sql);
 ?>
 
-<?php include 'include/header.php'; ?>
+<!DOCTYPE html>
+<html lang="th">
 
-<div class="container-fluid">
+<head>
+    <meta charset="UTF-8">
+    <title>รายการแพ็คเกจ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
     <div class="row">
         <main class="main-wrapper col-md-9 ms-sm-auto py-4 col-lg-9 px-md-4 border-start">
-            <div class="container">
-                <h1>แพ็คเกจ</h1>
-
-                <!-- ปุ่มเพิ่มแพ็กเกจใหม่ -->
-                <a href="Add_Package.php" class="btn btn-primary mb-3">เพิ่มแพ็คเกจ</a>
-                <div class="mb-3 d-flex justify-content-end">
-                    <button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#filterModal">การกรอง</button>
+            <div class="container mt-4">
+                <h3 class="mb-4"><strong>รายการแพ็คเกจ</strong></h3>
+                <div class="mb-3 text-end">
+                    <a href="add_package.php" class="btn btn-success">
+                        <i class="fa-solid fa-plus"></i>
+                    </a>
                 </div>
-
-                <!-- ตารางแสดงแพ็กเกจ -->
-                <div class="package-table">
-                    <table class="table table-bordered">
-                        <thead>
+                <div class="table-responsive">
+                    <table id="tableUse" class="table_use table-bordered table-hover">
+                        <thead class="table-light">
                             <tr>
-                                <th>#</th>
-                                <th>ชื่อแพ็คเกจ</th>
+                                <th>ลำดับ</th>
+                                <th>ชื่อเพ็คเกจ</th>
                                 <th>คำอธิบาย</th>
-                                <th>โปรโมชั่น</th>
-                                <th>Actions</th>
+                                <th onclick="sortTableByNumber()" style="cursor: pointer;">
+                                    ราคา <i id="sortIcon" class="fa-solid fa-arrow-down"></i>
+                                </th>
+                                <th>การดำเนินการ</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            foreach ($filteredPackages as $package) {
-                                echo "<tr>";
-                                echo "<td>" . $package['id'] . "</td>";
-                                echo "<td>" . htmlspecialchars($package['name']) . "</td>";
-                                echo "<td>" . htmlspecialchars($package['description']) . "</td>";
-                                echo "<td>" . $package['promotion'] . "</td>";
-                                echo "<td>
-                                        <a href='Edit_Package.php?id=" . $package['id'] . "' class='btn btn-warning'>Edit</a>
-                                        <button class='btn btn-danger'>Delete</button>
-                                      </td>";
-                                echo "</tr>";
-                            }
+                            if (mysqli_num_rows($result) > 0):
+                                $no = 1;
+                                while ($row = mysqli_fetch_assoc($result)):
                             ?>
+                                    <tr>
+                                        <td><?= $no++ ?></td>
+                                        <td><?= htmlspecialchars($row['package_name']) ?></td>
+                                        <td><?= htmlspecialchars($row['discription']) ?></td>
+                                        <td data-capacity="<?= $row['price'] ?>"><?= number_format($row['price'], 2) ?> บาท</td>
+
+                                        <td>
+                                            <a href="edit_package.php?id=<?= $row['package_id'] ?>" class="btn btn-sm btn-warning">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+                                            <a href="delete_package.php?id=<?= $row['package_id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบแพ็คเกจนี้?')">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endwhile;
+                            else: ?>
+                                <tr>
+                                    <td colspan="6" class="text-center">ไม่พบข้อมูลแพ็คเกจ</td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
-        </main>
-    </div>
 
-    <!-- Filter Modal -->
-    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="filterModalLabel">กรองข้อมูลแพ็กเกจ</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" action="packages.php">
-                        <div class="mb-3">
-                            <label class="form-label">โปรโมชั่น</label><br>
-                            <input type="checkbox" id="promotion_yes" name="filter_promotion[]" value="Yes">
-                            <label for="promotion_yes">มีโปรโมชั่น</label><br>
-                            <input type="checkbox" id="promotion_no" name="filter_promotion[]" value="No">
-                            <label for="promotion_no">ไม่มีโปรโมชั่น</label><br>
-                        </div>
-                        <button type="submit" class="btn btn-primary">กรอง</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+            <script>
+                let sortAsc = true;
 
-</div>
+                function sortTableByNumber() {
+                    const table = document.getElementById("tableUse");
+                    const tbody = table.querySelector("tbody");
+                    const rows = Array.from(tbody.querySelectorAll("tr"));
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-</body>
-</html>
+                    rows.sort((a, b) => {
+                        const aCap = parseFloat(a.cells[3].dataset.capacity || 0);
+                        const bCap = parseFloat(b.cells[3].dataset.capacity || 0);
+                        return sortAsc ? aCap - bCap : bCap - aCap;
+                    });
+
+                    tbody.innerHTML = "";
+                    rows.forEach(row => tbody.appendChild(row));
+
+                    // เปลี่ยนไอคอน
+                    const icon = document.getElementById("sortIcon");
+                    icon.classList.remove("fa-arrow-down", "fa-arrow-up");
+                    icon.classList.add(sortAsc ? "fa-arrow-up" : "fa-arrow-down");
+
+                    sortAsc = !sortAsc;
+                }
+            </script>
+
+
+            <?php include 'include/footer.php'; ?>

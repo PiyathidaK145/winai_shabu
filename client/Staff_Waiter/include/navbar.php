@@ -5,7 +5,7 @@
                 
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">
-                        <span><i class="fa-solid fa-list me-2"></i>รายการอาหาร</span>
+                        <span><i class="fa-solid fa-list me-2"></i>รายการอาหารแต่ละโต๊ะ</span>
                     </a>
                 </li>
 

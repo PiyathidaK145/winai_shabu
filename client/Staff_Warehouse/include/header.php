@@ -16,6 +16,8 @@
     <link href="../assets/css/table_status.css" rel="stylesheet">
     <!-- fontawesome -->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     
@@ -43,7 +45,7 @@
                 <div class="dropdown px-3">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="images/medium-shot-happy-man-smiling.jpg" class="profile-image img-fluid" alt="">  <!--รูปทดสอบ-->
-               ฆ     </a>
+                    </a>
                     <ul class="dropdown-menu bg-white shadow">
                         <li>
                             <div class="dropdown-menu-profile-thumb d-flex">
