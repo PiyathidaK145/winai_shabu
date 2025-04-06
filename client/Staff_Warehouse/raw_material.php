@@ -5,6 +5,7 @@ include dirname(__FILE__) . '/../../config/connect_db.php';
 
 // รับค่าการกรอง
 $category_id = $_GET['category_id'] ?? '';
+$status_filter = $_GET['status'] ?? '';
 
 // ดึงหมวดหมู่ทั้งหมด
 $category_query = "SELECT DISTINCT c.category_id, c.category_name 
@@ -14,19 +15,18 @@ $category_query = "SELECT DISTINCT c.category_id, c.category_name
 $category_result = mysqli_query($conn, $category_query);
 
 // ดึงเมนูตาม category_id
-$menu_query = "SELECT DISTINCT rm.item_name 
-               FROM raw_material rm 
-               WHERE 1 ";
+$menu_query = "SELECT DISTINCT rm.item_name FROM raw_material rm WHERE 1 ";
 if (!empty($category_id)) {
     $menu_query .= "AND rm.category_id = '$category_id'";
 }
-
 $menu_result = mysqli_query($conn, $menu_query);
 
+// SQL หลัก
 $sql = "
-    SELECT rm.*, w.name AS warehouse_name 
+    SELECT rm.*, w.name AS warehouse_name, m.quantity_of_sale AS amount_per_dish, m.unit
     FROM raw_material rm
     LEFT JOIN warehouse w ON rm.warehouse_id = w.warehouse_id
+    LEFT JOIN menu m ON rm.raw_material_id = m.raw_material_id
     WHERE 1
 ";
 
@@ -34,9 +34,16 @@ if (!empty($category_id)) {
     $sql .= " AND rm.category_id = '$category_id'";
 }
 
+// เงื่อนไข filter ตาม status
+if ($status_filter === 'available') {
+    $sql .= " AND rm.status = 'available' AND rm.capacity > 20";
+} elseif ($status_filter === 'low_stock') {
+    $sql .= " AND rm.status = 'available' AND rm.capacity > 0 AND rm.capacity <= 20";
+} elseif ($status_filter === 'out_of_stock') {
+    $sql .= " AND (rm.status = 'out_of_stock' OR rm.capacity = 0)";
+}
 
 $result = mysqli_query($conn, $sql);
-
 ?>
 
 <!DOCTYPE html>
@@ -56,29 +63,37 @@ $result = mysqli_query($conn, $sql);
 
                 <!-- Filter Form -->
                 <form method="GET" class="row mb-4">
-                    <div class="col d-flex align-items-end justify-content-between">
-                        <div style="max-width: 300px; width: 100%;">
-                            <label for="category_id">หมวดหมู่</label>
-                            <select name="category_id" id="category_id" class="form-select" onchange="this.form.submit()">
-                                <option value="">ทั้งหมด</option>
-                                <?php while ($cat = mysqli_fetch_assoc($category_result)) : ?>
-                                    <option value="<?= $cat['category_id'] ?>" <?= ($cat['category_id'] == $category_id) ? 'selected' : '' ?>>
-                                        <?= $cat['category_name'] ?>
-                                    </option>
-                                <?php endwhile; ?>
-                            </select>
-                        </div>
+                    <div class="col-md-4">
+                        <label for="category_id">หมวดหมู่</label>
+                        <select name="category_id" id="category_id" class="form-select" onchange="this.form.submit()">
+                            <option value="">ทั้งหมด</option>
+                            <?php while ($cat = mysqli_fetch_assoc($category_result)) : ?>
+                                <option value="<?= $cat['category_id'] ?>" <?= ($cat['category_id'] == $category_id) ? 'selected' : '' ?>>
+                                    <?= $cat['category_name'] ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
 
-                        <div>
-                            <a href="add_raw_material.php" class="btn btn-success ms-3">
-                                <i class="fa-solid fa-plus"></i>
-                            </a>
-                        </div>
+                    <div class="col-md-4">
+                        <label for="status">สถานะ</label>
+                        <select name="status" id="status" class="form-select" onchange="this.form.submit()">
+                            <option value="">ทั้งหมด</option>
+                            <option value="available" <?= ($status_filter == 'available') ? 'selected' : '' ?>>available</option>
+                            <option value="low_stock" <?= ($status_filter == 'low_stock') ? 'selected' : '' ?>>low stock</option>
+                            <option value="out_of_stock" <?= ($status_filter == 'out_of_stock') ? 'selected' : '' ?>>out of stock</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 text-end">
+                        <label class="d-block">&nbsp;</label>
+                        <a href="add_raw_material.php" class="btn btn-success">
+                            <i class="fa-solid fa-plus"></i>
+                        </a>
                     </div>
                 </form>
 
-
-                <!-- Supplier Table -->
+                <!-- Raw Material Table -->
                 <div class="table-responsive">
                     <table id="tableUse" class="table_use table-bordered table-hover">
                         <thead class="table-light">
@@ -87,8 +102,10 @@ $result = mysqli_query($conn, $sql);
                                 <th>ภาพประกอบ</th>
                                 <th>ชื่อวัตถุดิบ</th>
                                 <th onclick="sortTableByNumber()" style="cursor: pointer;">
-                                    จำนวน <i id="sortIcon" class="fa-solid fa-arrow-down"></i>
+                                    จำนวนจาน <i id="sortIcon" class="fa-solid fa-arrow-down"></i>
                                 </th>
+                                <th>ปริมาณต่อจาน</th>
+                                <th>หน่วย</th>
                                 <th>สถานะ</th>
                                 <th>สถานที่เก็บ</th>
                                 <th>การดำเนินการ</th>
@@ -111,6 +128,8 @@ $result = mysqli_query($conn, $sql);
                                         <td data-capacity="<?= htmlspecialchars($row['capacity']) ?>">
                                             <?= htmlspecialchars($row['capacity']) ?>
                                         </td>
+                                        <td><?= htmlspecialchars($row['amount_per_dish'] ?? '-') ?></td>
+                                        <td><?= htmlspecialchars($row['unit'] ?? '-') ?></td>
                                         <td>
                                             <?php
                                             if ($row['status'] == 'available') {
@@ -141,14 +160,13 @@ $result = mysqli_query($conn, $sql);
                                 <?php endwhile; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="6" class="text-center">ไม่พบข้อมูลวัตถุดิบ</td>
+                                    <td colspan="7" class="text-center">ไม่พบข้อมูลวัตถุดิบ</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
-
         </main>
     </div>
 
@@ -177,7 +195,6 @@ $result = mysqli_query($conn, $sql);
 
             sortAsc = !sortAsc;
         }
-
     </script>
 </body>
 

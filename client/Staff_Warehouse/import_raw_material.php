@@ -43,6 +43,8 @@ SELECT
     crm.capacity,
     irm.cost,
     irm.create_at,
+    m.quantity_of_sale,
+    m.unit,
     DATE_ADD(irm.create_at, INTERVAL rm.Num_before_consumption DAY) AS expired_date
 FROM 
     calculate_raw_material AS crm
@@ -97,7 +99,7 @@ $result = mysqli_stmt_get_result($stmt);
 
 <head>
     <meta charset="UTF-8">
-    <title>ประวัติการนำเข้าวัตถุดิบ</title>
+    <title>รายการนำเข้าวัตถุดิบ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -105,7 +107,7 @@ $result = mysqli_stmt_get_result($stmt);
     <div class="row">
         <main class="main-wrapper col-md-9 ms-sm-auto py-4 col-lg-9 px-md-4 border-start">
             <div class="container mt-4">
-                <h3 class="mb-4"><strong>ประวัติการนำเข้าวัตถุดิบ</strong></h3>
+                <h3 class="mb-4"><strong>รายการนำเข้าวัตถุดิบ</strong></h3>
 
                 <form method="GET" class="row mb-4 g-3 align-items-end">
                     <div class="col-md-2">
@@ -166,15 +168,19 @@ $result = mysqli_stmt_get_result($stmt);
                                 <th>ลำดับ</th>
                                 <th>ชื่อวัตถุดิบ</th>
                                 <th onclick="sortTableByNumber(2, 'number')" style="cursor:pointer;">
-                                    จำนวน <i id="sortIconQuantity" class="fa-solid fa-arrow-down"></i>
+                                    จำนวนจาน <i id="sortIconDish" class="fa-solid fa-arrow-down"></i>
                                 </th>
                                 <th onclick="sortTableByNumber(3, 'number')" style="cursor:pointer;">
+                                    ปริมาณการสั่งซื้อ <i id="sortIconQuentity" class="fa-solid fa-arrow-down"></i>
+                                </th>
+                                <th>หน่วย</th>
+                                <th onclick="sortTableByNumber(5, 'number')" style="cursor:pointer;">
                                     ราคา <i id="sortIconPrice" class="fa-solid fa-arrow-down"></i>
                                 </th>
-                                <th onclick="sortTableByNumber(4, 'date')" style="cursor:pointer;">
+                                <th onclick="sortTableByNumber(6, 'date')" style="cursor:pointer;">
                                     วันที่ได้รับสินค้า <i id="sortIconReceived" class="fa-solid fa-arrow-down"></i>
                                 </th>
-                                <th onclick="sortTableByNumber(5, 'date')" style="cursor:pointer;">
+                                <th onclick="sortTableByNumber(7, 'date')" style="cursor:pointer;">
                                     วันหมดอายุ <i id="sortIconExpired" class="fa-solid fa-arrow-down"></i>
                                 </th>
                                 <th>สถานะ</th>
@@ -209,6 +215,8 @@ $result = mysqli_stmt_get_result($stmt);
                                     <td><?= $no++ ?></td>
                                     <td><?= htmlspecialchars($row['item_name']) ?></td>
                                     <td><?= htmlspecialchars($row['capacity']) ?></td>
+                                    <td><?= htmlspecialchars($row['capacity']*$row['quantity_of_sale']) ?></td>
+                                    <td><?= htmlspecialchars($row['unit'] ?? '-') ?></td>
                                     <td><?= number_format($row['cost'], 2) ?> บาท</td>
                                     <td><?= date('Y-m-d', strtotime($row['create_at'])) ?></td>
                                     <td><?= date('Y-m-d', strtotime($row['expired_date'])) ?></td>
@@ -226,7 +234,9 @@ $result = mysqli_stmt_get_result($stmt);
             2: true,
             3: true,
             4: true,
-            5: true
+            5: true,
+            6: true,
+            7: true
         };
 
         function sortTableByNumber(colIndex, type) {
@@ -254,10 +264,12 @@ $result = mysqli_stmt_get_result($stmt);
 
             // Reset icon in all columns
             const iconIds = {
-                2: "sortIconQuantity",
-                3: "sortIconPrice",
+                2: "sortIconDish",
+                3: "sortIconQuentity",
                 4: "sortIconReceived",
-                5: "sortIconExpired"
+                5: "sortIconExpired",
+                6: "sortIconPrice",
+                7: "sortIconExpired"
             };
 
             for (const [index, id] of Object.entries(iconIds)) {

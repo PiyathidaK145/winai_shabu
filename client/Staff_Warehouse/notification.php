@@ -132,11 +132,11 @@ include dirname(__FILE__) . '/include/header.php';
         }
 
 
-        // เรียก check_notifications และโหลดแจ้งเตือนทุก 5 วิพอ
+        // เรียก check_notifications และโหลดแจ้งเตือนทุก 1 วิพอ
         setInterval(() => {
             fetch('check_notifications.php');
             fetchNotifications();
-        }, 5000);
+        }, 1000);
 
         // เรียกครั้งแรก
         fetchNotifications();

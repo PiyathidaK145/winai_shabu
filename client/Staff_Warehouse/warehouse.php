@@ -19,7 +19,7 @@ $locations_result = mysqli_query($conn, "SELECT DISTINCT locations FROM warehous
 
 <head>
     <meta charset="UTF-8">
-    <title>รายการคลังวัตถุดิบ</title>
+    <title>สถานที่เก็บวัตถุดิบ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -27,7 +27,7 @@ $locations_result = mysqli_query($conn, "SELECT DISTINCT locations FROM warehous
 <div class="row">
     <main class="main-wrapper col-md-9 ms-sm-auto py-4 col-lg-9 px-md-4 border-start">
         <div class="container mt-4">
-            <h3 class="mb-4"><strong>รายการคลังวัตถุดิบ</strong></h3>
+            <h3 class="mb-4"><strong>สถานที่เก็บวัตถุดิบ</strong></h3>
 
             <!-- ฟอร์มฟิลเตอร์จังหวัด -->
             <form method="GET" class="mb-3">

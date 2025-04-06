@@ -17,7 +17,7 @@
 
                 <li class="nav-item">
                     <a class="nav-link" href="import_raw_material.php">
-                        <span><i class="fa-solid fa-clock-rotate-left me-2"></i>ประวัติการนำเข้าวัตถุดิบ</span>
+                        <span><i class="fa-solid fa-clock-rotate-left me-2"></i>รายการนำเข้าวัตถุดิบ</span>
                     </a>
                 </li>
 
@@ -41,7 +41,7 @@
 
                 <li class="nav-item">
                     <a class="nav-link" href="warehouse.php">
-                        <span><i class="fa-solid fa-boxes-stacked me-2"></i>รายการคลังวัตถุดิบ</span>
+                        <span><i class="fa-solid fa-boxes-stacked me-2"></i>สถานที่เก็บวัตถุดิบ</span>
                     </a>
 
                 <li class="nav-item">

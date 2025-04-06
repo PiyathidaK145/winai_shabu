@@ -136,7 +136,7 @@ include dirname(__FILE__) . '/include/header.php';
                         </div>
 
                         <div class="text-end">
-                            <a href="import_raw_material_list.php" class="btn btn-danger">ยกเลิก</a>
+                            <a href="import_raw_material.php" class="btn btn-danger">ยกเลิก</a>
                             <button type="submit" class="btn btn-success">บันทึกข้อมูล</button>
                         </div>
                     </form>

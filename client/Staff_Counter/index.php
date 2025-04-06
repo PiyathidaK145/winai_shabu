@@ -568,9 +568,7 @@ foreach ($tables as $t) {
         // อัปเดตทุกวินาที
         setInterval(updateDateTime, 1000);
         updateDateTime(); // เรียกทันทีเมื่อโหลด
-        setInterval(() => {
-            window.location.reload();
-        }, 5000);
+        
     </script>
 </body>
 <?php include dirname(__FILE__) . '/include/footer.php'; ?>
