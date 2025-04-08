@@ -1,0 +1,26 @@
+/* top_suppliers.css */
+.top-suppliers-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.btn-filter {
+    position: relative;
+    z-index: 1051;
+}
+
+.top-suppliers-container .card {
+    font-size: 0.85rem; /* ปรับขนาดตัวอักษรโดยรวม */
+}
+
+.top-suppliers-container .card-header {
+    font-size: 1rem; /* หัวชื่อซัพพลายเออร์ */
+}
+
+.top-suppliers-container .card-body p {
+    font-size: 1rem; /* รายละเอียดใน body */
+}

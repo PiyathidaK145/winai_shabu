@@ -1,0 +1,86 @@
+/* summary_cards.css */
+
+/* ลบพื้นหลัง (ใช้ transparent), เพิ่มขอบ และทำให้เต็มหน้าจอแบบ responsive */
+.summary-card {
+    background-color: transparent !important;
+    color: #111;
+    border: 2px solid #333;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+    min-height: 100px;
+}
+
+/* เพิ่มความนูนเมื่อ hover */
+.summary-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ปรับขนาดตัวเลขใหญ่มากขึ้น */
+.summary-card .card-text {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #000;
+}
+
+/* ชื่อหัวข้อของ card */
+.summary-card .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #000;
+}
+
+/* ให้ card กว้างเท่ากันและเรียงเต็มจอ */
+.row > .col-md-2 {
+    flex: 1 1 20%;
+    max-width: 20%;
+}
+
+@media screen and (max-width: 768px) {
+    .row > .col-md-2 {
+        flex: 1 1 50%;
+        max-width: 50%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .row > .col-md-2 {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+}
+
+.summary-card {
+    background-color: transparent !important;
+    border: 2px solid #333;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+    min-height: 140px; /* ✅ ความสูงขั้นต่ำ */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* ✅ จัดเนื้อหาให้อยู่กลางแนวตั้ง */
+    align-items: center;
+}
+
+.summary-card .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.summary-card .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 0.5rem;
+    text-wrap: wrap;
+    text-align: center;
+}
+
+.summary-card .card-text {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #000;
+}
+

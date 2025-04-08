@@ -40,8 +40,10 @@ while ($row = mysqli_fetch_assoc($update_result)) {
 $sql = "
 SELECT 
     rm.item_name,
+    rm.quanity,
     crm.capacity,
     irm.cost,
+    irm.quantity,
     irm.create_at,
     m.quantity_of_sale,
     m.unit,
@@ -209,7 +211,7 @@ $result = mysqli_stmt_get_result($stmt);
                                     <td><?= $no++ ?></td>
                                     <td><?= htmlspecialchars($row['item_name']) ?></td>
                                     <td><?= htmlspecialchars($row['capacity']) ?></td>
-                                    <td><?= htmlspecialchars($row['capacity']*$row['quantity_of_sale']) ?></td>
+                                    <td><?= htmlspecialchars($row['quantity']*$row['quanity']) ?></td>
                                     <td><?= htmlspecialchars($row['unit'] ?? '-') ?></td>
                                     <td><?= number_format($row['cost'], 2) ?> บาท</td>
                                     <td><?= date('Y-m-d', strtotime($row['create_at'])) ?></td>

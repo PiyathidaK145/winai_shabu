@@ -4,7 +4,7 @@
             <ul class="nav flex-column">
                 
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php">
+                    <a class="nav-link" href="home.php">
                         <span><i class="fa-solid fa-house me-2"></i>หน้าหลัก</span>
                     </a>
                 </li>
