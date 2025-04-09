@@ -3,7 +3,6 @@ date_default_timezone_set("Asia/Bangkok");
 include dirname(__FILE__) . '/include/header.php';
 include dirname(__FILE__) . '/../../config/connect_db.php';
 include dirname(__FILE__) . '/model/modal_reserved.php';
-include dirname(__FILE__) . '/model/modal_occupied.php';
 include dirname(__FILE__) . '/model/modal_available.php';
 
 $today = date("Y-m-d");
@@ -14,28 +13,30 @@ function getTimeRange($selected_time, $today)
     switch ($selected_time) {
         case '16-18':
             $start = "$today 00:00:00";
-            $end   = "$today 17:59:59";
+            $end   = "$today 23:59:59";
             break;
         case '18-20':
             $start = "$today 00:00:00";
-            $end   = "$today 19:59:59";
+            $end   = "$today 23:59:59";
             break;
         case '20-22':
             $start = "$today 00:00:00";
-            $end   = "$today 21:59:59";
+            $end   = "$today 23:59:59";
             break;
         case '22-00':
             $start = "$today 00:00:00";
             $end   = "$today 23:59:59";
             break;
         case '00-02':
+            //ตรงนี้ยังติดตรง logic
+            $yesterday = date('Y-m-d', strtotime($today . " -1 day"));
             $tomorrow = date("Y-m-d", strtotime($today . " +1 day"));
             $start = "$today 00:00:00";
             $end   = "$tomorrow 01:59:59";
             break;
         default:
             $start = "$today 00:00:00";
-            $end   = "$today 17:59:59";
+            $end   = "$today 23:59:59";
     }
     return [$start, $end];
 }
@@ -50,9 +51,9 @@ if (isset($_GET['time'])) {
         $selected_time = "18-20";
     } elseif ($current_hour >= 20 && $current_hour < 22) {
         $selected_time = "20-22";
-    } elseif ($current_hour >= 22 || $current_hour < 0) {
+    } elseif ($current_hour >= 22 && $current_hour < 0) {
         $selected_time = "22-00";
-    } elseif ($current_hour >= 0 || $current_hour < 2) {
+    } elseif ($current_hour >= 0 && $current_hour < 2) {
         $selected_time = "00-02";
     } else {
         $selected_time = "16-18";
@@ -93,7 +94,8 @@ if ($result1 && mysqli_num_rows($result1) > 0) {
         $table_id = $row['table_id'];
         $payment_done = !empty($row['payment_timestamp']);
         if (!$payment_done) {
-            $tables[$table_id]['status'] = 'occupied'; // แดงถ้ายังกินอยู่
+            $tables[$table_id]['status'] = 'occupied';
+            $occupied_count++; // แดงถ้ายังกินอยู่
         } else {
             $tables[$table_id]['status'] = 'available'; // เขียวถ้าจ่ายเงินแล้ว
         }
@@ -135,10 +137,15 @@ $result2 = mysqli_query($conn, $sql2);
 if ($result2 && mysqli_num_rows($result2) > 0) {
     while ($row = mysqli_fetch_assoc($result2)) {
         $table_id = $row['table_id'];
-
-        if ($tables[$table_id]['status'] !== 'occupied') {
+        if (
+            (!isset($tables[$table_id]['status']) || $tables[$table_id]['status'] !== 'occupied') &&
+            (!isset($tables[$table_id]['counted']) || $tables[$table_id]['counted'] !== true)
+        ) {
             $tables[$table_id]['status'] = 'reserved';
+            $tables[$table_id]['counted'] = true; // ✅ ป้องกันนับซ้ำ
             $reserved_count++;
+            // Debugging: Output reserved table details
+            //echo "$reserved_count DEBUG: Reserved Table ID = $table_id<br>";
 
             // 🔍 กำหนด type ให้แยกว่าเป็น walkin หรือ reservation
             if (!empty($row['reservation_id'])) {
@@ -159,6 +166,7 @@ foreach ($tables as $t) {
     if ($t['status'] === 'available') $available_count++;
 }
 
+
 ?>
 
 <!DOCTYPE html>
@@ -168,6 +176,8 @@ foreach ($tables as $t) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>หน้าหลัก</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/table_status.css" rel="stylesheet">
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const labels = document.querySelectorAll(".filter-label");
@@ -230,7 +240,7 @@ foreach ($tables as $t) {
                         <div class="col-12 text-center mb-2">
                             <h5 class="fw-bold text-secondary">
                                 📅 <span class="me-2">วันที่: <?= $today ?></span>
-                                🕒 เวลา: <?= $current_time ?>
+                                🕒 เวลา: <span id="current-time"></span>
                                 | <?= $selected_time ?>
                             </h5>
                         </div>
@@ -238,7 +248,7 @@ foreach ($tables as $t) {
                         <!-- กำลังกินอยู่ -->
                         <div class="col-md-3 col-sm-6">
                             <div class="p-3 rounded-3 text-center" style="border: 1px solid #ccc;">
-                                <div class="fw-bold" style="color: #e53935;">🟥 กำลังกินอยู่</div>
+                                <div class="fw-bold" style="color: #e53935;">🟥 กำลังใช้งาน</div>
                                 <div class="display-6 fw-bold text-dark"><?= $occupied_count ?></div>
                                 <div class="text-muted small">โต๊ะ</div>
                             </div>
@@ -261,11 +271,13 @@ foreach ($tables as $t) {
                                 <div class="text-muted small">โต๊ะ</div>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
+
                 <section id="map">
+
+
                     <section id="rectangle-under-map">
                         <div class="rectangle-box">
                             <?php
@@ -304,7 +316,34 @@ foreach ($tables as $t) {
                             <div class="rectangle3">ประตู</div>
 
                     </section>
+                    <form id="walkinRedirectForm" action="show_walk_in.php" method="POST" style="display: none;">
+                        <input type="hidden" name="walkin_id" id="formWalkinId">
+                        <input type="hidden" name="first_name" id="formFirstName">
+                        <input type="hidden" name="last_name" id="formLastName">
+                        <input type="hidden" name="table_number" id="formTableNumber">
+                        <input type="hidden" name="table_id" id="formTableId">
+                        <input type="hidden" name="time_slot" id="formTimeSlot">
+                        <input type="hidden" name="number_of_guest" id="formGuests">
+                    </form>
+
+                    <form id="reservationRedirectForm" action="show_reservation.php" method="POST" style="display: none;">
+                        <input type="hidden" name="reservation_id" id="formReservationId">
+                        <input type="hidden" name="table_id" id="formReservationTableId">
+                        <input type="hidden" name="time_slot" id="formReservationTimeSlot">
+                        <input type="hidden" name="first_name" id="formReservationFirstName">
+                        <input type="hidden" name="last_name" id="formReservationLastName">
+                        <input type="hidden" name="number_of_guest" id="formReservationGuests">
+                    </form>
                 </section>
+
+                <div class="mt-4">
+                    <h4 class="text-start my-6">
+                        <div class="fw-bold">🟥 สถานะการใช้งานโต๊ะ</div>
+                    </h4>
+                    <?php include 'table_reservation_status.php'; ?>
+                </div>
+
+
             </main>
         </div>
     </div>
@@ -315,7 +354,7 @@ foreach ($tables as $t) {
             document.getElementById('reservedTimeSlot').textContent = timeSlot;
 
             console.log(`Fetching: get_reserved_data.php?table_id=${tableId}&time=${timeSlot}`); // Debug
-            fetch(`get_reserved_data.php?table_id=${tableId}&time=${timeSlot}`)
+            fetch(`get_reserved_data.php?table_id=${tableId}&time=${timeSlot}`) //debug
                 .then(response => response.json())
                 .then(data => {
                     console.log("✅ Reserved Data", data); // Debug
@@ -347,6 +386,56 @@ foreach ($tables as $t) {
                     console.error("ไม่สามารถโหลดข้อมูลการจองได้", error);
                     alert("ไม่สามารถโหลดข้อมูลการจองได้");
                 });
+
+            document.getElementById('verifyWalkinBtn').addEventListener('click', function() {
+                const walkinId = document.getElementById('walkinCodeDisplay').innerText.replace('รหัส - ', '');
+                const firstName = document.getElementById('walkinFirstName').innerText;
+                const lastName = document.getElementById('walkinLastName').innerText;
+                const tableNumber = document.getElementById('walkinTableNumber').innerText;
+                const timeSlot = document.getElementById('walkinTimeSlot').innerText;
+                const guests = document.getElementById('walkinGuests').innerText;
+
+                // ✅ เพิ่มฟิลด์ table_id
+                document.getElementById('formTableId').value = tableId;
+
+                // ✅ ใส่ค่าอื่น ๆ ตามเดิม
+                document.getElementById('formWalkinId').value = walkinId;
+                document.getElementById('formFirstName').value = firstName;
+                document.getElementById('formLastName').value = lastName;
+                document.getElementById('formTableNumber').value = tableNumber;
+                document.getElementById('formTimeSlot').value = timeSlot;
+                document.getElementById('formGuests').value = guests;
+
+                // ตั้ง action
+                document.getElementById('walkinRedirectForm').action = `show_walk_in.php?id=${walkinId}`;
+
+                // ส่งฟอร์ม
+                document.getElementById('walkinRedirectForm').submit();
+            });
+
+            document.getElementById('checkBookingBtn').addEventListener('click', function() {
+                const reservationId = document.getElementById('reservationIdHidden').value;
+                const tableId = document.getElementById('confirmTableId').value;
+                const timeSlot = document.getElementById('reservedTimeSlot').innerText;
+                const firstName = document.getElementById('reservedFirstName').innerText;
+                const lastName = document.getElementById('reservedLastName').innerText;
+                const guests = document.getElementById('reservedGuests').innerText;
+
+                // ✅ ใส่ค่าลงในฟอร์ม
+                document.getElementById('formReservationId').value = reservationId;
+                document.getElementById('formReservationTableId').value = tableId;
+                document.getElementById('formReservationTimeSlot').value = timeSlot;
+                document.getElementById('formReservationFirstName').value = firstName;
+                document.getElementById('formReservationLastName').value = lastName;
+                document.getElementById('formReservationGuests').value = guests;
+
+                // ✅ ตั้ง action พร้อม id
+                document.getElementById('reservationRedirectForm').action = `show_reservation.php?id=${reservationId}`;
+
+                // ✅ ส่งฟอร์ม
+                document.getElementById('reservationRedirectForm').submit();
+            });
+
         }
         // ฟังก์ชันเปิด modal สำหรับโต๊ะว่าง
         function openWalkinModal(tableId, tableNumber, timeSlot, timeId) {
@@ -396,18 +485,90 @@ foreach ($tables as $t) {
 
             const walkinModal = new bootstrap.Modal(document.getElementById('walkinModal'));
             walkinModal.show();
+
+            document.getElementById('walkinModal').addEventListener('hidden.bs.modal', function() {
+                document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                document.body.classList.remove('modal-open');
+                document.body.style = '';
+            });
+
+            const verifyBtn = document.getElementById('verifyWalkinBtn');
+
+            // ลบ Event เดิมออก ถ้ามี
+            const newBtn = verifyBtn.cloneNode(true);
+            verifyBtn.parentNode.replaceChild(newBtn, verifyBtn);
+
+            // เพิ่ม Event ใหม่
+            newBtn.addEventListener('click', function() {
+                const walkinId = document.getElementById('walkinCodeDisplay').innerText.replace('รหัส - ', '');
+                window.location.href = `show_walk_in.php?id=${walkinId}`;
+            });
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const walkinModal = document.getElementById('walkinModal');
-            if (walkinModal) {
-                walkinModal.addEventListener('hidden.bs.modal', () => {
-                    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-                    document.body.classList.remove('modal-open');
-                    document.body.style = '';
-                });
-            }
+        document.getElementById('verifyWalkinBtn').addEventListener('click', function() {
+            const walkinId = document.getElementById('walkinCodeDisplay').innerText.replace('รหัส - ', '');
+            const tableNumber = document.getElementById('walkinTableNumber').innerText;
+            const timeSlot = document.getElementById('walkinTimeSlot').innerText;
+
+            window.location.href = `show_walk_in.php?id=${walkinId}&table_number=${tableNumber}&time=${timeSlot}`;
         });
+
+        document.getElementById('checkBookingBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const reservationCode = document.getElementById('reservationCode').value.trim();
+
+            if (!reservationCode) {
+                alert("กรุณากรอกรหัสการจอง");
+                return;
+            }
+            //debug
+            fetch(`check_reservation_id.php?id=${reservationCode}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'found') {
+                        // ✅ กำหนดค่าจาก response ลงใน hidden input
+                        document.getElementById('formReservationId').value = data.reservation_id;
+                        document.getElementById('formReservationTableId').value = data.table_id;
+                        document.getElementById('formReservationTimeSlot').value = data.time_slot;
+                        document.getElementById('formReservationFirstName').value = data.first_name;
+                        document.getElementById('formReservationLastName').value = data.last_name;
+                        document.getElementById('formReservationGuests').value = data.number_of_guest;
+
+                        // ✅ ตั้ง action แล้วส่งฟอร์มไป show_reservation.php
+                        const form = document.getElementById('reservationRedirectForm');
+                        form.action = `show_reservation.php?id=${data.reservation_id}`;
+                        form.submit();
+                    } else {
+                        alert("ไม่พบรหัสการจองนี้ในระบบ");
+                    }
+                })
+                .catch(error => {
+                    console.error('เกิดข้อผิดพลาด', error);
+                    alert("เกิดข้อผิดพลาดในการตรวจสอบรหัส");
+                });
+        });
+
+        function updateDateTime() {
+            const now = new Date();
+
+            const date = now.toISOString().split('T')[0];
+
+            let hours = now.getHours().toString().padStart(2, "0");
+            let minutes = now.getMinutes().toString().padStart(2, "0");
+            let seconds = now.getSeconds().toString().padStart(2, "0");
+
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            const fullDateTime = `${date} ${timeString}`;
+
+            // อัปเดตเวลาใน span
+            document.getElementById("current-time").textContent = timeString;
+        }
+
+        // อัปเดตทุกวินาที
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); // เรียกทันทีเมื่อโหลด
+        
     </script>
 </body>
 <?php include dirname(__FILE__) . '/include/footer.php'; ?>

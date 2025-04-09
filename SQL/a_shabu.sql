@@ -758,28 +758,92 @@ INSERT INTO `payment` (`payment_id`, `getting_table_id`, `payment_method`, `paym
 -- Triggers `payment`
 --
 DELIMITER $$
-CREATE TRIGGER `after_payment_insert` AFTER INSERT ON `payment` FOR EACH ROW BEGIN
-    DECLARE total_amount INT;
-    DECLARE number_of_guest INT;
-    
-    -- ดึงข้อมูลจาก getting_table และ reservation
-    SELECT gt.total_amount, r.number_of_guest
-    INTO total_amount, number_of_guest
+
+CREATE TRIGGER `after_payment_insert` 
+AFTER INSERT ON `payment` 
+FOR EACH ROW 
+BEGIN
+  DECLARE total_amount DECIMAL(10,2) DEFAULT 0;
+  DECLARE number_of_guest INT DEFAULT 0;
+  DECLARE promotion_id INT DEFAULT 0;
+  DECLARE discount_value DECIMAL(10,2) DEFAULT 0;
+  DECLARE discount_type VARCHAR(20) DEFAULT '';
+  DECLARE calculated_total DECIMAL(10,2) DEFAULT 0;
+  DECLARE price DECIMAL(10,2) DEFAULT 0;
+  DECLARE pkg_id INT;
+
+  -- ตรวจสอบว่าเป็น reservation หรือ walk-in
+  IF (
+    SELECT reservation_id 
+    FROM getting_table 
+    WHERE getting_table_id = NEW.getting_table_id
+  ) IS NOT NULL THEN
+    -- กรณี reservation
+    SELECT r.number_of_guest
+    INTO number_of_guest
     FROM getting_table gt
     JOIN reservation r ON gt.reservation_id = r.reservation_id
     WHERE gt.getting_table_id = NEW.getting_table_id;
-    
-    -- คำนวณว่า total_payment ตรงกับผลคูณหรือไม่
-    IF NEW.total_payment = (number_of_guest * total_amount) THEN
-        INSERT INTO payment_verificatio (payment_id, approve)
-        VALUES (NEW.payment_id, 'completed');
-    ELSE
-        INSERT INTO payment_verificatio (payment_id, approve)
-        VALUES (NEW.payment_id, 'failed');
-    END IF;
-END
-$$
+
+    -- ดึง package_id จาก getting_table
+    SELECT package_id INTO pkg_id
+    FROM getting_table
+    WHERE getting_table_id = NEW.getting_table_id;
+
+    -- ดึง price จาก package
+    SELECT price INTO price
+    FROM package
+    WHERE package_id = pkg_id;
+
+  ELSE
+    -- กรณี walk-in
+    SELECT w.number_of_guest
+    INTO number_of_guest
+    FROM getting_table gt
+    JOIN walkin w ON gt.walkin_id = w.walkin_id
+    WHERE gt.getting_table_id = NEW.getting_table_id;
+
+    -- ดึง package_id จาก getting_table
+    SELECT package_id INTO pkg_id
+    FROM getting_table
+    WHERE getting_table_id = NEW.getting_table_id;
+
+    -- ดึง price จาก package
+    SELECT price INTO price
+    FROM package
+    WHERE package_id = pkg_id;
+  END IF;
+
+  -- ดึง promotion_id
+  SELECT promotion_id 
+  INTO promotion_id
+  FROM getting_table 
+  WHERE getting_table_id = NEW.getting_table_id;
+
+  IF promotion_id IS NOT NULL AND promotion_id > 0 THEN
+  SELECT discount_value, discount_type
+  INTO discount_value, discount_type
+  FROM promotion_item
+  WHERE promotion_id = promotion_id
+    AND status = 'active'
+    AND CURDATE() BETWEEN start_date AND end_date;
+END IF;
+
+  -- ตรวจสอบยอดเงินและจัดการ
+  IF ABS(ROUND(NEW.total_payment, 2) - ROUND(calculated_total, 2)) < 0.05 THEN
+    INSERT INTO payment_verificatio (payment_id, approve)
+    VALUES (NEW.payment_id, 'completed');
+ELSE
+    INSERT INTO payment_verificatio (payment_id, approve)
+    VALUES (NEW.payment_id, 'failed');
+END IF;
+
+
+END$$
+
 DELIMITER ;
+
+
 
 -- --------------------------------------------------------
 

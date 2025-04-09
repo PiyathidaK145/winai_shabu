@@ -31,7 +31,30 @@ if ($result_tables->num_rows > 0) {
         }
     }
 }
+// คิวรีข้อมูลจากฐานข้อมูล
+$sql = "
+    SELECT DISTINCT p.image_url
+    FROM promotion p
+    JOIN promotion_item pi ON p.promotion_id = pi.promotion_id
+    WHERE 
+        p.image_url IS NOT NULL 
+        AND p.image_url != ''
+        AND pi.status = 'active'
+";
+$result = $conn->query($sql);
 
+// สร้างอาร์เรย์เพื่อเก็บพาธของภาพ
+$image_paths = [];
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $image_url = trim($row['image_url']); // ลบช่องว่างที่อาจมีอยู่รอบ ๆ ค่าของ image_url
+        if (!empty($image_url)) {
+            $image_paths[] = '../../../client/Staff_Manager/' . htmlspecialchars($image_url);
+        }
+    }
+} else {
+    echo "ไม่มีข้อมูลโปรโมชั่นที่มีสถานะเป็น active";
+}
 $conn->close();
 ?>
 
@@ -57,8 +80,20 @@ $conn->close();
             </div>
         </header>
         <div class="promotion-banner">
+            <?php if (!empty($image_paths)) { ?>
+                <div class="slideshow-container">
+                    <?php foreach ($image_paths as $index => $image_path) { ?>
+                        <div class="mySlides fade">
+                            <img src="<?php echo $image_path; ?>" style="width:50%">
+                        </div>
+                    <?php } ?>
+                </div>
+            <?php } else { ?>
+                <p>ไม่มีภาพโปรโมชั่น</p>
+            <?php } ?>
             <p>โปรโมชันพิเศษสำหรับเดือนนี้! ลดราคาสุดคุ้มทุกวันจันทร์-พฤหัสบดี</p>
         </div>
+
         <main>
             <div class="menu-carousel">
                 <div class="menu-item">

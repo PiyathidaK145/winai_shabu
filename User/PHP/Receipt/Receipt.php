@@ -6,28 +6,41 @@ if (isset($_GET['getting_table_id']) && isset($_GET['payment_method']) && isset(
     $payment_method = $_GET['payment_method'];
     $total_payment = $_GET['total_payment'];
 
-    // ดึง reservation_id จาก getting_table_id
-    $sql = "SELECT reservation_id FROM getting_table WHERE getting_table_id = ?";
+    // ดึง reservation_id หรือ warkin_id จาก getting_table
+    $sql = "SELECT reservation_id, walkin_id FROM getting_table WHERE getting_table_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $getting_table_id);
     $stmt->execute();
-    $stmt->bind_result($reservation_id);
+    $stmt->bind_result($reservation_id, $workin_id);
     $stmt->fetch();
     $stmt->close();
 
-    if ($reservation_id) {
-        // ดึง availability_id และ number_of_guest จาก reservation โดยใช้ reservation_id
-        $sql2 = "SELECT availability_id, number_of_guest FROM reservation WHERE reservation_id = ?";
+    // ตรวจสอบว่าควรใช้ reservation_id หรือ warkin_id
+    $primary_id = $reservation_id ? $reservation_id : $workin_id;
+
+    if ($primary_id) {
+        // ดึง availability_id และ number_of_guest จาก reservation หรือ walkin โดยใช้ primary_id
+        $sql2 = "
+            SELECT availability_id, number_of_guest FROM reservation WHERE reservation_id = ?
+            UNION DISTINCT
+            SELECT availability_id, number_of_guest FROM walkin WHERE walkin_id = ?";
+        
         $stmt2 = $conn->prepare($sql2);
         if (!$stmt2) {
             die('MySQL prepare error: ' . $conn->error);
         }
-        $stmt2->bind_param("i", $reservation_id);
+        $stmt2->bind_param("ii", $primary_id, $primary_id);
         $stmt2->execute();
-        $stmt2->bind_result($availability_id, $number_of_guest); // ดึง number_of_guest มาพร้อมกัน
-        $stmt2->fetch();
+        $stmt2->bind_result($availability_id, $number_of_guest); // ดึง availability_id และ number_of_guest
+        if ($stmt2->fetch()) {
+            // ถ้าพบข้อมูล
+        } else {
+            $availability_id = null;
+            $number_of_guest = 0;
+        }
         $stmt2->close();
     }
+    
     if ($availability_id) {
         // ดึง table_id จาก table_availability โดยใช้ availability_id
         $sql3 = "SELECT table_id FROM table_availability WHERE availability_id = ?";
@@ -38,30 +51,47 @@ if (isset($_GET['getting_table_id']) && isset($_GET['payment_method']) && isset(
         $stmt3->bind_param("i", $availability_id);
         $stmt3->execute();
         $stmt3->bind_result($table_id);
-        $stmt3->fetch();
+        if ($stmt3->fetch()) {
+            // ถ้าพบ table_id
+        } else {
+            $table_id = null;
+        }
         $stmt3->close();
     }
-    if ($reservation_id) {
-        // ใช้ reservation_id เพื่อดึง first_name และ member_id
-        $sql4 = "SELECT m.member_id
-        FROM `member` m
-        JOIN `reservation` r ON m.first_name = r.first_name
-        WHERE r.reservation_id = ?";
-
+    
+    if ($primary_id) {
+        // ใช้ primary_id เพื่อดึง custumer_id, first_name, และ last_name จากตาราง custumer ผ่าน reservation หรือ walkin
+        $sql4 = "
+            SELECT m.custumer_id, m.first_name, m.last_name
+            FROM `custumer` m
+            JOIN `reservation` r ON m.custumer_id = r.custumer_id
+            WHERE r.reservation_id = ?
+            UNION DISTINCT
+            SELECT m.custumer_id, m.first_name, m.last_name
+            FROM `custumer` m
+            JOIN `walkin` w ON m.custumer_id = w.custumer_id
+            WHERE w.walkin_id = ?";
+        
         $stmt4 = $conn->prepare($sql4);
         if (!$stmt4) {
             die('MySQL prepare error: ' . $conn->error);
         }
-        $stmt4->bind_param("i", $reservation_id); // "i" สำหรับ int
+        // ใช้ primary_id เป็นค่าใน parameter สำหรับทั้ง reservation_id และ walkin_id
+        $stmt4->bind_param("ii", $primary_id, $primary_id); // "ii" สำหรับ int
         $stmt4->execute();
-        $stmt4->bind_result($member_id);
+        $stmt4->bind_result($custumer_id, $first_name, $last_name); // ดึงข้อมูล custumer_id, first_name และ last_name
         if ($stmt4->fetch()) {
-            // member_id ถูกดึงมาแล้ว สามารถใช้ได้
+            // ถ้าพบข้อมูล
+            // สามารถใช้งาน $custumer_id, $first_name, $last_name ได้ที่นี่
         } else {
-            $member_id = null; // ถ้าไม่มีข้อมูล
+            $custumer_id = null; // ถ้าไม่พบข้อมูล
+            $first_name = null;
+            $last_name = null;
         }
         $stmt4->close();
     }
+    
+    
 
     if ($getting_table_id) {
         // ใช้ getting_table_id เพื่อดึง package_name และ price
@@ -279,12 +309,14 @@ $conn->close();
         </div>
         <div class="employee-id">
             <p>พนักงาน: <?php echo $employeeId; ?></p>
+            <p>รหัสใบเสร็จ: <?php echo  $receipt_id; ?></p>
         </div>
         <div class="additional-details">
-            <p>รหัสใบเสร็จ: <?php echo "RCPT" . $receipt_id; ?></p>
+            <p>รหัสสมาชิก: <?php echo  $custumer_id; ?></p>
         </div>
         <div class="additional-details">
-            <p>รหัสลูกค้า: <?php echo $member_id; ?></p>
+            <p>ชื่อ: <?php echo  $first_name; ?></p>
+            <p>นามสกุล: <?php echo  $last_name; ?></p>
             <p>โต๊ะ: <?php echo $table_id; ?></p>
         </div>
         <div class="line"></div>

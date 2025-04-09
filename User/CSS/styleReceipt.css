@@ -38,6 +38,7 @@ body {
     margin-bottom: 5px;
 }
 
+
 .additional-details {
     display: flex;
     justify-content: space-between;
@@ -86,6 +87,8 @@ body {
     cursor: pointer;
 }
 .employee-id {
+    display: flex;
+    justify-content: space-between; /* จัดข้อความให้อยู่คนละฝั่ง */
     margin-top: 12px; /* ปรับระยะห่างด้านบน */
     margin-bottom: 12px; /* ปรับระยะห่างด้านล่าง */
 }

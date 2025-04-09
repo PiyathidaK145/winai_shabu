@@ -27,8 +27,7 @@ $maxPeople = in_array($table, ['2', '3', '4']) ? 8 : 4;
 <body>
     <div class="form-container">
         <h1>ฟอร์มการจอง</h1>
-        <a class="close-button" href="javascript:void(0);" onclick="goBack()">&times;</a>
-
+        <a class="close-button" href="javascript:void(0);" onclick="window.location.href='../Home/Homepage.php'">&times;</a>
         <form id="bookingForm" action="Checkbook.php" method="POST">
             <input type="hidden" id="table" name="table" value="<?php echo $table; ?>">
             <input type="hidden" id="availability_id" name="availability_id" value="<?php echo $availability_id; ?>">

@@ -26,7 +26,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function submitOrder(reservationId) {
+    // ✅ เปลี่ยนชื่อพารามิเตอร์จาก reservationId → gettingTableId
+    function submitOrder(gettingTableId) {
         if (Object.keys(orderList).length === 0) {
             alert("กรุณาเลือกเมนูก่อนสั่ง!");
             return;
@@ -38,12 +39,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         let orderData = {
-            reservation_id: reservationId,
+            getting_table_id: gettingTableId, // ✅ ใช้ getting_table_id แทน
             items: itemsData
         };
 
         console.log("🔹 Fetching URL:", "/winai_shabu-main/User/PHP/QR_order_menu/submitOrder.php");
- // Debug JSON ก่อนส่ง
 
         fetch("http://localhost:8081/winai_shabu-main/User/PHP/QR_order_menu/submitOrder.php", {
             method: "POST",
@@ -52,11 +52,11 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             body: JSON.stringify(orderData)
         })
-        .then(response => response.text()) // รับค่าจากเซิร์ฟเวอร์เป็นข้อความ
+        .then(response => response.text())
         .then(data => {
             console.log("🔹 Response (RAW):", data);
             try {
-                let jsonData = JSON.parse(data); // แปลงเป็น JSON
+                let jsonData = JSON.parse(data);
                 console.log("🔹 Response (JSON):", jsonData);
 
                 if (jsonData.success) {
@@ -77,6 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // ทำให้ function เหล่านี้สามารถเรียกใช้ได้จาก HTML
     window.updateOrder = updateOrder;
     window.submitOrder = submitOrder;
 });

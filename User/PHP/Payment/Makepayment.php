@@ -3,42 +3,58 @@ include '../../../config/connect_db.php';
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// ตรวจสอบค่าจาก URL
 if (isset($_GET['getting_table_id']) && isset($_GET['payment_method']) && isset($_GET['total_payment'])) {
     $getting_table_id = $_GET['getting_table_id'];
     $payment_method = $_GET['payment_method'];
     $total_payment = $_GET['total_payment'];
 
-    $sql = "SELECT approve FROM payment_verificatio WHERE payment_id = ?"; // ใช้คอลัมน์ที่ถูกต้องที่นี่
-    $stmt = $conn->prepare($sql);
-    if ($stmt === false) {
-        die("Error preparing statement: " . $conn->error);
+    // 🔍 ดึง payment_id จากตาราง payment
+    $sql_payment = "SELECT payment_id FROM payment WHERE getting_table_id = ? AND total_payment = ?";
+    $stmt_payment = $conn->prepare($sql_payment);
+    if (!$stmt_payment) {
+        die("Error preparing payment statement: " . $conn->error);
+    }
+    $stmt_payment->bind_param("id", $getting_table_id, $total_payment);
+    $stmt_payment->execute();
+    $stmt_payment->bind_result($payment_id);
+    $stmt_payment->fetch();
+    $stmt_payment->close();
+
+    if (!$payment_id) {
+        die("ไม่พบข้อมูลการชำระเงินที่ตรงกับ getting_table_id และ total_payment");
     }
 
-    $stmt->bind_param("i", $getting_table_id);
-    if ($stmt->execute()) {
-        // ดึงข้อมูลจากฐานข้อมูล
-        $stmt->bind_result($approve_status);
-        $stmt->fetch();
+    // 🔍 ดึง approve จากตาราง payment_verificatio
+    $sql_verify = "SELECT approve FROM payment_verificatio WHERE payment_id = ?";
+    $stmt_verify = $conn->prepare($sql_verify);
+    if (!$stmt_verify) {
+        die("Error preparing verification statement: " . $conn->error);
+    }
+    $stmt_verify->bind_param("i", $payment_id);
+    $stmt_verify->execute();
+    $stmt_verify->bind_result($approve_status);
+    $stmt_verify->fetch();
+    $stmt_verify->close();
 
-        // หากสถานะเป็น "Complete" จะเปลี่ยนข้อความในหน้า HTML
-        if ($approve_status == 'completed') {
-            $status_message = "ชำระเสร็จสิ้น";
-            $hide_description = "none"; // ซ่อนข้อความ description
-            $show_button = "block"; // แสดงปุ่มถัดไป
-        } else {
-            $status_message = "กำลังตรวจสอบการชำระเงิน...";
-            $hide_description = "block"; // ให้แสดงข้อความ description
-            $show_button = "none"; // ซ่อนปุ่มถัดไป
-        }
+    // ✅ ตรวจสอบสถานะการ approve
+    if ($approve_status == 'completed') {
+        $status_message = "ชำระเสร็จสิ้น";
+        $hide_description = "none"; // ซ่อนข้อความ description
+        $show_button = "block"; // แสดงปุ่มถัดไป
+    } elseif ($approve_status == 'failed') {
+        header("Location: ../Payment/payment.php");
+        exit(); // จบการทำงาน
     } else {
-        die("Query failed: " . $stmt->error);
+        $status_message = "กำลังตรวจสอบการชำระเงิน...";
+        $hide_description = "block"; // ให้แสดงข้อความ description
+        $show_button = "none"; // ซ่อนปุ่มถัดไป
     }
-    $stmt->close();
+
 } else {
     echo "<script>alert('ข้อมูลการชำระเงินไม่สมบูรณ์');</script>";
     exit();
 }
+
 
 $conn->close();
 ?>

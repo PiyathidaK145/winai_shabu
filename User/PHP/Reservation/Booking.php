@@ -22,11 +22,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    // บันทึกข้อมูลลงในตาราง Reservation
-    $stmt = $conn->prepare("INSERT INTO Reservation (first_name, last_name, status, time_update, availability_id, number_of_guest) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, ?)");
-
+    // 🔍 ค้นหา custumer_id จากตาราง custumer
+    $stmt = $conn->prepare("SELECT custumer_id FROM custumer WHERE first_name = ? AND last_name = ? LIMIT 1");
     if ($stmt) {
-        $stmt->bind_param("sssii", $first_name, $last_name, $status, $availability_id, $number_of_guest);
+        $stmt->bind_param("ss", $first_name, $last_name);
+        $stmt->execute();
+        $stmt->bind_result($custumer_id);
+        $stmt->fetch();
+        $stmt->close();
+
+        // ถ้าไม่พบข้อมูลลูกค้า
+        if (!$custumer_id) {
+            echo "<script>alert('ไม่พบข้อมูลลูกค้าในระบบ!'); window.history.back();</script>";
+            exit();
+        }
+    } else {
+        die("❌ Error preparing statement (custumer check): " . $conn->error);
+    }
+
+    // ✅ บันทึกข้อมูลลงในตาราง Reservation โดยใช้ custumer_id ที่ค้นพบ
+    $stmt = $conn->prepare("INSERT INTO Reservation (custumer_id, status, time_update, availability_id, number_of_guest) VALUES (?, ?, CURRENT_TIMESTAMP, ?, ?)");
+    if ($stmt) {
+        $stmt->bind_param("isii", $custumer_id, $status, $availability_id, $number_of_guest);
 
         if ($stmt->execute()) {
             $reservation_id = $stmt->insert_id;
@@ -46,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $stmt->close();
     } else {
-        die("Error preparing statement: " . $conn->error);
+        die("❌ Error preparing statement (insert reservation): " . $conn->error);
     }
 }
 $conn->close();

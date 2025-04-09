@@ -512,6 +512,9 @@ body {
 .busy {
     background-color: #B0B0B0; /* สีเทา สำหรับโต๊ะที่ถูกจอง */
 }
-
+/* ซ่อนภาพทั้งหมดก่อน */
+.mySlides {
+  display: none;
+}
   
   

@@ -37,20 +37,16 @@
                 </div>
 
                 <!-- Input code -->
-                <div class="mb-3">
-                    <label for="bookingCodeInput" class="form-label">กรอกรหัส</label>
-                    <input type="text" class="form-control" id="bookingCodeInput">
+                <div>
+                    <label for="reservationCode">กรอกรหัสการจอง:</label>
+                    <input type="text" class="form-control" id="reservationCode">
                 </div>
 
-                <!-- Not found message -->
-                <div id="bookingNotFound" class="text-danger" style="display: none;">
-                    ❌ ไม่พบข้อมูลการจองในระบบ
-                </div>
+
             </div>
 
             <div class="modal-footer justify-content-end">
-                <button class="btn btn-primary" id="checkBookingBtn">ตรวจสอบรหัส</button>
-                <button class="btn btn-success d-none" id="confirmReservationBtn">ยืนยันการจอง</button>
+                <a href="#" class="btn btn-primary" id="checkBookingBtn">ตรวจสอบรหัส</a>
             </div>
         </div>
     </div>
@@ -95,7 +91,7 @@
             </div>
 
             <div class="modal-footer justify-content-end">
-                <button class="btn btn-primary" id="verifyWalkinBtn">รับโต๊ะ</button>
+                <a href="#" class="btn btn-primary" id="verifyWalkinBtn">รับโต๊ะ</a>
             </div>
         </div>
     </div>

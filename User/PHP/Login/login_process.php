@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // ตรวจสอบในฐานข้อมูล
     // แก้ไขคำสั่ง SQL โดยใช้ backticks รอบชื่อของตาราง `member`
-    $sql = "SELECT * FROM `member` WHERE first_name = ? AND last_name = ?";
+    $sql = "SELECT * FROM `Custumer` WHERE first_name = ? AND last_name = ?";
     $stmt = $conn->prepare($sql);
 
     // ตรวจสอบว่า prepare ทำงานได้หรือไม่

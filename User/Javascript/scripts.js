@@ -23,3 +23,5 @@ function renderOrderSummary() {
 function submitOrder() {
     alert("สรุปรายการที่เลือก: " + JSON.stringify(orderList));
 }
+
+

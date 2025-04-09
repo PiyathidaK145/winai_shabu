@@ -12,7 +12,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 
     if ($availability_id > 0) {
         // ตรวจสอบว่ามีการจองอยู่จริง และยังไม่ได้ถูกยกเลิก
-        $sql = "SELECT reservation_id FROM reservation WHERE availability_id = ? AND first_name = ? AND last_name = ? AND status != 'Cancel'";
+        $sql = "SELECT r.reservation_id 
+                FROM reservation r
+                JOIN custumer c ON r.custumer_id = c.custumer_id
+                WHERE r.availability_id = ? AND c.first_name = ? AND c.last_name = ? AND r.status != 'Cancel'";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("iss", $availability_id, $first_name, $last_name);
         $stmt->execute();

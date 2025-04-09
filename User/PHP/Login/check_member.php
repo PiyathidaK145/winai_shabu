@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // เตรียมคำสั่ง SQL เพื่อหาชื่อและนามสกุลที่ตรงกัน
-        $stmt = $conn->prepare("SELECT * FROM `Member` WHERE first_name = ? AND last_name = ?");
+        $stmt = $conn->prepare("SELECT * FROM `Custumer` WHERE first_name = ? AND last_name = ?");
         if ($stmt === false) {
             echo "Error preparing statement: " . $conn->error;
             exit;
