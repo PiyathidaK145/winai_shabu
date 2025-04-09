@@ -77,31 +77,219 @@
   border-radius: 5px;
 }
 
-.table-available { background-color: #4caf50; } /* Green */
-.table-reserved { background-color: #ff6f00; }  /* Orange */
-.table-occupied { background-color: #e53935; }  /* Red */
+.table_use {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table_use thead {
+  background-color: #b5b4b4;
+  color: #343a40;
+  font-weight: bold;
+  text-align: center;
+}
+
+.table_use th,
+.table_use td {
+  padding: 12px 15px;
+  text-align: center;
+  border: 1px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.table_use tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.table_use tbody tr:hover {
+  background-color: #f1f1f1;
+  transition: 0.3s ease;
+}
+
+/* ป้ายสถานะ */
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: #fff;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.badge-walkin {
+  background-color: #28a745; /* เขียว */
+}
+
+.badge-reservation {
+  background-color: #007bff; /* น้ำเงิน */
+}
+
+/* เวลาคงเหลือ */
+.remaining-time {
+  font-weight: bold;
+  color: #dc3545;
+}
+.table-available {
+  background-color: #4caf50;
+}
+
+/* Green */
+.table-reserved {
+  background-color: #ff6f00;
+}
+
+/* Orange */
+.table-occupied {
+  background-color: #e53935;
+}
+
+/* Red */
 
 /* Positioning each table */
-.table1  { top: 30%; left: 32%; width: 9%; height: 10%; }
-.table2  { top: 40.2%; left: 23%; width: 18%; height: 10%; }
-.table3  { top: 50.5%; left: 23%; width: 18%; height: 10%; }
-.table4  { top: 60.9%; left: 23%; width: 18%; height: 10%; }
-.table5  { top: 20%; left: 54%; width: 9%; height: 10%; }
-.table6  { top: 30.3%; left: 54%; width: 9%; height: 10%; }
-.table7  { top: 40.5%; left: 54%; width: 9%; height: 10%; }
-.table8  { top: 50.8%; left: 54%; width: 9%; height: 10%; }
-.table9  { top: 61%; left: 54%; width: 9%; height: 10%; }
-.table10 { top: 20%; left: 65%; width: 9%; height: 10%; }
-.table11 { top: 30.3%; left: 65%; width: 9%; height: 10%; }
-.table12 { top: 40.5%; left: 65%; width: 9%; height: 10%; }
-.table13 { top: 50.8%; left: 65%; width: 9%; height: 10%; }
-.table14 { top: 61%; left: 65%; width: 9%; height: 10%; }
-.table15 { top: 15%; left: 90%; width: 9%; height: 10%; }
-.table16 { top: 25.3%; left: 90%; width: 9%; height: 10%; }
-.table17 { top: 35.6%; left: 90%; width: 9%; height: 10%; }
-.table18 { top: 45.9%; left: 90%; width: 9%; height: 10%; }
-.table19 { top: 56.3%; left: 90%; width: 9%; height: 10%; }
-.table20 { top: 66.7%; left: 90%; width: 9%; height: 10%; }
+.table1 {
+  top: 30%;
+  left: 32%;
+  width: 9%;
+  height: 10%;
+}
+
+.table2 {
+  top: 40.2%;
+  left: 23%;
+  width: 18%;
+  height: 10%;
+}
+
+.table3 {
+  top: 50.5%;
+  left: 23%;
+  width: 18%;
+  height: 10%;
+}
+
+.table4 {
+  top: 60.9%;
+  left: 23%;
+  width: 18%;
+  height: 10%;
+}
+
+.table5 {
+  top: 20%;
+  left: 54%;
+  width: 9%;
+  height: 10%;
+}
+
+.table6 {
+  top: 30.3%;
+  left: 54%;
+  width: 9%;
+  height: 10%;
+}
+
+.table7 {
+  top: 40.5%;
+  left: 54%;
+  width: 9%;
+  height: 10%;
+}
+
+.table8 {
+  top: 50.8%;
+  left: 54%;
+  width: 9%;
+  height: 10%;
+}
+
+.table9 {
+  top: 61%;
+  left: 54%;
+  width: 9%;
+  height: 10%;
+}
+
+.table10 {
+  top: 20%;
+  left: 65%;
+  width: 9%;
+  height: 10%;
+}
+
+.table11 {
+  top: 30.3%;
+  left: 65%;
+  width: 9%;
+  height: 10%;
+}
+
+.table12 {
+  top: 40.5%;
+  left: 65%;
+  width: 9%;
+  height: 10%;
+}
+
+.table13 {
+  top: 50.8%;
+  left: 65%;
+  width: 9%;
+  height: 10%;
+}
+
+.table14 {
+  top: 61%;
+  left: 65%;
+  width: 9%;
+  height: 10%;
+}
+
+.table15 {
+  top: 15%;
+  left: 90%;
+  width: 9%;
+  height: 10%;
+}
+
+.table16 {
+  top: 25.3%;
+  left: 90%;
+  width: 9%;
+  height: 10%;
+}
+
+.table17 {
+  top: 35.6%;
+  left: 90%;
+  width: 9%;
+  height: 10%;
+}
+
+.table18 {
+  top: 45.9%;
+  left: 90%;
+  width: 9%;
+  height: 10%;
+}
+
+.table19 {
+  top: 56.3%;
+  left: 90%;
+  width: 9%;
+  height: 10%;
+}
+
+.table20 {
+  top: 66.7%;
+  left: 90%;
+  width: 9%;
+  height: 10%;
+}
 
 /* Restaurant areas */
 .rectangle,
@@ -117,7 +305,34 @@
   font-family: Arial, sans-serif;
 }
 
-.rectangle  { width: 250px; height: 50px;  top: 6.3%;  left: 31.5%; transform: translate(-50%, -50%); }
-.rectangle1 { width: 50px;  height: 310px; top: 42%;   left: 6.5%;  transform: translate(-50%, -50%); }
-.rectangle2 { width: 100px; height: 30px;  top: 10.5%; left: 87.5%; transform: translate(-50%, -50%); }
-.rectangle3 { width: 150px; height: 20px;  top: 100%;  left: 50%;   transform: translate(-50%, -50%); }
+.rectangle {
+  width: 250px;
+  height: 50px;
+  top: 6.3%;
+  left: 31.5%;
+  transform: translate(-50%, -50%);
+}
+
+.rectangle1 {
+  width: 50px;
+  height: 310px;
+  top: 42%;
+  left: 6.5%;
+  transform: translate(-50%, -50%);
+}
+
+.rectangle2 {
+  width: 100px;
+  height: 30px;
+  top: 10.5%;
+  left: 87.5%;
+  transform: translate(-50%, -50%);
+}
+
+.rectangle3 {
+  width: 150px;
+  height: 20px;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

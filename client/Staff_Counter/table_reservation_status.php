@@ -179,15 +179,29 @@ function getRemainingTimeToSlotEnd($created_at, $time_id)
                     $discount_value = $row['discount_value'];
 
                     $subtotal = $total_amount * $number_of_guest;
+<<<<<<< HEAD
+=======
+                    $discount = 0;
+>>>>>>> 8b2216fd18008dad437930077b67c9ef256e13d2
 
                     if ($discount_type === 'percentage') {
                         $discount = $subtotal * $discount_value;
                     } elseif ($discount_type === 'fixed_amount') {
                         $discount = $discount_value;
+<<<<<<< HEAD
+=======
+                    } elseif ($discount_type === 'count_number') {
+                        $free_count = floor($number_of_guest / ($discount_value + 1));
+                        $discount = $free_count * $total_amount;
+>>>>>>> 8b2216fd18008dad437930077b67c9ef256e13d2
                     } else {
                         $discount = 0;
                     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8b2216fd18008dad437930077b67c9ef256e13d2
                     $after_discount = $subtotal - $discount;
                     $vat = $after_discount * 0.07;
                     $final_total = $after_discount + $vat;

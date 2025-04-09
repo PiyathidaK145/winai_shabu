@@ -1,142 +1,121 @@
+<?php
+date_default_timezone_set("Asia/Bangkok");
+
+include '../../config/connect_db.php';
+// ดึงหมวดหมู่
+$category_query = "SELECT * FROM category";
+$category_result = mysqli_query($conn, $category_query);
+
+// ดึง raw_material + JOIN menu เพื่อดึง menu_id
+$material_query = "
+    SELECT 
+        m.menu_id,
+        r.item_name,
+        r.category_id,
+        c.category_name
+    FROM 
+        menu AS m
+    INNER JOIN raw_material AS r ON m.raw_material_id = r.raw_material_id
+    INNER JOIN category AS c ON r.category_id = c.category_id
+    ORDER BY c.category_name ASC, r.item_name ASC
+";
+$material_result = mysqli_query($conn, $material_query);
+
+// จัดกลุ่มเมนูตาม category
+$menus_by_category = [];
+while ($row = mysqli_fetch_assoc($material_result)) {
+    $cat_id = $row['category_id'];
+    if (!isset($menus_by_category[$cat_id])) {
+        $menus_by_category[$cat_id] = [
+            'category_name' => $row['category_name'],
+            'menus' => []
+        ];
+    }
+    $menus_by_category[$cat_id]['menus'][] = $row;
+}
+
+
+include dirname(__FILE__) . '/include/header.php';
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Package</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-        }
-
-        h1 {
-            text-align: center;
-            margin-top: 20px;
-            color: #333;
-        }
-
-        .form-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin: 30px auto;
-            max-width: 800px;
-        }
-
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* กำหนดให้มี 2 คอลัมน์ */
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .image-item {
-            display: flex;
-            align-items: center;
-            position: relative;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .image-item input[type="checkbox"] {
-            margin-right: 10px;  /* ให้ checkbox อยู่ข้างซ้ายของรูป */
-        }
-
-        .image-item img {
-            max-width: 100%;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            transition: border-color 0.3s ease;
-        }
-
-        .image-item input[type="checkbox"]:checked + label img {
-            border-color: #007bff; /* เปลี่ยนขอบของรูปเมื่อเลือก */
-        }
-
-        .form-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        .btn-back {
-            background-color:rgb(51, 52, 53);
-            color: white;
-        }
-
-        .btn-back:hover {
-            background-color: #5a6268;
-        }
-    </style>
+    <title>เพิ่มแพ็คเกจ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-<?php include 'include/header.php'; ?>
 
-<div class="container-fluid">
+<body>
     <div class="row">
         <main class="main-wrapper col-md-9 ms-sm-auto py-4 col-lg-9 px-md-4 border-start">
-            <div class="container">
-                <h1>เพิ่มแพ็คเกจ</h1>
-                <div class="form-container">
-                    <form action="add_package_process.php" method="POST" enctype="multipart/form-data">
-                        <!-- Package Name -->
-                        <div class="mb-3">
-                            <label for="package_name" class="form-label">ชื่อแพ็คเกจ</label>
-                            <input type="text" id="package_name" name="package_name" class="form-control" placeholder="Enter Package Name" required>
-                        </div>
+            <div class="container mt-4">
+                <div class="card shadow">
+                    <div class="card-header bg-secondary text-white">
+                        <h4 class="mb-0">เพิ่มเพ็คเกจ</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="save_package.php" method="POST">
+                            <div class="mb-3">
+                                <label for="package_name" class="form-label">ชื่อแพ็คเกจ</label>
+                                <input type="text" name="package_name" id="package_name" class="form-control" required>
+                            </div>
 
-                        <!-- Description -->
-                        <div class="mb-3">
-                            <label for="package_description" class="form-label">คำอธิบาย</label>
-                            <textarea id="package_description" name="package_description" class="form-control" placeholder="Enter Description" rows="4" required></textarea>
-                        </div>
+                            <div class="mb-3">
+                                <label for="discription" class="form-label">คำอธิบาย</label>
+                                <textarea name="discription" id="discription" rows="3" class="form-control" required></textarea>
+                            </div>
 
-                        <!-- Promotion Image Selection -->
-                        <label for="promotion_image" class="form-label">เลือกเมนู</label>
-                        <div class="image-grid">
-                            <div class="image-item">
-                                <input type="checkbox" id="image1" name="promotion_image[]" value="image1.jpg">
-                                <label for="image1"><img src="image1.jpg" alt="Image 1"></label>
+                            <div class="mb-3">
+                                <label for="price" class="form-label">ราคา (บาท)</label>
+                                <input type="number" name="price" id="price" class="form-control" required>
                             </div>
-                            <div class="image-item">
-                                <input type="checkbox" id="image2" name="promotion_image[]" value="image2.jpg">
-                                <label for="image2"><img src="image2.jpg" alt="Image 2"></label>
-                            </div>
-                            <div class="image-item">
-                                <input type="checkbox" id="image3" name="promotion_image[]" value="image3.jpg">
-                                <label for="image3"><img src="image3.jpg" alt="Image 3"></label>
-                            </div>
-                            <div class="image-item">
-                                <input type="checkbox" id="image4" name="promotion_image[]" value="image4.jpg">
-                                <label for="image4"><img src="image4.jpg" alt="Image 4"></label>
-                            </div>
-                            <div class="image-item">
-                                <input type="checkbox" id="image5" name="promotion_image[]" value="image5.jpg">
-                                <label for="image5"><img src="image5.jpg" alt="Image 5"></label>
-                            </div>
-                            <div class="image-item">
-                                <input type="checkbox" id="image6" name="promotion_image[]" value="image6.jpg">
-                                <label for="image6"><img src="image6.jpg" alt="Image 6"></label>
-                            </div>
-                        </div>
 
-                        <div class="form-buttons">
-                            <a href="Package.php" class="btn btn-secondary btn-back">กลับ</a>
-                            <button type="submit" class="btn btn-primary">บันทึกข้อมูล</button>
-                        </div>
-                    </form>
+                            <div class="mb-3">
+                                <label class="form-label">เลือกเมนูในแพ็คเกจ (แยกตามหมวดหมู่)</label>
+                                <?php foreach ($menus_by_category as $cat_id => $cat_data): ?>
+                                    <div class="mb-2">
+                                        <strong><?= htmlspecialchars($cat_data['category_name']) ?></strong>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input select-all" type="checkbox" id="select_all_<?= $cat_id ?>" data-category="<?= $cat_id ?>">
+                                            <label class="form-check-label text-danger fw-bold" for="select_all_<?= $cat_id ?>">เลือกทั้งหมด</label>
+                                        </div><br>
+                                        <?php foreach ($cat_data['menus'] as $menu): ?>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input menu-checkbox" type="checkbox" name="menu_ids[]" value="<?= $menu['menu_id'] ?>" data-category="<?= $cat_id ?>" id="menu_<?= $menu['menu_id'] ?>">
+                                                <label class="form-check-label" for="menu_<?= $menu['menu_id'] ?>">
+                                                    <?= htmlspecialchars($menu['item_name']) ?>
+                                                </label>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <hr>
+                                <?php endforeach; ?>
+                            </div>
+
+                            <div class="text-end">
+                                <a href="package.php" class="btn btn-danger">ยกเลิก</a>
+                                <button type="submit" class="btn btn-primary">บันทึกแพ็คเกจ</button>
+                            </div>
+                        </form>
+
+                    </div>
                 </div>
             </div>
         </main>
     </div>
-</div>
+    <script>
+        // เมื่อคลิก checkbox "เลือกทั้งหมด"
+        document.querySelectorAll('.select-all').forEach(selectAllCheckbox => {
+            selectAllCheckbox.addEventListener('change', function() {
+                const category = this.getAttribute('data-category');
+                const checkboxes = document.querySelectorAll(`.menu-checkbox[data-category='${category}']`);
+                checkboxes.forEach(cb => cb.checked = this.checked);
+            });
+        });
+    </script>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
+
 </html>

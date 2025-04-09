@@ -34,4 +34,8 @@ if (isset($_GET['role_id'])) {
 } else {
     echo "Role ID is missing.";
 }
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> 8b2216fd18008dad437930077b67c9ef256e13d2

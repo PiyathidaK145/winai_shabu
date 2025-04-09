@@ -1,0 +1,68 @@
+/* ingredient_analytics.css */
+.ingredient-analytics-container {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.ingredient-analytics-container h4 {
+    font-weight: bold;
+}
+
+.ingredient-analytics-container .btn {
+    margin-bottom: 10px;
+}
+
+.ingredient-analytics-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.button-sidebar {
+    min-width: 220px;
+}
+
+.button-sidebar .btn {
+    text-align: left;
+    font-weight: 500;
+}
+
+.chart-box {
+    margin-bottom: 1rem;
+}
+
+.button-sidebar .btn {
+    width: 100%;
+    min-width: 240px;
+    height: 100px;
+    padding: 10px 20px;
+    border: 2px solid #333;
+    border-radius: 14px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #000;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.button-sidebar .btn strong {
+    font-size: 1.3rem;
+    color: #222;
+}
+
+.button-sidebar .btn:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-1px);
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-filter {
+    position: relative;
+    z-index: 1051;
+}
