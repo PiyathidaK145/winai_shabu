@@ -9,14 +9,6 @@
 </footer>
 
 <!-- JAVASCRIPT FILES -->
-<<<<<<< HEAD
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/apexcharts.min.js"></script>
-<script src="js/custom.js"></script>
-<script src="js/fetch_dashboard_data.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-=======
 <!-- jQuery -->
 <script src="../assets/js/jquery.min.js"></script>
 
@@ -29,7 +21,6 @@
 <!-- Scripts ที่ต้องพึ่ง bootstrap -->
 <script src="../assets/js/custom.js"></script>
 <script src="../assets/js/fetch_dashboard_data.js"></script>
->>>>>>> 8b2216fd18008dad437930077b67c9ef256e13d2
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
 </script>

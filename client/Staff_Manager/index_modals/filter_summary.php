@@ -39,7 +39,7 @@
                             <!-- เพศ -->
                             <div class="col-md-6">
                                 <label for="gender_service_analysis" class="form-label">เพศ</label>
-                                <select name="gender" id="gender_service_analysis" class="form-select">
+                                <select name="gender" id="gender" class="form-select">
                                     <option value="">ทั้งหมด</option>
                                 </select>
                             </div>
@@ -47,7 +47,7 @@
                             <!-- ศาสนา -->
                             <div class="col-md-6">
                                 <label for="religion_service_analysis" class="form-label">ศาสนา</label>
-                                <select name="religion" id="religion_service_analysis" class="form-select">
+                                <select name="religion" id="religion" class="form-select">
                                     <option value="">ทั้งหมด</option>
                                 </select>
                             </div>

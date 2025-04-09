@@ -8,10 +8,6 @@
                         <span><i class="fa-solid fa-list me-2"></i>รายการอาหารแต่ละโต๊ะ</span>
                     </a>
                 </li>
-<<<<<<< HEAD
-=======
-
->>>>>>> 8b2216fd18008dad437930077b67c9ef256e13d2
                 <li class="nav-item border-top mt-auto pt-2">
                     <a class="nav-link" href="#">
                         <i class="bi-box-arrow-left me-2"></i>
