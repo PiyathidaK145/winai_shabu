@@ -39,10 +39,15 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="staff.php">
+                    <a class="nav-link" href="employee.php">
                         <span><i class="fa-solid fa-user me-2"></i></i>รายชื่อพนักงาน</span>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="Role_employee.php">
+                        <span><i class="fa-solid fa-user-tie me-2"></i>หน้าที่พนักงาน</span>
+                    </a>
 
                 <li class="nav-item border-top mt-auto pt-2">
                     <a class="nav-link" href="#">
