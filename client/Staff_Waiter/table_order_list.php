@@ -1,15 +1,12 @@
 <?php
-error_reporting(E_ALL);
 ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 if (!isset($_GET['ajax'])) {
     include 'include/header.php';
 }
 
-$servername = "localhost";
-$username = "root";
-$password = "123456";
-$dbname = "a_shabu";
+include dirname(__FILE__) . '/../../config/connect_db.php';
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password);
@@ -23,22 +20,122 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['orderId'], $_POST['ne
     $orderId = filter_input(INPUT_POST, 'orderId', FILTER_VALIDATE_INT);
     $newStatus = $_POST['newStatus'];
 
-    if ($orderId && in_array($newStatus, ['in_progress', 'complete'])) {
-        $stmt = $conn->prepare("UPDATE `order` SET status = :status WHERE order_id = :orderId");
+    if ($orderId && in_array($newStatus, ['pending', 'served'])) {
+        // ✅ อัปเดตสถานะ
+        $stmt = $conn->prepare("UPDATE `order` SET status_waiter = :status WHERE order_id = :orderId");
         $stmt->execute(['status' => $newStatus, 'orderId' => $orderId]);
-        echo json_encode(['success' => true, 'message' => 'Status updated successfully.']);
+
+        if ($newStatus === 'served') {
+            $stmt = $conn->prepare("
+                SELECT rm.item_name AS menu_item, o.quantity
+                FROM `order` o
+                JOIN menu m ON o.menu_id = m.menu_id
+                JOIN raw_material rm ON m.raw_material_id = rm.raw_material_id
+                WHERE o.order_id = :orderId
+            ");
+            $stmt->execute(['orderId' => $orderId]);
+            $order = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($order) {
+                $menuItem = $order['menu_item'];
+                $quantityToDeduct = $order['quantity']; // 👈 ✅ ใช้ quantity จาก order
+
+                // 1. หา raw_material_id จาก item_name
+                $stmt = $conn->prepare("SELECT raw_material_id FROM raw_material WHERE item_name = :item_name");
+                $stmt->execute(['item_name' => $menuItem]);
+                $rawMaterialId = $stmt->fetchColumn();
+
+                if ($rawMaterialId) {
+                    // 2. หา menu_id ที่ใช้ raw_material นี้
+                    $stmt = $conn->prepare("SELECT menu_id FROM menu WHERE raw_material_id = :raw_id");
+                    $stmt->execute(['raw_id' => $rawMaterialId]);
+                    $menuIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                    foreach ($menuIds as $menuId) {
+                        // 3. หา import_raw_material_id
+                        $stmt = $conn->prepare("SELECT import_raw_material_id FROM import_raw_material WHERE menu_id = :menuId");
+                        $stmt->execute(['menuId' => $menuId]);
+                        $importIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                        foreach ($importIds as $importId) {
+                            $remaining = $quantityToDeduct;
+
+                            ob_implicit_flush(true);  // เปิดการแสดงข้อความแบบทันที
+                            // เปิดไฟล์เพื่อบันทึกข้อความ
+                            $file = fopen("debug_log.txt", "a");
+                            while ($remaining > 0) {
+                                // ตรวจสอบว่า remaining == 0 ก่อนทำการคิวรี
+                                if ($remaining == 0) {
+                                    fwrite($file, "Remaining is 0, exiting loop.\n");
+                                    break;  // หยุดลูป
+                                }
+                            
+                                // คิวรีข้อมูลจากฐานข้อมูล
+                                $stmt = $conn->prepare(" 
+                                    SELECT calculate_raw_material_id, capacity, expried_date 
+                                    FROM calculate_raw_material 
+                                    WHERE import_raw_material_id = :importId AND capacity > 0 
+                                    ORDER BY expried_date ASC LIMIT 1 
+                                ");
+                                $stmt->execute(['importId' => $importId]);
+                                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                            
+                                // หากไม่พบข้อมูล หรือ remaining == 0 ให้หยุดลูป
+                                if (!$row) {
+                                    fwrite($file, "No more rows found. Exiting loop.\n");
+                                    break;  // หยุดลูป
+                                }
+                            
+                                // แสดงข้อมูลแถวที่เจอ
+                                fwrite($file, "Found row: calculate_raw_material_id = " . $row['calculate_raw_material_id'] . ", capacity = " . $row['capacity'] . ", expried_date = " . $row['expried_date'] . "\n");
+                            
+                                // หัก capacity ตาม remaining
+                                $deductAmount = min($row['capacity'], $remaining);
+                                $newCapacity = $row['capacity'] - $deductAmount;
+                            
+                                // แสดงการหัก capacity
+                                fwrite($file, "Deducting: $deductAmount from capacity. New capacity = $newCapacity\n");
+                            
+                                // อัปเดต capacity ในฐานข้อมูล
+                                $stmt = $conn->prepare(" 
+                                    UPDATE calculate_raw_material 
+                                    SET capacity = :newCapacity 
+                                    WHERE calculate_raw_material_id = :id 
+                                ");
+                                $stmt->execute(['newCapacity' => $newCapacity, 'id' => $row['calculate_raw_material_id']]);
+                            
+                                // ตรวจสอบผลการอัปเดต
+                                if ($stmt->rowCount() > 0) {
+                                    fwrite($file, "Capacity updated successfully for calculate_raw_material_id = " . $row['calculate_raw_material_id'] . ".\n");
+                                } else {
+                                    fwrite($file, "No rows affected for calculate_raw_material_id = " . $row['calculate_raw_material_id'] . ".\n");
+                                }
+                            
+                                // อัปเดต remaining
+                                $remaining -= $deductAmount;
+                            }
+                            // ตรวจสอบว่าเมื่อออกจากลูปยังคงทำงาน
+                            fwrite($file, "Exited loop, remaining = $remaining\n");
+                            die();
+                        }
+                    }
+                }
+            }die();
+        }
+        echo json_encode(['success' => true, 'message' => 'Status updated and raw material adjusted.']);
     } else {
         echo json_encode(['success' => false, 'message' => 'Invalid input.']);
     }
     exit;
 }
 
+
 // ✅ **ตั้งค่าการเรียงลำดับ**
 $orderColumn = $_GET['orderColumn'] ?? 'getting_table_id';
 $orderDirection = ($_GET['orderDirection'] ?? 'ASC') === 'ASC' ? 'ASC' : 'DESC';
 
-// ✅ **กรองเฉพาะ Order ที่เป็น `in_progress`**
-$whereClause = "WHERE o.status = 'in_progress'";
+// ✅ **กรองเฉพาะ Order ที่เป็น `pending`**
+$whereClause = "WHERE o.status_waiter  = 'pending'";
 $params = [];
 
 if (!empty($_GET['table_id'])) {
@@ -56,17 +153,19 @@ $query = "
         rm.item_name AS menu_item,
         o.quantity,
         o.order_date,
-        o.status
+        o.status_waiter
     FROM `order` o
     LEFT JOIN getting_table g ON o.getting_table_id = g.getting_table_id
     LEFT JOIN reservation r ON g.reservation_id = r.reservation_id
-    LEFT JOIN table_availability t ON r.availability_id = t.availability_id
+    LEFT JOIN walkin w ON g.walkin_id = w.walkin_id  -- เพิ่มการเชื่อมโยงตาราง walkin
+    LEFT JOIN table_availability t ON (r.availability_id = t.availability_id OR w.availability_id = t.availability_id)  -- ใช้การเชื่อมโยงทั้งจาก reservation และ walkin
     LEFT JOIN menu m ON o.menu_id = m.menu_id
     LEFT JOIN raw_material rm ON m.raw_material_id = rm.raw_material_id
     $whereClause
-    GROUP BY g.getting_table_id, o.order_id, rm.item_name, o.quantity, o.order_date, o.status
+    GROUP BY g.getting_table_id, o.order_id, rm.item_name, o.quantity, o.order_date, o.status_waiter 
     ORDER BY $orderColumn $orderDirection
 ";
+
 
 $stmt = $conn->prepare($query);
 $stmt->execute($params);
@@ -88,7 +187,8 @@ foreach ($result as &$row) {
     $row['order_number'] = $orderNumbers[$tableId];
 
     // ✅ เพิ่มค่าโต๊ะในตัวเลือกดรอปดาวน์โดยตรวจสอบค่าซ้ำ
-    foreach (explode(', ', $row['table_numbers']) as $table) {
+    $tableNumbers = $row['table_numbers'] ?? ''; // หากเป็น null ให้ใช้ค่าว่างแทน
+    foreach (explode(', ', $tableNumbers) as $table) {
         $tableOptions[$table] = $table;
     }
 }
@@ -111,17 +211,16 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
         <main class="main-wrapper col-md-9 ms-sm-auto py-4 col-lg-9 px-md-4 border-start">
             <h1 class="h2 mb-3">รายการอาหารแต่ละโต๊ะ</h1>
             <div class="mb-3">
-    <label for="tableFilter" class="form-label">เลือกโต๊ะ:</label>
-    <select id="tableFilter" class="form-select">
-        <option value="">ทั้งหมด</option>
-        <?php foreach ($tableOptions as $tableId): ?>
-            <option value="<?= htmlspecialchars($tableId) ?>">
-                <?= htmlspecialchars($tableId) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-</div>
-
+                <label for="tableFilter" class="form-label">เลือกโต๊ะ:</label>
+                <select id="tableFilter" class="form-select">
+                    <option value="">ทั้งหมด</option>
+                    <?php foreach ($tableOptions as $tableId): ?>
+                        <option value="<?= htmlspecialchars($tableId) ?>">
+                            <?= htmlspecialchars($tableId) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
 
             <div class="table-responsive">
                 <table id="orderTable" class="display">
@@ -137,19 +236,20 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
                     </thead>
                     <tbody>
                         <?php foreach ($result as $row): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($row['order_number']) ?></td>
-                            <td><?= htmlspecialchars($row['table_numbers']) ?></td>
-                            <td><?= htmlspecialchars($row['menu_item']) ?></td>
-                            <td><?= htmlspecialchars($row['quantity']) ?></td>
-                            <td><?= htmlspecialchars($row['order_date']) ?></td>
-                            <td>
-                                <select class="status-dropdown" data-order-id="<?= $row['order_id'] ?>">
-                                    <option value="in_progress" <?= $row['status'] == 'in_progress' ? 'selected' : '' ?>>In Progress</option>
-                                    <option value="complete" <?= $row['status'] == 'complete' ? 'selected' : '' ?>>Complete</option>
-                                </select>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td><?= htmlspecialchars($row['order_number'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($row['table_numbers'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($row['menu_item'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($row['quantity'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($row['order_date'] ?? '') ?></td>
+
+                                <td>
+                                    <select class="status-dropdown" data-order-id="<?= $row['order_id'] ?>">
+                                        <option value="pending" <?= $row['status_waiter'] == 'pending' ? 'selected' : '' ?>>pending</option>
+                                        <option value="served" <?= $row['status_waiter'] == 'served' ? 'selected' : '' ?>>served</option>
+                                    </select>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -159,39 +259,50 @@ if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
 </div>
 
 <script>
-$(document).ready(function() {
-    let table = $('#orderTable').DataTable({
-        "order": [[0, "asc"]],
-        "columnDefs": [{
-            "targets": [5], 
-            "orderable": false
-        }]
-    });
+    $(document).ready(function() {
+        let table = $('#orderTable').DataTable({
+            "order": [
+                [0, "asc"]
+            ],
+            "columnDefs": [{
+                "targets": [5],
+                "orderable": false
+            }]
+        });
 
-    // กรองตามหมายเลขโต๊ะที่เลือก
-    $('#tableFilter').on('change', function() {
-        let tableId = $(this).val();
-        if (tableId) {
-            table.column(1).search('\\b' + tableId + '\\b', true, false).draw(); 
-        } else {
-            table.column(1).search('').draw();
-        }
-    });
+        // กรองตามหมายเลขโต๊ะที่เลือก
+        $('#tableFilter').on('change', function() {
+            let tableId = $(this).val();
+            if (tableId) {
+                table.column(1).search('\\b' + tableId + '\\b', true, false).draw();
+            } else {
+                table.column(1).search('').draw();
+            }
+        });
 
-    // อัปเดตสถานะ order ผ่าน AJAX
-    $(document).on("change", ".status-dropdown", function() {
-        let orderId = $(this).data("order-id");
-        let newStatus = $(this).val();
+        // อัปเดตสถานะ order ผ่าน AJAX
+        $(document).on("change", ".status-dropdown", function() {
+            let orderId = $(this).data("order-id");
+            let newStatus = $(this).val();
+            let currentRow = $(this).closest('tr');
 
-        fetch("table_order_list.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `orderId=${orderId}&newStatus=${newStatus}`
-        })
-        .then(response => response.json())
-        .then(data => console.log(data.message))
-        .catch(error => console.error("Error:", error));
-    });
-});
+            fetch("table_order_list.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: `orderId=${orderId}&newStatus=${newStatus}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
 
+                    if (newStatus === 'served') {
+                        // ลบแถวทันทีจาก DataTable
+                        $('#orderTable').DataTable().row(currentRow).remove().draw();
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        });
+    })
 </script>
